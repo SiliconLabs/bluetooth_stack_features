@@ -1,7 +1,7 @@
 <table border="0">
   <tr>
     <td align="left" valign="middle">
-    <h1>EFR32 Bluetooth Stack Feature Examples</h1>
+    <h1>EFR32 Bluetooth Firmware Upgrade Examples</h1>
   </td>
   <td align="left" valign="middle">
     <a href="https://www.silabs.com/wireless/bluetooth">
@@ -11,22 +11,9 @@
   </tr>
 </table>
 
-# Silicon Labs Bluetooth Stack Feature Examples #
+# Silicon Labs Bluetooth Firmware Upgrade Examples #
 
-This repo contains example projects which demonstrate the features of the Silicon Labs Bluetooth stack. The examples are categorized by the features that they demonstrate. These features are advertising, connections, GATT protocol, security, persistent storage, firmware upgrade, NCP, and system and performance.
-
-## Examples ##
-
-- Advertising
-- Connections
-- GATT Protocol
-- Security
-- Persistent Storage
-- Firmware Upgrade
-  - OTA for NCP Hosts
-  - OTA from Windows
-- NCP
-- System and Performance
+This directory contains example projects which demonstrate Bluetooth firmware upgrades.
 
 ## Documentation ##
 

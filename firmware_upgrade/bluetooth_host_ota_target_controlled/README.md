@@ -5,7 +5,7 @@
 The GG11 is the host and the MG12 is the target.
 In this project, the target is responsible for setting the host to bootloader mode (using the gpio activation and reset pin) and send the image through USART to the host. The host does not have any code regarding the OTA Control and Data. That is handled inside the target device. All code related to updating the host is in the btl_app folder of this project.
 
-## SDK Version ## 
+## Gecko SDK Version ##
 
 v2.7
 

@@ -403,23 +403,42 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
 
     case sl_bt_evt_gatt_server_user_write_request_id:
       if (evt->data.evt_gatt_server_user_write_request.characteristic == gattdb_long_data) {
+          app_log_info("gatt_write_request opcode %2X, %d bytes at offset %d\r\n",
+                     evt->data.evt_gatt_server_user_write_request.att_opcode,
+                     evt->data.evt_gatt_server_user_write_request.value.len,
+                     evt->data.evt_gatt_server_user_write_request.offset);
+          memcpy(&long_data_buffer[evt->data.evt_gatt_server_user_write_request.offset],
+                 evt->data.evt_gatt_server_user_write_request.value.data,
+                 evt->data.evt_gatt_server_user_write_request.value.len);
 
-        sl_app_log("gatt_write_request opcode %2X, %d bytes at offset %d\r\n",
-                   evt->data.evt_gatt_server_user_write_request.att_opcode,
-                   evt->data.evt_gatt_server_user_write_request.value.len,
-                   evt->data.evt_gatt_server_user_write_request.offset);
-        memcpy(&long_data_buffer[evt->data.evt_gatt_server_user_write_request.offset],
-               evt->data.evt_gatt_server_user_write_request.value.data,
-               evt->data.evt_gatt_server_user_write_request.value.len);
-        
-        sc = sl_bt_gatt_server_send_user_write_response(
-            evt->data.evt_gatt_server_user_write_request.connection,
-            evt->data.evt_gatt_server_user_write_request.characteristic,
-            (uint8_t)SL_STATUS_OK);
-        sl_app_assert(sc == SL_STATUS_OK,
-                      "[E: 0x%04x] Failed to send a response\n",
-                      (int)sc);
-
+          if(evt->data.evt_gatt_server_user_write_request.att_opcode == sl_bt_gatt_write_request ){
+          sc = sl_bt_gatt_server_send_user_write_response(
+              evt->data.evt_gatt_server_user_write_request.connection,
+              evt->data.evt_gatt_server_user_write_request.characteristic,
+              (uint8_t)SL_STATUS_OK);
+          app_assert(sc == SL_STATUS_OK,
+                        "[E: 0x%04x] Failed to send a write response\n",
+                        (int)sc);
+          } else if (evt->data.evt_gatt_server_user_write_request.att_opcode == sl_bt_gatt_prepare_write_request){
+          sc = sl_bt_gatt_server_send_user_prepare_write_response(
+              evt->data.evt_gatt_server_user_write_request.connection,
+              evt->data.evt_gatt_server_user_write_request.characteristic,
+              (uint8_t)SL_STATUS_OK,
+              evt->data.evt_gatt_server_user_write_request.offset,
+              evt->data.evt_gatt_server_user_write_request.value.len,
+              evt->data.evt_gatt_server_user_write_request.value.data);
+          app_assert(sc == SL_STATUS_OK,
+                        "[E: 0x%04x] Failed to send a prepare write response\n",
+                        (int)sc);
+          }
+      }
+      if(evt->data.evt_gatt_server_user_write_request.att_opcode == sl_bt_gatt_execute_write_request){
+          sc = sl_bt_gatt_server_send_user_write_response(evt->data.evt_gatt_server_user_write_request.connection,
+                                                     evt->data.evt_gatt_server_user_write_request.characteristic,
+                                                     (uint8_t)SL_STATUS_OK);
+          app_assert(sc == SL_STATUS_OK,
+                        "[E: 0x%04x] Failed to send a write response\n",
+                        (int)sc);
       }
       break;
 

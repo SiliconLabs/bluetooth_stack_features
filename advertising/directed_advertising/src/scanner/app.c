@@ -34,8 +34,6 @@
 #include "app.h"
 #include "app_log.h"
 
-// The advertising set handle allocated from Bluetooth stack.
-static uint8_t advertising_set_handle = 0xff;
 // Advertiser address
 static bd_addr advertiser = {.addr = {0x39, 0x5C, 0xE6, 0x27, 0xFD, 0x84}};
 // Connection ID
@@ -113,19 +111,6 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
                address.addr[2],
                address.addr[1],
                address.addr[0]);
-
-      // Create an advertising set.
-      sc = sl_bt_advertiser_create_set(&advertising_set_handle);
-      app_assert_status(sc);
-
-      // Set advertising interval to 100ms.
-      sc = sl_bt_advertiser_set_timing(
-        advertising_set_handle,
-        160, // min. adv. interval (milliseconds * 1.6)
-        160, // max. adv. interval (milliseconds * 1.6)
-        0,   // adv. duration
-        0);  // max. num. adv. events
-      app_assert_status(sc);
 
       sl_bt_scanner_start(sl_bt_gap_1m_phy, sl_bt_scanner_discover_observation);
       break;

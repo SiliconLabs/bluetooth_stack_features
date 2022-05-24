@@ -11,12 +11,12 @@ This is a special-purpose type of advertising, designed to invite a specific pee
 
 ## Gecko SDK version
 
-GSDK v4.0.2
+GSDK v4.1.0 or newer
 
 ## Hardware Required
 
 - Two WSTK boards
-- Two Bluetooth capable radio boards, e.g: BRD4162A
+- Two Bluetooth-capable radio boards, e.g: BRD4162A
 
 ## Setup
 
@@ -26,61 +26,61 @@ To create an **Advertiser**:
 
 1. Download the latest Bluetooth SDK via [Simplicity Studio](https://www.silabs.com/products/development-tools/software/simplicity-studio) if not already done.
 2. Create a **Bluetooth - SoC Empty** project base on the board you are using as the starting point.
-3. Open the .slcp file of the project, select the **Software Components** tab and do the following changes:
+3. Open the .slcp file of the project, select the **Software Components** tab, and make the following changes:
 
-   - Install **IO Stream: USART** component with the default instance name: **vcom**  
+   - Install **IO Stream: USART** component with the default instance name: **vcom**.
     ![install usart](images/install_usart.png)
 
-   - Find the **Board Control** component and click to the **Configure** button like below
+   - Find the **Board Control** component and click to the **Configure** button as shown.
     ![board control configure](images/board_control_configure.png)  
-    Then enable *Virtual COM UART* under its configuration
+    Then enable *Virtual COM UART* under its configuration.
     ![board control configure](images/enable_vir_com.png)
  
-   - Install the **Legacy Advertising** component, if it is not yet installed
+   - Install the **Legacy Advertising** component, if it is not yet installed.
    ![demo](images/legacy.png)
 
-   - Install the **Log** component (found under Application > Utility group)
+   - Install the **Log** component (found under Application > Utility group).
    ![log](images/log.png)
 
-4. Drag and drop the *app.c* and *app.h* files that located in `src\advertiser` folder to your project to replace the existing ones.
-5. Modify the `scanner` variable in the *app.c* file and configure the Bluetooth address of the *Scanner* board
-6. Modify the advertising parameters to your needs (high/low duty cycle) in function `sl_bt_legacy_advertiser_start_directed`
+4. Drag and drop the *app.c* and *app.h* files located in `src\advertiser` folder to your project to replace the existing ones.
+5. Modify the `scanner` variable in the *app.c* file and configure the Bluetooth address of the *Scanner* board (in reverse byte order).
+6. Modify the advertising parameters to your needs (high/low duty cycle) in function `sl_bt_legacy_advertiser_start_directed`.
 7. Compile and run the program. Use a Bluetooth scanner to check the advertisement.
 
 ### Scanner
 
-Silicon Labs Bluetooth stack also support scanning for directed advertising.
+The Silicon Labs Bluetooth stack also supports scanning for directed advertising.
 
 To create a **Scanner**:
 
 1. Download the latest Bluetooth SDK via [Simplicity Studio](https://www.silabs.com/products/development-tools/software/simplicity-studio) if not already done.
 2. Create a **Bluetooth - SoC Empty** project based on the board you are using as the starting point.
-3. Open the .slcp file of the project, select the **Software Components** tab and do the following changes:
+3. Open the .slcp file of the project, select the **Software Components** tab, and make the following changes:
 
-   - Install **IO Stream: USART** component with the default instance name: **vcom**  
+   - Install **IO Stream: USART** component with the default instance name: **vcom**.
     ![install usart](images/install_usart.png)
 
-   - Find the **Board Control** component and click to the **Configure** button like below
+   - Find the **Board Control** component and click to the **Configure** button as shown.
     ![board control configure](images/board_control_configure.png)  
-    Then enable *Virtual COM UART* under its configuration
+    Then enable *Virtual COM UART* under its configuration.
     ![board control configure](images/enable_vir_com.png)
 
-   - Install the **Log** component (found under Application > Utility group)
+   - Install the **Log** component (found under Application > Utility group).
    ![log](images/log.png)
 
-4. Drag and drop the *app.c* file that located in `src\scanner` folder to your project to replace the existing ones.
-5. Modify the `advertiser` variable in the *app.c* file and configure the Bluetooth address of the *Advertiser* board 
+4. Drag and drop the *app.c* file located in `src\scanner` folder to your project to replace the existing one.
+5. Modify the `advertiser` variable in the *app.c* file and configure the Bluetooth address of the *Advertiser* board (in reverse byte order).
 6. Compile and run the program.
 
 ## Usage
 
 1. Flash one radio board with the advertiser code, and another one with the scanner code.
 
-2. Open two instances of your favorite terminal program, and connect to both kits via the virtual COM port (find the JLink CDC UART ports). Use the following UART settings: **baud rate 115200, 8N1, no flow control**.
+2. Open two instances of your favorite terminal program, and connect to both boards via the virtual COM port (find the JLink CDC UART ports). Use the following UART settings: **baud rate 115200, 8N1, no flow control**.
 
 3. Press the reset buttons, first on the scanner, then on the advertiser board.
 
-4. On the Advertiser's terminal you will see the device address and on the Scanner's termial you will see the list of advertising data as below result
+4. On the Advertiser's terminal you will see the device address and on the Scanner's termial you will see the list of advertising data:
 
 |Advertiser|Scanner|
 |:----------:|:-------:|

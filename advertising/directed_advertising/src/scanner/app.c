@@ -35,7 +35,7 @@
 #include "app_log.h"
 
 // Advertiser address
-static bd_addr advertiser = {.addr = {0x39, 0x5C, 0xE6, 0x27, 0xFD, 0x84}};
+static bd_addr advertiser = {.addr = {0x00, 0x00, 0x00, 0x00, 0x00, 0x00}};
 // Connection ID
 uint8_t connection = 0;
 

@@ -37,7 +37,7 @@
 // The advertising set handle allocated from Bluetooth stack.
 static uint8_t advertising_set_handle = 0xff;
 // Scanner address
-static bd_addr scanner = {.addr = {0xEB, 0xFB, 0xA8, 0x57, 0x0B, 0x00}};
+static bd_addr scanner = {.addr = {0x00, 0x00, 0x00, 0x00, 0x00, 0x00}};
 
 /**************************************************************************//**
  * Application Init.

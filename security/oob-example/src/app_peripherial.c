@@ -15,12 +15,12 @@
  *
  ******************************************************************************/
 #include "em_common.h"
-#include "sl_app_assert.h"
+#include "app_assert.h"
 #include "sl_bluetooth.h"
 #include "gatt_db.h"
 #include "app.h"
 #include "sl_iostream_init_usart_instances.h"
-#include "sl_app_log.h"
+#include "app_log.h"
 
 #define LEGACY_PAIRING            1
 #define SECURE_CONNECTION_PAIRING 2
@@ -92,19 +92,19 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
   // Do not call any stack command before receiving this boot event!
   case sl_bt_evt_system_boot_id:
     memset(notifyBuf, '0', 20);
-    sl_app_log("stack version: %u.%u.%u\r\r\n", evt->data.evt_system_boot.major, evt->data.evt_system_boot.minor, evt->data.evt_system_boot.patch);
-    sl_app_log("Peripheral Boot\r\n");
+    app_log("stack version: %u.%u.%u\r\r\n", evt->data.evt_system_boot.major, evt->data.evt_system_boot.minor, evt->data.evt_system_boot.patch);
+    app_log("Peripheral Boot\r\n");
     // Extract unique ID from BT Address.
     sc = sl_bt_system_get_identity_address(&address, &address_type);
-    sl_app_assert(sc == SL_STATUS_OK,
+    app_assert(sc == SL_STATUS_OK,
                   "[E: 0x%04x] Failed to get Bluetooth address\n",
                   (int)sc);
-    sl_app_log("local BT device address: ");
+    app_log("local BT device address: ");
     for (uint8_t i = 0; i < 5; i++)
     {
-      sl_app_log("%2.2x:", address.addr[5 - i]);
+      app_log("%2.2x:", address.addr[5 - i]);
     }
-    sl_app_log("%2.2x\r\n", address.addr[0]);
+    app_log("%2.2x\r\n", address.addr[0]);
     // Pad and reverse unique ID to get System ID.
     system_id[0] = address.addr[5];
     system_id[1] = address.addr[4];
@@ -119,41 +119,41 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
                                                  0,
                                                  sizeof(system_id),
                                                  system_id);
-    sl_app_assert(sc == SL_STATUS_OK,
+    app_assert(sc == SL_STATUS_OK,
                   "[E: 0x%04x] Failed to write attribute\n",
                   (int)sc);
     // Create an advertising set.
     sc = sl_bt_advertiser_create_set(&advertising_set_handle);
-    sl_app_assert(sc == SL_STATUS_OK,
+    app_assert(sc == SL_STATUS_OK,
                   "[E: 0x%04x] Failed to create advertising set\n",
                   (int)sc);
-    sl_app_log("All bonding deleted\r\n");
+    app_log("All bonding deleted\r\n");
     sc = sl_bt_sm_delete_bondings();
-    sl_app_assert(sc == SL_STATUS_OK,
+    app_assert(sc == SL_STATUS_OK,
                   "[E: 0x%04x] Failed to delete bondings\r\n",
                   (int)sc);
 
     /* bit 3 of flag is 0 to allow legacy pairing */
     sc = sl_bt_sm_configure(0x0B, sm_io_capability_keyboarddisplay);
-    sl_app_assert(sc == SL_STATUS_OK,
+    app_assert(sc == SL_STATUS_OK,
                   "[E: 0x%04x] Failed to configure security requirements and I/O capabilities of the system\r\n",
                   (int)sc);
 
     sc = sl_bt_sm_set_bondable_mode(1);
-    sl_app_assert(sc == SL_STATUS_OK,
+    app_assert(sc == SL_STATUS_OK,
                   "[E: 0x%04x] Failed to set the device accept new bondings\r\n",
                   (int)sc);
 
 #if (PAIRING_MODE == SECURE_CONNECTION_PAIRING)
-    sl_app_log("Use Secure Connection Pairing.\r\n");
-    sl_app_log("Enter 32-byte OOB data and confirm value.\r\n");
+    app_log("Use Secure Connection Pairing.\r\n");
+    app_log("Enter 32-byte OOB data and confirm value.\r\n");
     sc = sl_bt_sm_use_sc_oob(1, 32, NULL, NULL);
-    sl_app_assert(sc == SL_STATUS_OK,
+    app_assert(sc == SL_STATUS_OK,
                   "[E: 0x%04x] Failed to enable the use of OOB data and confirm value\r\n",
                   (int)sc);
 #elif (PAIRING_MODE == LEGACY_PAIRING)
-    sl_app_log("Use Legacy Pairing.\r\n");
-    sl_app_log("Enter 16-byte OOB data.\r\n");
+    app_log("Use Legacy Pairing.\r\n");
+    app_log("Enter 16-byte OOB data.\r\n");
 #endif
     _oob_state = STATE_OOB_MODE;
     break;
@@ -161,25 +161,28 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
   // -------------------------------
   // This event indicates that a new connection was opened.
   case sl_bt_evt_connection_opened_id:
-    sl_app_log("Connected\r\n");
+    app_log("Connected\r\n");
     connHandle = evt->data.evt_connection_opened.connection;
 
     sc = sl_bt_sm_increase_security(connHandle);
-    sl_app_assert(sc == SL_STATUS_OK,
+    app_assert(sc == SL_STATUS_OK,
                   "Increasing security error, error code = 0x%04x\r\n",
                   (int)sc);
-    sl_app_log("Increasing security\r\n");
+    app_log("Increasing security\r\n");
     break;
 
   // -------------------------------
   // This event indicates that a connection was closed.
   case sl_bt_evt_connection_closed_id:
     // Restart advertising after client has disconnected.
-    sc = sl_bt_advertiser_start(
-        advertising_set_handle,
-        advertiser_general_discoverable,
-        advertiser_connectable_scannable);
-    sl_app_assert(sc == SL_STATUS_OK,
+    sc = sl_bt_legacy_advertiser_generate_data(advertising_set_handle,
+                                                advertiser_general_discoverable);
+    app_assert(sc == SL_STATUS_OK,
+                  "[E: 0x%04x] Failed to generate data\n",
+                  (int)sc);
+    sc = sl_bt_legacy_advertiser_start(advertising_set_handle,
+                                        advertiser_connectable_scannable);
+    app_assert(sc == SL_STATUS_OK,
                   "[E: 0x%04x] Failed to start advertising\n",
                   (int)sc);
     break;
@@ -197,7 +200,7 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
     {
       sc = sl_bt_system_set_soft_timer(0, NOTIFY_TIMER, true);
     }
-    sl_app_assert(sc == SL_STATUS_OK,
+    app_assert(sc == SL_STATUS_OK,
                   "[E: 0x%04x] Failed to set soft timer\n",
                   (int)sc);
     break;
@@ -205,12 +208,12 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
   case sl_bt_evt_gatt_server_attribute_value_id:
     if ((evt->data.evt_gatt_server_attribute_value.att_opcode == gatt_write_request) && (evt->data.evt_gatt_server_attribute_value.attribute == gattdb_wrt_char))
     {
-      sl_app_log("Gatt Write Received: ");
+      app_log("Gatt Write Received: ");
       for (uint8_t i = 0; i < evt->data.evt_gatt_server_attribute_value.value.len; i++)
       {
-        sl_app_log("%c", evt->data.evt_gatt_server_attribute_value.value.data[i]);
+        app_log("%c", evt->data.evt_gatt_server_attribute_value.value.data[i]);
       }
-      sl_app_log("\r\n");
+      app_log("\r\n");
     }
     break;
 
@@ -232,7 +235,7 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
           memset(notifyBuf, i + 1, 20);
         }
         sc = sl_bt_gatt_server_send_notification(connHandle, gattdb_ntf_char, 20, notifyBuf);
-        sl_app_assert(sc == SL_STATUS_OK,
+        app_assert(sc == SL_STATUS_OK,
                       "[E: 0x%04x] Failed to send notification\n",
                       (int)sc);
       }
@@ -245,89 +248,89 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
 
   case sl_bt_evt_sm_confirm_bonding_id:
     sl_bt_sm_bonding_confirm(evt->data.evt_sm_confirm_bonding.connection, 1);
-    sl_app_log("Bonding confirmed\r\n");
+    app_log("Bonding confirmed\r\n");
     break;
 
   case sl_bt_evt_sm_passkey_display_id:
-    sl_app_log("Passkey display\r\n");
-    //      sl_app_log("Enter this passkey on the tablet:\r\n%d\r\n",
+    app_log("Passkey display\r\n");
+    //      app_log("Enter this passkey on the tablet:\r\n%d\r\n",
     //          evt->data.evt_sm_passkey_display.passkey);
     break;
 
   case sl_bt_evt_sm_passkey_request_id:
-    sl_app_log("Passkey request\r\n");
-    //      sl_app_log("Enter the passkey you see on the tablet\r\n");
+    app_log("Passkey request\r\n");
+    //      app_log("Enter the passkey you see on the tablet\r\n");
     break;
 
   case sl_bt_evt_sm_confirm_passkey_id:
-    sl_app_log("Confirm passkey\r\n");
-    //      sl_app_log("Are you see the same passkey on the tablet: %d (y/n)?\r\n",evt->data.evt_sm_confirm_passkey.passkey);
+    app_log("Confirm passkey\r\n");
+    //      app_log("Are you see the same passkey on the tablet: %d (y/n)?\r\n",evt->data.evt_sm_confirm_passkey.passkey);
     break;
 
   case sl_bt_evt_sm_bonded_id:
     /* The bonding/pairing was successful so set the flag to allow indications to proceed */
-    sl_app_log("Bonding completed\r\n");
+    app_log("Bonding completed\r\n");
     break;
 
   case sl_bt_evt_sm_bonding_failed_id:
     /* If the attempt at bonding/pairing failed, clear the bonded flag and display the reason */
-    sl_app_log("Bonding failed: ");
+    app_log("Bonding failed: ");
     switch (evt->data.evt_sm_bonding_failed.reason)
     {
     case SL_STATUS_BT_SMP_PASSKEY_ENTRY_FAILED:
-      sl_app_log("The user input of passkey failed\r\n");
+      app_log("The user input of passkey failed\r\n");
       break;
 
     case SL_STATUS_BT_SMP_OOB_NOT_AVAILABLE:
-      sl_app_log("Out of Band data is not available for authentication\r\n");
+      app_log("Out of Band data is not available for authentication\r\n");
       break;
 
     case SL_STATUS_BT_SMP_AUTHENTICATION_REQUIREMENTS:
-      sl_app_log("The pairing procedure cannot be performed as authentication requirements cannot be met due to IO capabilities of one or both devices\r\n");
+      app_log("The pairing procedure cannot be performed as authentication requirements cannot be met due to IO capabilities of one or both devices\r\n");
       break;
 
     case SL_STATUS_BT_SMP_CONFIRM_VALUE_FAILED:
-      sl_app_log("The confirm value does not match the calculated compare value\r\n");
+      app_log("The confirm value does not match the calculated compare value\r\n");
       break;
 
     case SL_STATUS_BT_SMP_PAIRING_NOT_SUPPORTED:
-      sl_app_log("Pairing is not supported by the device\r\n");
+      app_log("Pairing is not supported by the device\r\n");
       break;
 
     case SL_STATUS_BT_SMP_ENCRYPTION_KEY_SIZE:
-      sl_app_log("The resultant encryption key size is insufficient for the security requirements of this device\r\n");
+      app_log("The resultant encryption key size is insufficient for the security requirements of this device\r\n");
       break;
 
     case SL_STATUS_BT_SMP_COMMAND_NOT_SUPPORTED:
-      sl_app_log("The SMP command received is not supported on this device\r\n");
+      app_log("The SMP command received is not supported on this device\r\n");
       break;
 
     case SL_STATUS_BT_SMP_UNSPECIFIED_REASON:
-      sl_app_log("Pairing failed due to an unspecified reason\r\n");
+      app_log("Pairing failed due to an unspecified reason\r\n");
       break;
 
     case SL_STATUS_BT_SMP_REPEATED_ATTEMPTS:
-      sl_app_log("Pairing or authentication procedure is disallowed because too little time has elapsed since last pairing request or security request\r\n");
+      app_log("Pairing or authentication procedure is disallowed because too little time has elapsed since last pairing request or security request\r\n");
       break;
 
     case SL_STATUS_BT_SMP_INVALID_PARAMETERS:
-      sl_app_log("Invalid Parameters\r\n");
+      app_log("Invalid Parameters\r\n");
       break;
 
     case SL_STATUS_BT_SMP_DHKEY_CHECK_FAILED:
-      sl_app_log("The bonding does not exist\r\n");
+      app_log("The bonding does not exist\r\n");
       break;
 
     case SL_STATUS_BT_CTRL_PIN_OR_KEY_MISSING:
-      sl_app_log("Pairing failed because of missing PIN, or authentication failed because of missing Key\r\n");
+      app_log("Pairing failed because of missing PIN, or authentication failed because of missing Key\r\n");
       break;
 
     case SL_STATUS_TIMEOUT:
-      sl_app_log("Operation timed out\r\n");
+      app_log("Operation timed out\r\n");
       break;
 
     default:
-      sl_app_log("Unknown error: 0x%X\r\n", evt->data.evt_sm_bonding_failed.reason);
+      app_log("Unknown error: 0x%X\r\n", evt->data.evt_sm_bonding_failed.reason);
       break;
     }
     break;
@@ -355,7 +358,7 @@ static void read_oob_data()
 #ifdef LOCAL_ECHO
     if (input != '\n')
     {
-      sl_app_log("%c", input);
+      app_log("%c", input);
     }
 #else
     rx_oob_buf[num++] = input;
@@ -364,55 +367,63 @@ static void read_oob_data()
 #if (PAIRING_MODE == SECURE_CONNECTION_PAIRING)
   if (num == 32)
   {
-    sl_app_log("16-byte OOB data: ");
+    app_log("16-byte OOB data: ");
     for (uint8_t x = 0; x < 16; x++)
     {
-      sl_app_log("0x%02X ", rx_oob_buf[x]);
+      app_log("0x%02X ", rx_oob_buf[x]);
     }
-    sl_app_log("\r\n");
-    sl_app_log("16-byte confirm value: ");
+    app_log("\r\n");
+    app_log("16-byte confirm value: ");
     for (uint8_t x = 16; x < 32; x++)
     {
-      sl_app_log("0x%02X ", rx_oob_buf[x]);
+      app_log("0x%02X ", rx_oob_buf[x]);
     }
-    sl_app_log("\r\n");
+    app_log("\r\n");
 
     sl_bt_sm_set_sc_remote_oob_data(32, rx_oob_buf);
-    sl_app_assert(sc == SL_STATUS_OK,
+    app_assert(sc == SL_STATUS_OK,
                   "[E: 0x%04x] Failed to set OOB data\n",
                   (int)sc);
     /* Set advertising parameters. 100ms advertisement interval. All channels used.
      * The first two parameters are minimum and maximum advertising interval, both in
      * units of (milliseconds * 1.6). The third parameter '7' sets advertising on all channels. */
     sl_bt_advertiser_set_timing(advertising_set_handle, 160, 160, 0, 0);
-    sl_app_assert(sc == SL_STATUS_OK,
+    app_assert(sc == SL_STATUS_OK,
                   "[E: 0x%04x] Failed to set advertising parameters\n",
                   (int)sc);
 
     sc = sl_bt_advertiser_set_channel_map(advertising_set_handle, 7);
-    sl_app_assert(sc == SL_STATUS_OK,
+    app_assert(sc == SL_STATUS_OK,
                   "[E: 0x%04x] Failed to set the primary advertising channel map\n",
                   (int)sc);
     /* Start general advertising and enable connections. */
-    sc = sl_bt_advertiser_start(advertising_set_handle, sl_bt_advertiser_general_discoverable, sl_bt_advertiser_connectable_scannable);
-    sl_app_assert(sc == SL_STATUS_OK,
-                  "[E: 0x%04x] Failed to start general advertising and enable connections\n",
+
+    sc = sl_bt_legacy_advertiser_generate_data(advertising_set_handle,
+                                               sl_bt_advertiser_general_discoverable);
+    app_assert(sc == SL_STATUS_OK,
+                  "[E: 0x%04x] Failed to generate data\n",
                   (int)sc);
+    sc = sl_bt_legacy_advertiser_start(advertising_set_handle,
+                                       sl_bt_advertiser_connectable_scannable);
+    app_assert(sc == SL_STATUS_OK,
+                  "[E: 0x%04x] Failed to start advertising\n",
+                  (int)sc);
+
     num = 0;
     _oob_state = STATE_IDLE_MODE;
   }
 #elif (PAIRING_MODE == LEGACY_PAIRING)
   if (num == 16)
   {
-    sl_app_log("16-byte OOB data: ");
+    app_log("16-byte OOB data: ");
     for (uint8_t x = 0; x < 16; x++)
     {
-      sl_app_log("0x%02X ", rx_oob_buf[x]);
+      app_log("0x%02X ", rx_oob_buf[x]);
     }
-    sl_app_log("\r\n");
+    app_log("\r\n");
 
     sc = sl_bt_sm_set_oob_data(16, rx_oob_buf);
-    sl_app_assert(sc == SL_STATUS_OK,
+    app_assert(sc == SL_STATUS_OK,
                   "[E: 0x%04x] Failed to set OOB data\n",
                   (int)sc);
     // Set advertising interval to 100ms.
@@ -422,15 +433,18 @@ static void read_oob_data()
         160, // max. adv. interval (milliseconds * 1.6)
         0,   // adv. duration
         0);  // max. num. adv. events
-    sl_app_assert(sc == SL_STATUS_OK,
+    app_assert(sc == SL_STATUS_OK,
                   "[E: 0x%04x] Failed to set advertising timing\n",
                   (int)sc);
     // Start general advertising and enable connections.
-    sc = sl_bt_advertiser_start(
-        advertising_set_handle,
-        advertiser_general_discoverable,
-        advertiser_connectable_scannable);
-    sl_app_assert(sc == SL_STATUS_OK,
+    sc = sl_bt_legacy_advertiser_generate_data(advertising_set_handle,
+                                                advertiser_general_discoverable);
+    app_assert(sc == SL_STATUS_OK,
+                  "[E: 0x%04x] Failed to generate data\n",
+                  (int)sc);
+    sc = sl_bt_legacy_advertiser_start(advertising_set_handle,
+                                        advertiser_connectable_scannable);
+    app_assert(sc == SL_STATUS_OK,
                   "[E: 0x%04x] Failed to start advertising\n",
                   (int)sc);
     num = 0;

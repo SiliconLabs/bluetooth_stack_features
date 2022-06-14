@@ -34,6 +34,7 @@ To use this example, you need two radio boards, one for the server side and one 
     - Add the **Log** component
     - Add the **Simple Button** with two instances: **btn0** and **btn1**
     - In the **Board Control** set the **Enable Virtual COM UART** to enabled
+    - Install the **Legacy Advertising** component, if it is not yet installed
 
 4. Open GATT Configurator and import the attached **gatt_configuration.btconf**
 
@@ -49,7 +50,8 @@ To use this example, you need two radio boards, one for the server side and one 
               
     - Add the **IO Stream: USART** component, with the instance name: **vcom**
     - Add the **Log** component
-    - In the **Board Control** set the **Enable Virtual COM UART** to enabled 
+    - In the **Board Control** set the **Enable Virtual COM UART** to enabled
+    - Install the **Legacy Advertising** component, if it is not yet installed
 4. Open the Software Components and install **NVM3 Default Instance** component.
    
 5. Build and flash your project to your device.

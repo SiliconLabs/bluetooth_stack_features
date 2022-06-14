@@ -181,10 +181,13 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
                     "[E: 0x%04x] Failed to set advertising timing\n",
                     (int)sc);
       // Start general advertising and enable connections.
-      sc = sl_bt_advertiser_start(
-        advertising_set_handle,
-        advertiser_general_discoverable,
-        advertiser_connectable_scannable);
+      sc = sl_bt_legacy_advertiser_generate_data(advertising_set_handle,
+                                                 advertiser_general_discoverable);
+      app_assert(sc == SL_STATUS_OK,
+                    "[E: 0x%04x] Failed to generate data\n",
+                    (int)sc);
+      sc = sl_bt_legacy_advertiser_start(advertising_set_handle,
+                                         advertiser_connectable_scannable);
       app_assert(sc == SL_STATUS_OK,
                     "[E: 0x%04x] Failed to start advertising\n",
                     (int)sc);
@@ -209,10 +212,13 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
     // This event indicates that a connection was closed.
     case sl_bt_evt_connection_closed_id:
       // Restart advertising after client has disconnected.
-      sc = sl_bt_advertiser_start(
-        advertising_set_handle,
-        advertiser_general_discoverable,
-        advertiser_connectable_scannable);
+      sc = sl_bt_legacy_advertiser_generate_data(advertising_set_handle,
+                                                 advertiser_general_discoverable);
+      app_assert(sc == SL_STATUS_OK,
+                    "[E: 0x%04x] Failed to generate data\n",
+                    (int)sc);
+      sc = sl_bt_legacy_advertiser_start(advertising_set_handle,
+                                         advertiser_connectable_scannable);
       app_assert(sc == SL_STATUS_OK,
                     "[E: 0x%04x] Failed to start advertising\n",
                     (int)sc);

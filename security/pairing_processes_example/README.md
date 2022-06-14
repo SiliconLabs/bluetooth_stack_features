@@ -47,7 +47,10 @@ GSDK v3.1.1
     Then enable *Virtual COM UART* under its configuration  
     ![enable vcom](images/enable_vir_com.png)
 
-  - Install the **Log** component (found under Bluetooth > Utility group)
+  - Install the **Legacy Advertising** component, if it is not yet installed (Bluetooth > Feature)
+    ![legacy advertising](images/legacy.png)
+
+  - Install the **Log** component (found under Application > Utility group)
     ![log configure](images/log.png)
 
   - Create the first button by installing the **Simple Button** component with the default instance name: **btn0**
@@ -110,7 +113,7 @@ Finally, bondings are enabled and the devices start scanning (responder) or adve
         if (is_initiator)
         {
           sc = sl_bt_sm_increase_security(connection);
-          sl_app_assert(sc == SL_STATUS_OK,
+          app_assert(sc == SL_STATUS_OK,
                         "[E: 0x%04x] Failed to enhance the security of a connection\n",
                         (int)sc);
         }
@@ -119,13 +122,13 @@ Finally, bondings are enabled and the devices start scanning (responder) or adve
       // -------------------------------
       // This event indicates that a connection was closed.
       case sl_bt_evt_connection_closed_id:
-        sl_app_log("Connection closed, reason: 0x%2.2x\r\n",
+        app_log("Connection closed, reason: 0x%2.2x\r\n",
                   evt->data.evt_connection_closed.reason);
         sc = sl_bt_sm_delete_bondings();
-        sl_app_assert(sc == SL_STATUS_OK,
+        app_assert(sc == SL_STATUS_OK,
                       "[E: 0x%04x] Failed to delete all bonding information\n",
                       (int)sc);
-        sl_app_log("All bonding deleted\r\n");
+        app_log("All bonding deleted\r\n");
         connection = 0xFF;
         state = IDLE;
         // Restart advertising after client has disconnected.
@@ -137,16 +140,16 @@ Finally, bondings are enabled and the devices start scanning (responder) or adve
         switch (evt->data.evt_connection_parameters.security_mode)
         {
         case connection_mode1_level1:
-          sl_app_log("No Security\r\n");
+          app_log("No Security\r\n");
           break;
         case connection_mode1_level2:
-          sl_app_log("Unauthenticated pairing with encryption (Just Works)\r\n");
+          app_log("Unauthenticated pairing with encryption (Just Works)\r\n");
           break;
         case connection_mode1_level3:
-          sl_app_log("Authenticated pairing with encryption (Legacy Pairing)\r\n");
+          app_log("Authenticated pairing with encryption (Legacy Pairing)\r\n");
           break;
         case connection_mode1_level4:
-          sl_app_log("Authenticated Secure Connections pairing with encryption (BT 4.2 LE Secure Pairing)\r\n");
+          app_log("Authenticated Secure Connections pairing with encryption (BT 4.2 LE Secure Pairing)\r\n");
           break;
         default:
           break;
@@ -155,40 +158,40 @@ Finally, bondings are enabled and the devices start scanning (responder) or adve
 
       case sl_bt_evt_sm_passkey_display_id:
         // Display passkey
-        sl_app_log("Passkey: %4lu\r\n", evt->data.evt_sm_passkey_display.passkey);
+        app_log("Passkey: %4lu\r\n", evt->data.evt_sm_passkey_display.passkey);
         passkey = evt->data.evt_sm_passkey_display.passkey;
         state = DISPLAY_PASSKEY;
         break;
 
       case sl_bt_evt_sm_passkey_request_id:
-        sl_app_log("Passkey request\r\n");
+        app_log("Passkey request\r\n");
         state = PROMPT_INPUTTING_PASSKEY;
         break;
 
       case sl_bt_evt_sm_confirm_passkey_id:
-        sl_app_log("Passkey confirm\r\n");
+        app_log("Passkey confirm\r\n");
         passkey = evt->data.evt_sm_confirm_passkey.passkey;
         state = PROMPT_YESNO;
         break;
 
       case sl_bt_evt_sm_confirm_bonding_id:
-        sl_app_log("Bonding confirm\r\n");
+        app_log("Bonding confirm\r\n");
         sc = sl_bt_sm_bonding_confirm(evt->data.evt_sm_confirm_bonding.connection, 1);
-        sl_app_assert(sc == SL_STATUS_OK,
+        app_assert(sc == SL_STATUS_OK,
                       "[E: 0x%04x] Failed to accept or reject the bonding request\n",
                       (int)sc);
         break;
 
       case sl_bt_evt_sm_bonded_id:
-        sl_app_log("Bond success\r\n");
+        app_log("Bond success\r\n");
         state = BOND_SUCCESS;
         break;
 
       case sl_bt_evt_sm_bonding_failed_id:
-        sl_app_log("Bonding failed, reason 0x%2X\r\n",
+        app_log("Bonding failed, reason 0x%2X\r\n",
                   evt->data.evt_sm_bonding_failed.reason);
         sc = sl_bt_connection_close(evt->data.evt_sm_bonding_failed.connection);
-        sl_app_assert(sc == SL_STATUS_OK,
+        app_assert(sc == SL_STATUS_OK,
                       "[E: 0x%04x] Failed to close a Bluetooth connection\n",
                       (int)sc);
         state = BOND_FAILURE;

@@ -30,7 +30,7 @@ static const uint8_t eddystone_data[] = {
 Call the API to set this data to be advertised.
 
 ``` C
-sl_bt_advertiser_set_data(advertising_set_handle, 0, sizeof(eddystone_data), eddystone_data);
+sl_bt_legacy_advertiser_set_data(advertising_set_handle, 0, sizeof(eddystone_data), eddystone_data);
 ```
 
 The first two parameters are the advertising set handle and a value indicating that data is to be used in advertising packets.
@@ -50,7 +50,7 @@ sl_bt_advertiser_set_timing(advertising_set_handle, 160, 160, 0, 0);
 The device is now ready to start advertising the Eddystone-URL beacon data. This is accomplished by making the following call:
 
 ``` C
-sl_bt_advertiser_start(advertising_set_handle, advertiser_user_data, advertiser_non_connectable);
+sl_bt_legacy_advertiser_start(advertising_set_handle, advertiser_non_connectable);
 ```
 This tells the stack to use the custom user data and to make the beacon non-connectable.
  
@@ -83,7 +83,9 @@ To be able to test this example do as follows:
 
 - Find the **Board Control** component  and enable *Virtual COM UART* under its configuration.
 
-- Install the **Log** component (found under Bluetooth > Utility group).
+- Install the **Legacy Advertising** component, if it is not yet installed
+
+- Install the **Log** component (found under Application > Utility group).
 
 4. Build and flash the project to your device.
 

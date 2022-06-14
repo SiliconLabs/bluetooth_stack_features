@@ -167,9 +167,10 @@ bool sl_ncp_local_evt_process(sl_bt_msg_t *evt)
         sl_bt_advertiser_create_set(&advertising_set_handle);
 
         // Start advertising
-        sl_bt_advertiser_start(advertising_set_handle,
-                               advertiser_general_discoverable,
-                               advertiser_connectable_scannable);
+        sl_bt_legacy_advertiser_generate_data(advertising_set_handle,
+                                              advertiser_general_discoverable);
+        sl_bt_legacy_advertiser_start(advertising_set_handle,
+                                      advertiser_connectable_scannable);
       }
       break;
 
@@ -252,15 +253,17 @@ bool sl_ncp_local_evt_process(sl_bt_msg_t *evt)
                                                     0,
                                                     name_len,
                                                     (uint8_t*)name);
-            sl_bt_advertiser_start(advertising_set_handle,
-                                   advertiser_general_discoverable,
-                                   advertiser_connectable_scannable);
+            sl_bt_legacy_advertiser_generate_data(advertising_set_handle,
+                                                  advertiser_general_discoverable);
+            sl_bt_legacy_advertiser_start(advertising_set_handle,
+                                          advertiser_connectable_scannable);
           }
         } else {
             /* Restart advertising after client has disconnected */
-            sl_bt_advertiser_start(advertising_set_handle,
-                                   advertiser_general_discoverable,
-                                   advertiser_connectable_scannable);
+            sl_bt_legacy_advertiser_generate_data(advertising_set_handle,
+                                                  advertiser_general_discoverable);
+            sl_bt_legacy_advertiser_start(advertising_set_handle,
+                                          advertiser_connectable_scannable);
         }
       break;
 

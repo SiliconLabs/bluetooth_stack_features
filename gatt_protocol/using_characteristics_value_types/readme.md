@@ -40,14 +40,18 @@ GSDK v3.1.1
 
 ![](images/install_usart.png)
 
-- Find the **Board Control** component  and enable *Virtual COM UART* under its configuration.
+- Find the **Board Control** component and enable *Virtual COM UART* under its configuration.
 
 ![](images/board_control.png)
 
-- Install the **Log** component (found under Bluetooth > Utility group).
+- Install the **Log** component (found under Application > Utility group).
 
 ![](images/log.png)
 
+- Install the **Legacy Advertising** component, if it is not yet installed (Bluetooth > Feature)
+
+![](images/legacy.png)
+  
 4. Replace the *app.c* file in the project with the provided *app.c*.
 5. Build and flash to the target.
 6. Do not forget to flash a bootloader to your board, if you have not done so already.

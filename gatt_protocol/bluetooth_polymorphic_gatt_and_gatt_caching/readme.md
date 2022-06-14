@@ -50,6 +50,7 @@ To try this example, you need two radio boards, one for the server side and one 
    - Add the **IO Stream USART** component, with the instance name: **vcom**
    - Add the **Log** component
    - In the **Board control** set the **Enable Virtual COM Port** to enable
+   - Install the **Legacy Advertising** component, if it is not yet installed
    - Add two instances of the **Simple button**, with the names: **btn0** and **btn1**
 
 5. Open GATT Configurator, and import the attached **gatt_configuration.btconf**
@@ -67,6 +68,7 @@ To try this example, you need two radio boards, one for the server side and one 
    - Add the **IO Stream USART** component, with the instance name: **vcom**
    - Add the **Log** component
    - In the **Board control** set the **Enable Virtual COM Port** to enable
+   - Install the **Legacy Advertising** component, if it is not yet installed
 
 4. Open the Sotware Components and install **NVM3 Default Instance** component.
 

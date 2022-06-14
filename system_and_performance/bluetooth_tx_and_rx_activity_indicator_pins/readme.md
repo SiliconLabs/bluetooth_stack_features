@@ -22,17 +22,19 @@ The image above shows one advertising event. The advertisement is transmitted on
    
 2. Using the project configurator install the PRS Software Component.
 
-3. Copy the attached app.c into your project.
+3. Install the **Legacy Advertising** component, if it is not yet installed (Bluetooth > Feature)
 
-4. The application calls a single function to enable the RX/TX activity pins. 
+4. Copy the attached app.c into your project.
 
-5. In  `app_init()`, configure the TX and RX indicators to the desired pins. The example below outputs RX activity on PORTB0 and TX activity on PORTB1.
+5. The application calls a single function to enable the RX/TX activity pins. 
+
+6. In  `app_init()`, configure the TX and RX indicators to the desired pins. The example below outputs RX activity on PORTB0 and TX activity on PORTB1.
 
    ```  c
    enableDebugGpios(gpioPortB,0,gpioPortB,1);
    ```
 
-6. Build your project and flash it to your device.
+7. Build your project and flash it to your device.
 
 
 

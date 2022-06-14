@@ -54,9 +54,11 @@ To create an **Advertiser**:
    - Find the **Board Control** component and click to the **Configure** button like below
     ![board control configure](images/board_control_configure.png)  
     Then enable *Virtual COM UART* under its configuration
-    ![board control configure](images/enable_vir_com.png)  
+    ![board control configure](images/enable_vir_com.png)
+ 
+   - Install the **Extended Advertising** component, if it is not yet installed
 
-   - Install the **Log** component (found under Bluetooth > Utility group)
+   - Install the **Log** component (found under Application > Utility group)
 4. Drag and drop the *app.c* and *app.h* files that located in `src\advertiser` folder to your project to replace the existing ones.
 5. Compile and run the program. Use a Bluetooth scanner to check the advertisement.
 
@@ -83,7 +85,7 @@ To create a **Scanner**:
     Then enable *Virtual COM UART* under its configuration
     ![board control configure](images/enable_vir_com.png)
 
-   - Install the **Log** component (found under Bluetooth > Utility group)
+   - Install the **Log** component (found under Application > Utility group)
 
 4. Drag and drop all of files that located in `src\scanner` folder to the project created just now, then compile and program to your board.
 5. Modify the project settings in app.c if needed.

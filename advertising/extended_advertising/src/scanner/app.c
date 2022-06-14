@@ -15,7 +15,7 @@
  *
  ******************************************************************************/
 #include "em_common.h"
-#include "sl_app_assert.h"
+#include "app_assert.h"
 #include "sl_bluetooth.h"
 #include "gatt_db.h"
 #include "app.h"
@@ -80,7 +80,7 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
                  evt->data.evt_system_boot.build);
       // Extract unique ID from BT Address.
       sc = sl_bt_system_get_identity_address(&address, &address_type);
-      sl_app_assert(sc == SL_STATUS_OK,
+      app_assert(sc == SL_STATUS_OK,
                     "[E: 0x%04x] Failed to get Bluetooth address\n",
                     (int)sc);
 
@@ -97,7 +97,7 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
                                                    0,
                                                    sizeof(system_id),
                                                    system_id);
-      sl_app_assert(sc == SL_STATUS_OK,
+      app_assert(sc == SL_STATUS_OK,
                     "[E: 0x%04x] Failed to write attribute\n",
                     (int)sc);
       break;
@@ -249,22 +249,22 @@ static void on_system_boot(void)
   sc = sl_bt_scanner_set_timing(sl_bt_gap_1m_phy,
                                                 0xFFFF,
                                                 0xFFFF);
-  sl_app_assert(sc == SL_STATUS_OK,
+  app_assert(sc == SL_STATUS_OK,
                       "[E: 0x%04x] Failed to set discovery timing\n",
                       (int)sc);
    /*Passive scanning*/
   sc = sl_bt_scanner_set_mode(sl_bt_gap_1m_phy, 0);
-  sl_app_assert(sc == SL_STATUS_OK,
+  app_assert(sc == SL_STATUS_OK,
                         "[E: 0x%04x] Failed to set scanner mode\n",
                         (int)sc);
    /*Start discovering*/
   sc = sl_bt_scanner_start(sl_bt_gap_1m_phy, scanner_discover_generic);
-  sl_app_assert(sc == SL_STATUS_OK,
+  app_assert(sc == SL_STATUS_OK,
                       "[E: 0x%04x] Failed to start discovery\n",
                       (int)sc);
    /*Start refreshing timer*/
   sc = sl_bt_system_set_soft_timer(REFRESH_PERIOD, REFRESH_TIMER_ID, 0);
-  sl_app_assert(sc == SL_STATUS_OK,
+  app_assert(sc == SL_STATUS_OK,
                         "[E: 0x%04x] Failed to set soft-timer\n",
                         (int)sc);
   LOGD("Scanning and timer started.\n");

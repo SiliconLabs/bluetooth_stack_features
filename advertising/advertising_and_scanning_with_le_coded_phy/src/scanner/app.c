@@ -15,13 +15,13 @@
  *
  ******************************************************************************/
 #include "em_common.h"
-#include "sl_app_assert.h"
+#include "app_assert.h"
 #include "sl_bluetooth.h"
 #include "gatt_db.h"
 #include "app.h"
 
 #include "sl_bt_api.h"
-#include "sl_app_log.h"
+#include "app_log.h"
 
 
 /**************************************************************************//**
@@ -70,7 +70,7 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
 
       // Extract unique ID from BT Address.
       sc = sl_bt_system_get_identity_address(&address, &address_type);
-      sl_app_assert(sc == SL_STATUS_OK,
+      app_assert(sc == SL_STATUS_OK,
                     "[E: 0x%04x] Failed to get Bluetooth address\n",
                     (int)sc);
 
@@ -88,17 +88,17 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
                                                    0,
                                                    sizeof(system_id),
                                                    system_id);
-      sl_app_assert(sc == SL_STATUS_OK,
+      app_assert(sc == SL_STATUS_OK,
                     "[E: 0x%04x] Failed to write attribute\n",
                     (int)sc);
 
 
-      sl_app_log("System Boot\r\n");
+      app_log("System Boot\r\n");
 
       // set scan mode
       sc = sl_bt_scanner_set_mode(gap_coded_phy,
                              0); // 0 mean passive scanning mode
-      sl_app_assert(sc == SL_STATUS_OK,
+      app_assert(sc == SL_STATUS_OK,
                     "[E: 0x%04x] Failed to set scanner mode \n",
                     (int)sc);
 
@@ -106,7 +106,7 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
       sc = sl_bt_scanner_set_timing(gap_coded_phy,
                                     200,
                                     200);
-      sl_app_assert(sc == SL_STATUS_OK,
+      app_assert(sc == SL_STATUS_OK,
                     "[E: 0x%04x] Failed to set scanner timming \n",
                     (int)sc);
 
@@ -137,7 +137,7 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
     case sl_bt_evt_system_soft_timer_id:
       if(1==evt->data.evt_system_soft_timer.handle){
           sl_bt_scanner_stop();
-          sl_app_log("no connectable devices in range\r\n");
+          app_log("no connectable devices in range\r\n");
       }
       break;
 
@@ -148,7 +148,7 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
       // add the filter if it is needed
       remote_address = &(evt->data.evt_scanner_scan_report.address);
 
-      sl_app_log("advertisement/scan response from %2.2X:%2.2X:%2.2X:%2.2X:%2.2X:%2.2X\r\n",
+      app_log("advertisement/scan response from %2.2X:%2.2X:%2.2X:%2.2X:%2.2X:%2.2X\r\n",
              remote_address->addr[5],
              remote_address->addr[4],
              remote_address->addr[3],
@@ -156,19 +156,19 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
              remote_address->addr[1],
              remote_address->addr[0]);
 
-      sl_app_log("RSSI %d\r\n", evt->data.evt_scanner_scan_report.rssi);
+      app_log("RSSI %d\r\n", evt->data.evt_scanner_scan_report.rssi);
 
 
-      sl_app_log("data len: %d\r\n", evt->data.evt_scanner_scan_report.data.len);
+      app_log("data len: %d\r\n", evt->data.evt_scanner_scan_report.data.len);
 
-      sl_app_log("\r\n data raw: \r\n");
+      app_log("\r\n data raw: \r\n");
       for(int i = 0; i< evt->data.evt_scanner_scan_report.data.len; i++){
-          sl_app_log("%c ", evt->data.evt_scanner_scan_report.data.data[i]);
+          app_log("%c ", evt->data.evt_scanner_scan_report.data.data[i]);
       }
 
-      sl_app_log("\r\n data hex: \r\n");
+      app_log("\r\n data hex: \r\n");
       for(int i = 0; i< evt->data.evt_scanner_scan_report.data.len; i++){
-          sl_app_log("%x ", evt->data.evt_scanner_scan_report.data.data[i]);
+          app_log("%x ", evt->data.evt_scanner_scan_report.data.data[i]);
       }
 
       //stop the tracking timer
@@ -180,13 +180,13 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
                             sl_bt_gap_public_address,
                             gap_coded_phy,
                             &app_connection);
-      sl_app_assert(sc == SL_STATUS_OK,
+      app_assert(sc == SL_STATUS_OK,
                     "[E: 0x%04x] Failed to open connection\n",
                     (int)sc);
       break;
 
     case sl_bt_evt_connection_phy_status_id:
-      sl_app_log("using PHY %d\r\n", evt->data.evt_connection_phy_status.phy );
+      app_log("using PHY %d\r\n", evt->data.evt_connection_phy_status.phy );
       break;
 
     ///////////////////////////////////////////////////////////////////////////

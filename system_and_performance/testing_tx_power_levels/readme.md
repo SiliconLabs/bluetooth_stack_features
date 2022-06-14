@@ -46,7 +46,7 @@ To be able to test this example do as follows:
 
 - Find the **Board Control** component  and enable *Virtual COM UART* under its configuration.
 
-- Install the **Log** component (found under Bluetooth > Utility group).
+- Install the **Log** component (found under Application > Utility group).
 
 4. Build and flash the project to your device.
 

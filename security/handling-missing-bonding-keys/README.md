@@ -74,7 +74,10 @@ Peripheral: An EFR32 Radio board (a BGM module in this case, **it supports LE se
     Then enable *Virtual COM UART* under its configuration
     ![enable vcom](images/enable_vir_com.png)
 
-   - Install the **Log** component (found under Bluetooth > Utility group)
+   - Install the **Legacy Advertising** component, if it is not yet installed (Bluetooth > Feature)
+    ![legacy advertising](images/legacy.png)
+
+   - Install the **Log** component (found under Application > Utility group)
    ![log configure](images/log.png)
 
    - Create the first button by installing the **Simple Button** component with the default instance name: **btn0**

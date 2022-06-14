@@ -96,10 +96,10 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
         0);  // max. num. adv. events
 
       // Start general advertising and enable connections.
-      sl_bt_advertiser_start(
-        advertising_set_handle,
-        advertiser_general_discoverable,
-        advertiser_connectable_scannable);
+        sl_bt_legacy_advertiser_generate_data(advertising_set_handle,
+                                              advertiser_general_discoverable);
+        sl_bt_legacy_advertiser_start(advertising_set_handle,
+                                      advertiser_connectable_scannable);
       break;
 
     // -------------------------------
@@ -127,10 +127,10 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
     case sl_bt_evt_connection_closed_id:
       app_log("connection closed, reason: 0x%2.2x\r\n", evt->data.evt_connection_closed.reason);
       // Restart advertising after client has disconnected.
-      sl_bt_advertiser_start(
-        advertising_set_handle,
-        advertiser_general_discoverable,
-        advertiser_connectable_scannable);
+        sl_bt_legacy_advertiser_generate_data(advertising_set_handle,
+                                              advertiser_general_discoverable);
+        sl_bt_legacy_advertiser_start(advertising_set_handle,
+                                      advertiser_connectable_scannable);
       break;
     case sl_bt_evt_system_external_signal_id:
       if (evt->data.evt_system_external_signal.extsignals & BUTTON0_PRESSED) {

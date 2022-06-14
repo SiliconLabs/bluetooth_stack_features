@@ -101,11 +101,16 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
       app_assert_status(sc);
 
       // Start general advertising and enable connections.
-      sc = sl_bt_advertiser_start(
-        advertising_set_handle,
-        advertiser_general_discoverable,
-        advertiser_connectable_scannable);
-      app_assert_status(sc);
+      sc = sl_bt_legacy_advertiser_generate_data(advertising_set_handle,
+                                                 advertiser_general_discoverable);
+      app_assert(sc == SL_STATUS_OK,
+                    "[E: 0x%04x] Failed to generate data\n",
+                    (int)sc);
+      sc = sl_bt_legacy_advertiser_start(advertising_set_handle,
+                                         advertiser_connectable_scannable);
+      app_assert(sc == SL_STATUS_OK,
+                    "[E: 0x%04x] Failed to start advertising\n",
+                    (int)sc);
       break;
 
     // -------------------------------
@@ -125,11 +130,16 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
     case sl_bt_evt_connection_closed_id:
       app_log("connection closed, reason: 0x%2.2x\r\n", evt->data.evt_connection_closed.reason);
       // Restart advertising after client has disconnected.
-      sc = sl_bt_advertiser_start(
-        advertising_set_handle,
-        advertiser_general_discoverable,
-        advertiser_connectable_scannable);
-      app_assert_status(sc);
+      sc = sl_bt_legacy_advertiser_generate_data(advertising_set_handle,
+                                                 advertiser_general_discoverable);
+      app_assert(sc == SL_STATUS_OK,
+                    "[E: 0x%04x] Failed to generate data\n",
+                    (int)sc);
+      sc = sl_bt_legacy_advertiser_start(advertising_set_handle,
+                                         advertiser_connectable_scannable);
+      app_assert(sc == SL_STATUS_OK,
+                    "[E: 0x%04x] Failed to start advertising\n",
+                    (int)sc);
       break;
     case sl_bt_evt_system_external_signal_id:
       if (evt->data.evt_system_external_signal.extsignals & BUTTON0_PRESSED) {

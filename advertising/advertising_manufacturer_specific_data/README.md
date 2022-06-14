@@ -46,11 +46,11 @@ sl_bt_advertiser_create_set()
 ```
 
 ```c
-sl_bt_advertiser_set_data()
+sl_bt_legacy_advertiser_set_data()
 ```
 
 ```c
-sl_bt_advertiser_start()
+sl_bt_legacy_advertiser_start()
 ```
 
 The first call sets the advertising data content before starting advertisements. Calling the latter starts the advertising. When using custom data, note that the parameter "discoverable mode" must be set to **advertiser_user_data** (value 4).
@@ -85,7 +85,9 @@ GSDK v3.1.1
     Then enable *Virtual COM UART* under its configuration
     ![board control configure](images/enable_vir_com.png)
 
-   - Install the **Log** component (found under Bluetooth > Utility group)
+   - Install the **Legacy Advertising** component, if it is not yet installed
+
+   - Install the **Log** component (found under Application > Utility group)
 
 4. Drag and drop all of files (**app.c**, **custom_adv.c**, **custom_adv.h**) that located in `src` folder to the project created just now, then compile and program to your board.
 

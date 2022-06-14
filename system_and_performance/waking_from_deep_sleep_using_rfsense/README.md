@@ -21,13 +21,17 @@ More info about RFSense:
 ## Setup ##
 1. Create a **Bluetooth - SoC Empty** project
 2. Open the "Software components" and do the following changes:
-- Install **IO Stream: USART** component with the defaul instance name: **vcom**
+  - Install **IO Stream: USART** component with the defaul instance name: **vcom**
 
-![](images/install-usart.png)
+    ![](images/install-usart.png)
 
   - Find the **Board Control** component  and enable *Virtual COM UART* under its configuration
 
-  - Install the **Log** component (found under Bluetooth > Utility group)
+  - Install the **Log** component (found under Application > Utility group)
+  
+  - Install the **Legacy Advertising** component, if it is not yet installed (Bluetooth > Feature)
+
+    ![](images/legacy.png)
 
 3. Replace the *app.c* file in the project with the provided *app.c*
 4. Select the RfSense mode with the **#define RFSENSE_SELECTED_MODE**

@@ -15,11 +15,11 @@
  *
  ******************************************************************************/
 #include "em_common.h"
-#include "sl_app_assert.h"
+#include "app_assert.h"
 #include "sl_bluetooth.h"
 #include "gatt_db.h"
 #include "app.h"
-#include "sl_app_log.h"
+#include "app_log.h"
 
 // The advertising set handle allocated from Bluetooth stack.
 static uint8_t advertising_set_handle = 0xff;
@@ -80,19 +80,19 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
     // Do not call any stack command before receiving this boot event!
     case sl_bt_evt_system_boot_id:
       /* Print stack version */
-      sl_app_log("Bluetooth stack booted: v%d.%d.%d-b%d\n",
+      app_log("Bluetooth stack booted: v%d.%d.%d-b%d\n",
                  evt->data.evt_system_boot.major,
                  evt->data.evt_system_boot.minor,
                  evt->data.evt_system_boot.patch,
                  evt->data.evt_system_boot.build);
       // Extract unique ID from BT Address.
       sc = sl_bt_system_get_identity_address(&address, &address_type);
-      sl_app_assert(sc == SL_STATUS_OK,
+      app_assert(sc == SL_STATUS_OK,
                     "[E: 0x%04x] Failed to get Bluetooth address\n",
                     (int)sc);
 
       /* Print Bluetooth address */
-      sl_app_log("Bluetooth %s address: %02X:%02X:%02X:%02X:%02X:%02X\n",
+      app_log("Bluetooth %s address: %02X:%02X:%02X:%02X:%02X:%02X\n",
                        address_type ? "static random" : "public device",
                        address.addr[5],
                        address.addr[4],
@@ -115,30 +115,30 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
                                                    0,
                                                    sizeof(system_id),
                                                    system_id);
-      sl_app_assert(sc == SL_STATUS_OK,
+      app_assert(sc == SL_STATUS_OK,
                     "[E: 0x%04x] Failed to write attribute\n",
                     (int)sc);
 
       // Create an advertising set.
       sc = sl_bt_advertiser_create_set(&advertising_set_handle);
-      sl_app_assert(sc == SL_STATUS_OK,
+      app_assert(sc == SL_STATUS_OK,
                     "[E: 0x%04x] Failed to create advertising set\n",
                     (int)sc);
 
       // Set 0 dBm Transmit Power.
       sc = sl_bt_system_set_tx_power(0, 0, &ret_min_power, &ret_max_power);
-      sl_app_assert(sc == SL_STATUS_OK,
+      app_assert(sc == SL_STATUS_OK,
                     "[E: 0x%04x] Failed to set max TX power for Bluetooth\n",
                     (int)sc);
       (void)ret_min_power;
       (void)ret_max_power;
 
       // Set custom advertising data.
-      sc = sl_bt_advertiser_set_data(advertising_set_handle,
-                                     0,
-                                     sizeof(eddystone_data),
-                                     eddystone_data);
-      sl_app_assert(sc == SL_STATUS_OK,
+      sc = sl_bt_legacy_advertiser_set_data(advertising_set_handle,
+                                            0,
+                                            sizeof(eddystone_data),
+                                            eddystone_data);
+      app_assert(sc == SL_STATUS_OK,
                     "[E: 0x%04x] Failed to set advertiser data\n",
                     (int)sc);
 
@@ -149,19 +149,18 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
         160, // max. adv. interval (milliseconds * 1.6)
         0,   // adv. duration
         0);  // max. num. adv. events
-      sl_app_assert(sc == SL_STATUS_OK,
+      app_assert(sc == SL_STATUS_OK,
                     "[E: 0x%04x] Failed to set advertising timing\n",
                     (int)sc);
 
       // Start advertising in user mode and disable connections.
-      sc = sl_bt_advertiser_start(
+      sc = sl_bt_legacy_advertiser_start(
         advertising_set_handle,
-        advertiser_user_data,
         advertiser_non_connectable);
-      sl_app_assert(sc == SL_STATUS_OK,
+      app_assert(sc == SL_STATUS_OK,
                     "[E: 0x%04x] Failed to start advertising\n",
                     (int)sc);
-      sl_app_log("boot event - starting advertising\r\n");
+      app_log("boot event - starting advertising\r\n");
       break;
 
     ///////////////////////////////////////////////////////////////////////////

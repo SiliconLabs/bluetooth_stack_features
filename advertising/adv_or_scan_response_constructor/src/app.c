@@ -15,14 +15,15 @@
  *
  ******************************************************************************/
 #include "em_common.h"
-#include "sl_app_assert.h"
+#include "app_assert.h"
 #include "sl_bluetooth.h"
 #include "gatt_db.h"
 #include "app.h"
-#include "sl_app_log.h"
+#include "app_log.h"
 
 // The advertising set handle allocated from Bluetooth stack.
 static uint8_t advertising_set_handle = 0xff;
+static uint8_t ext_adv = 0;
 
 /**************************************************************************//**
  * Application Init.
@@ -68,7 +69,7 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
 
       // Extract unique ID from BT Address.
       sc = sl_bt_system_get_identity_address(&address, &address_type);
-      sl_app_assert(sc == SL_STATUS_OK,
+      app_assert(sc == SL_STATUS_OK,
                     "[E: 0x%04x] Failed to get Bluetooth address\n",
                     (int)sc);
 
@@ -86,13 +87,13 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
                                                    0,
                                                    sizeof(system_id),
                                                    system_id);
-      sl_app_assert(sc == SL_STATUS_OK,
+      app_assert(sc == SL_STATUS_OK,
                     "[E: 0x%04x] Failed to write attribute\n",
                     (int)sc);
 
       // Create an advertising set.
       sc = sl_bt_advertiser_create_set(&advertising_set_handle);
-      sl_app_assert(sc == SL_STATUS_OK,
+      app_assert(sc == SL_STATUS_OK,
                     "[E: 0x%04x] Failed to create advertising set\n",
                     (int)sc);
       // Set advertising interval to 100ms.
@@ -102,16 +103,19 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
         160, // max. adv. interval (milliseconds * 1.6)
         0,   // adv. duration
         0);  // max. num. adv. events
-      sl_app_assert(sc == SL_STATUS_OK,
+      app_assert(sc == SL_STATUS_OK,
                     "[E: 0x%04x] Failed to set advertising timing\n",
                     (int)sc);
       demo_setup_adv(advertising_set_handle);
       // Start general advertising and enable connections.
-      sc = sl_bt_advertiser_start(
+      if(ext_adv) sc = sl_bt_extended_advertiser_start(
         advertising_set_handle,
-        advertiser_user_data,
-        advertiser_connectable_scannable);
-      sl_app_assert(sc == SL_STATUS_OK,
+        sl_bt_extended_advertiser_connectable,
+        0);
+      else sc = sl_bt_legacy_advertiser_start(
+        advertising_set_handle,
+        sl_bt_legacy_advertiser_connectable);
+      app_assert(sc == SL_STATUS_OK,
                     "[E: 0x%04x] Failed to start advertising\n",
                     (int)sc);
       break;
@@ -125,11 +129,14 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
     // This event indicates that a connection was closed.
     case sl_bt_evt_connection_closed_id:
       // Restart advertising after client has disconnected.
-      sc = sl_bt_advertiser_start(
+      if(ext_adv) sc = sl_bt_extended_advertiser_start(
         advertising_set_handle,
-        advertiser_user_data,
-        advertiser_connectable_scannable);
-      sl_app_assert(sc == SL_STATUS_OK,
+        sl_bt_extended_advertiser_connectable,
+        0);
+      else sc = sl_bt_legacy_advertiser_start(
+        advertising_set_handle,
+        sl_bt_legacy_advertiser_connectable);
+      app_assert(sc == SL_STATUS_OK,
                     "[E: 0x%04x] Failed to start advertising\n",
                     (int)sc);
       break;
@@ -153,7 +160,6 @@ void demo_setup_adv(uint8_t handle)
   sl_status_t sc;
   const uint8_t flag_data = 0x6;
   const uint8_t local_name_data[] = "AdvC";
-  const uint8_t *service_uuid = bg_gattdb_data.uuidtable_128;
 
   /* https://www.bluetooth.com/specifications/assigned-numbers/company-identifiers - To get your company ID*/
   /* Below is an example to construct your manufacturer specific data with payload set to "KBA - Adv Constructor" */
@@ -177,39 +183,33 @@ void demo_setup_adv(uint8_t handle)
     },
     /* Element 2 */
     {
-      .ad_type = more_128_uuids,
-      .len = 16,
-      .data = service_uuid
-    },
-    /* Element 3 */
-    {
       .ad_type = manufacturer_specific_data,
       .len = sizeof(manu_data),
       .data = manu_data
     }
   };
 
-  /* Set up advertisement payload with the first 3 elements - 0, 1 and 2 */
+  /* Set up advertisement payload with the first 2 elements */
   adv_t adv = {
     .adv_handle = handle,
     .adv_packet_type = adv_packet,
-    .ele_num = 3,
+    .ele_num = 2,
     .p_element = ad_elements
   };
-  sc = construct_adv(&adv, 0);
+  sc = construct_adv(&adv, ext_adv);
   if (sc != SL_STATUS_OK) {
-      sl_app_log("Check error here [%s:%u]\n", __FILE__, __LINE__);
+      app_log("Check error here [%s:%u]\n", __FILE__, __LINE__);
   }
 
-  /* Set up scan response payload with the last (4th) element */
+  /* Set up scan response payload with the last (3th) element */
   adv.adv_handle = handle;
   adv.adv_packet_type = scan_rsp;
   adv.ele_num = 1;
-  adv.p_element = &ad_elements[3];
+  adv.p_element = &ad_elements[2];
 
-  sc = construct_adv(&adv, 0);
+  sc = construct_adv(&adv, ext_adv);
   if (sc != SL_STATUS_OK) {
-    sl_app_log("Check error here [%s:%u]\n", __FILE__, __LINE__);
+    app_log("Check error here [%s:%u]\n", __FILE__, __LINE__);
   }
 }
 
@@ -220,20 +220,20 @@ sl_status_t construct_adv(const adv_t *adv, uint8_t ext_adv)
   sl_status_t sc;
 
   if (!adv) {
-      sl_app_log("input param null, aborting.\n");
+      app_log("input param null, aborting.\n");
       return SL_STATUS_NULL_POINTER;
   }
 
   for (i = 0; i < adv->ele_num; i++) {
     amout_bytes += adv->p_element[i].len + 2;
     if (!adv->p_element[i].data) {
-        sl_app_log("adv unit payload data null, aborting.\n");
+        app_log("adv unit payload data null, aborting.\n");
         return SL_STATUS_NULL_POINTER;
     }
   }
   if (((amout_bytes > MAX_ADV_DATA_LENGTH) && !ext_adv)
       || ((amout_bytes > MAX_EXTENDED_ADV_LENGTH))) {
-      sl_app_log("Adv data too long [length = %d], aborting.\n", amout_bytes);
+      app_log("Adv data too long [length = %d], aborting.\n", amout_bytes);
       return SL_STATUS_BT_CTRL_PACKET_TOO_LONG;
   }
 
@@ -244,8 +244,9 @@ sl_status_t construct_adv(const adv_t *adv, uint8_t ext_adv)
     memcpy(buf + amout_bytes, adv->p_element[i].data, adv->p_element[i].len);
     amout_bytes += adv->p_element[i].len;
   }
-  sc = sl_bt_advertiser_set_data(adv->adv_handle, adv->adv_packet_type, amout_bytes, buf);
-  sl_app_assert(sc == SL_STATUS_OK,
+  if(ext_adv) sc = sl_bt_extended_advertiser_set_data(adv->adv_handle, amout_bytes, buf);
+  else sc = sl_bt_legacy_advertiser_set_data(adv->adv_handle, adv->adv_packet_type, amout_bytes, buf);
+  app_assert(sc == SL_STATUS_OK,
                     "[E: 0x%04x] Failed to set advertising data\n",
                     (int)sc);
   return SL_STATUS_OK;

@@ -16,7 +16,7 @@
  ******************************************************************************/
 #include "em_common.h"
 #include "sl_ncp.h"
-#include "sl_app_assert.h"
+#include "app_assert.h"
 #include "app.h"
 
 #include "em_wdog.h"
@@ -70,7 +70,7 @@ SL_WEAK void app_init(void)
 
   // Start the software timer to feed the watchdog every 1s
   sc = sl_bt_system_set_soft_timer(TICKS_PER_SECOND,0,0);
-  sl_app_assert(sc == SL_STATUS_OK,
+  app_assert(sc == SL_STATUS_OK,
                 "[E: 0x%04x] Failed to start soft timer\n",
                 (int)sc);
 }

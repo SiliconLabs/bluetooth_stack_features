@@ -15,11 +15,11 @@
  *
  ******************************************************************************/
 #include "em_common.h"
-#include "sl_app_assert.h"
+#include "app_assert.h"
 #include "sl_bluetooth.h"
 #include "gatt_db.h"
 #include "app.h"
-#include "sl_app_log.h"
+#include "app_log.h"
 #include "sl_simple_led_instances.h"
 
 #define UINT16_TO_BYTES(n) ((uint8_t)(n)), ((uint8_t)((n) >> 8))
@@ -74,7 +74,7 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
 
     // Extract unique ID from BT Address.
     sc = sl_bt_system_get_identity_address(&address, &address_type);
-    sl_app_assert(sc == SL_STATUS_OK,
+    app_assert(sc == SL_STATUS_OK,
                   "[E: 0x%04x] Failed to get Bluetooth address\n",
                   (int)sc);
 
@@ -92,13 +92,13 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
                                                  0,
                                                  sizeof(system_id),
                                                  system_id);
-    sl_app_assert(sc == SL_STATUS_OK,
+    app_assert(sc == SL_STATUS_OK,
                   "[E: 0x%04x] Failed to write attribute\n",
                   (int)sc);
 
     // Create an advertising set.
     sc = sl_bt_advertiser_create_set(&handle_demo);
-    sl_app_assert(sc == SL_STATUS_OK,
+    app_assert(sc == SL_STATUS_OK,
                   "[E: 0x%04x] Failed to create advertising set\n",
                   (int)sc);
 
@@ -109,54 +109,64 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
         160, // max. adv. interval (milliseconds * 1.6)
         0,   // adv. duration
         0);  // max. num. adv. events
-    sl_app_assert(sc == SL_STATUS_OK,
+    app_assert(sc == SL_STATUS_OK,
                   "[E: 0x%04x] Failed to set advertising timing\n",
                   (int)sc);
 
     sl_bt_system_set_tx_power(0, 100, NULL, NULL);
-    sl_app_assert(sc == SL_STATUS_OK,
+    app_assert(sc == SL_STATUS_OK,
                   "[E: 0x%04x] Failed to set the global minimum and maximum radiated TX power levels for Bluetooth\n",
                   (int)sc);
 
     /* Set 1 dBm Transmit Power */
     sl_bt_advertiser_set_tx_power(handle_demo, 10, NULL);
-    sl_app_assert(sc == SL_STATUS_OK,
+    app_assert(sc == SL_STATUS_OK,
                   "[E: 0x%04x] Failed to limit the maximum advertising TX power\n",
                   (int)sc);
 
     // Start general advertising and enable connections.
-    sc = sl_bt_advertiser_start(
+    sc = sl_bt_extended_advertiser_generate_data(handle_demo,
+                                                 advertiser_general_discoverable);
+    app_assert(sc == SL_STATUS_OK,
+                  "[E: 0x%04x] Failed to generate data\n",
+                  (int)sc);
+    sc = sl_bt_extended_advertiser_start(
         handle_demo,
-        advertiser_general_discoverable,
-        advertiser_connectable_scannable);
-    sl_app_assert(sc == SL_STATUS_OK,
+        sl_bt_extended_advertiser_scannable,
+        0);
+    app_assert(sc == SL_STATUS_OK,
                   "[E: 0x%04x] Failed to start advertising\n",
                   (int)sc);
 
-    sl_app_log("\r\nFirst connectable advertising set started.\r\n");
-    sl_app_log("  Conected-> LED0 ON else LED0->OFF\r\n");
+    app_log("\r\nFirst connectable advertising set started.\r\n");
+    app_log("  Conected-> LED0 ON else LED0->OFF\r\n");
     bcnSetupAdvBeaconing();
-    sl_app_log("\r\nSecond non-connectable advertising set started.\r\n");
+    app_log("\r\nSecond non-connectable advertising set started.\r\n");
     break;
 
   // -------------------------------
   // This event indicates that a new connection was opened.
   case sl_bt_evt_connection_opened_id:
     sl_led_led0.turn_on(sl_led_led0.context);
-    sl_app_log("\r\n connection opened. LED0 status: %s \r\n", sl_led_led0.get_state(sl_led_led0.context) == 1 ? "ON" : "OFF");
+    app_log("\r\n connection opened. LED0 status: %s \r\n", sl_led_led0.get_state(sl_led_led0.context) == 1 ? "ON" : "OFF");
     break;
 
   // -------------------------------
   // This event indicates that a connection was closed.
   case sl_bt_evt_connection_closed_id:
     sl_led_led0.turn_off(sl_led_led0.context);
-    sl_app_log("\r\n connection opened. LED0 status: %s \r\n", sl_led_led0.get_state(sl_led_led0.context) == 1 ? "ON" : "OFF");
+    app_log("\r\n connection opened. LED0 status: %s \r\n", sl_led_led0.get_state(sl_led_led0.context) == 1 ? "ON" : "OFF");
     // Restart advertising after client has disconnected.
-    sc = sl_bt_advertiser_start(
+    sc = sl_bt_extended_advertiser_generate_data(handle_demo,
+                                                 advertiser_general_discoverable);
+    app_assert(sc == SL_STATUS_OK,
+                  "[E: 0x%04x] Failed to generate data\n",
+                  (int)sc);
+    sc = sl_bt_extended_advertiser_start(
         handle_demo,
-        advertiser_general_discoverable,
-        advertiser_connectable_scannable);
-    sl_app_assert(sc == SL_STATUS_OK,
+        sl_bt_extended_advertiser_scannable,
+        0);
+    app_assert(sc == SL_STATUS_OK,
                   "[E: 0x%04x] Failed to start advertising\n",
                   (int)sc);
     break;
@@ -232,18 +242,18 @@ void bcnSetupAdvBeaconing(void)
 
   /* Set custom advertising data */
   sc = sl_bt_advertiser_create_set(&handle_ibeacon);
-  sl_app_assert(sc == SL_STATUS_OK,
+  app_assert(sc == SL_STATUS_OK,
                 "[E: 0x%04x] Failed to create advertising set\n",
                 (int)sc);
 
-  sl_bt_advertiser_set_data(handle_ibeacon, 0, len, pData);
-  sl_app_assert(sc == SL_STATUS_OK,
+  sl_bt_extended_advertiser_set_data(handle_ibeacon, len, pData);
+  app_assert(sc == SL_STATUS_OK,
                 "[E: 0x%04x] Failed to set user-defined data\n",
                 (int)sc);
 
   /* Set 8 dBm Transmit Power */
   sl_bt_advertiser_set_tx_power(handle_ibeacon, 80, NULL);
-  sl_app_assert(sc == SL_STATUS_OK,
+  app_assert(sc == SL_STATUS_OK,
                 "[E: 0x%04x] Failed to limit the maximum advertising TX power\n",
                 (int)sc);
 
@@ -251,13 +261,13 @@ void bcnSetupAdvBeaconing(void)
    * The first two parameters are minimum and maximum advertising interval, both in
    * units of (milliseconds * 1.6).  */
   sc = sl_bt_advertiser_set_timing(handle_ibeacon, 320, 320, 0, 0);
-  sl_app_assert(sc == SL_STATUS_OK,
+  app_assert(sc == SL_STATUS_OK,
                 "[E: 0x%04x] Failed to set advertising timing\n",
                 (int)sc);
 
   /* Start advertising in user mode */
-  sc = sl_bt_advertiser_start(handle_ibeacon, sl_bt_advertiser_user_data, sl_bt_advertiser_non_connectable);
-  sl_app_assert(sc == SL_STATUS_OK,
+  sc = sl_bt_extended_advertiser_start(handle_ibeacon, sl_bt_advertiser_non_connectable, 0);
+  app_assert(sc == SL_STATUS_OK,
                 "[E: 0x%04x] Failed to start advertising\n",
                 (int)sc);
 }

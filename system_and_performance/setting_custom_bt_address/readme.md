@@ -77,8 +77,9 @@ MFG_CUSTOM_EUI_64: 0000AABBCCDDEE11
 Once you have written the custom address into the manufacturing token, do the following:
 
 1. Create a new **SoC-Empty** project.
-2. Copy the attached app.c file replacing the existing `app.c`.
-3. Build and flash your project to your board.
+2. Install the **Legacy Advertising** component, if it is not yet installed (Bluetooth > Feature)
+3. Copy the attached app.c file replacing the existing `app.c`.
+4. Build and flash your project to your board.
 
 
 

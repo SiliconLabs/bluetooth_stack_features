@@ -15,11 +15,11 @@
  *
  ******************************************************************************/
 #include "em_common.h"
-#include "sl_app_assert.h"
+#include "app_assert.h"
 #include "sl_bluetooth.h"
 #include "gatt_db.h"
 #include "app.h"
-#include "sl_app_log.h"
+#include "app_log.h"
 
 #define MIN_TEST_NUMBER         (-300) // This is the minimum tx_power to start the sweep.
 #define MAX_TEST_NUMBER         (80)   // This is the maximum tx_power to end the sweep.
@@ -68,7 +68,7 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
     // Do not call any stack command before receiving this boot event!
     case sl_bt_evt_system_boot_id:
       /* Print stack version. */
-      sl_app_log("Bluetooth stack booted: v%d.%d.%d-b%d\n",
+      app_log("Bluetooth stack booted: v%d.%d.%d-b%d\n",
                  evt->data.evt_system_boot.major,
                  evt->data.evt_system_boot.minor,
                  evt->data.evt_system_boot.patch,
@@ -76,12 +76,12 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
 
       // Extract unique ID from BT Address.
       sc = sl_bt_system_get_identity_address(&address, &address_type);
-      sl_app_assert(sc == SL_STATUS_OK,
+      app_assert(sc == SL_STATUS_OK,
                     "[E: 0x%04x] Failed to get Bluetooth address\n",
                     (int)sc);
 
       /* Print local Bluetooth address. */
-      sl_app_log("Bluetooth %s address: %02X:%02X:%02X:%02X:%02X:%02X\n",
+      app_log("Bluetooth %s address: %02X:%02X:%02X:%02X:%02X:%02X\n",
                  address_type ? "static random" : "public device",
                  address.addr[5],
                  address.addr[4],
@@ -90,12 +90,12 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
                  address.addr[1],
                  address.addr[0]);
 
-      sl_app_log("------------------------Start-------------------------\r\n");
+      app_log("------------------------Start-------------------------\r\n");
 
       /* Set a timer to call sl_bt_system_set_tx_power every 10 ms
        * with incremental input and print out result. */
       sc = sl_bt_system_set_soft_timer(328, 1, 0);
-      sl_app_assert(sc == SL_STATUS_OK,
+      app_assert(sc == SL_STATUS_OK,
                     "[E: 0x%04x] Failed to start a software timer\r\n",
                     (int)sc);
       break;
@@ -106,20 +106,20 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
 
         /* Set maximum tx power and read what was actually set */
         sc = sl_bt_system_set_tx_power(MIN_TEST_NUMBER, tx_to_set, NULL, &tx_set);
-        sl_app_assert(sc == SL_STATUS_OK,
+        app_assert(sc == SL_STATUS_OK,
                       "[E: 0x%04x] Failed to set tx power\r\n",
                       (int)sc);
         /* Print out input value and response from the command.
          * The print formatting can be changed as desired
          * (e.g. so that a log can be imported as csv into excel).
          */
-        sl_app_log("set_tx_power(%03d) returns %03d\r\n", tx_to_set, tx_set);
+        app_log("set_tx_power(%03d) returns %03d\r\n", tx_to_set, tx_set);
 
         if (tx_to_set++ == MAX_TEST_NUMBER) {
           /* If max value has been reached print "End" and stop timer */
-          sl_app_log("-----------------------End-------------------------\r\n");
+          app_log("-----------------------End-------------------------\r\n");
           sc = sl_bt_system_set_soft_timer(0, 1, 0);
-          sl_app_assert(sc == SL_STATUS_OK,
+          app_assert(sc == SL_STATUS_OK,
                         "[E: 0x%04x] Failed to stop a software timer\r\n",
                         (int)sc);
         }

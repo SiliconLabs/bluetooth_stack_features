@@ -19,7 +19,7 @@
 #define APP_H
 
 #include "sl_bt_api.h"
-#include "sl_app_log.h"
+#include "app_log.h"
 
 /**************************************************************************//**
  * Application Init.

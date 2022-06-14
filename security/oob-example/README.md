@@ -67,19 +67,22 @@ As shown above, the example requires two devices (e.g., BRD4104a Rev A00) and se
    - Select the SOFTWARE COMPONENTS tab.
 
    - Install **IO Stream: USART** component with the default instance name: **vcom**.
-  ![vcom_component](images/install_usart.png)
+   ![vcom_component](images/install_usart.png)
 
    - Find the **Board Control** component and click to the **Configure** button like below
    ![board control configure](images/board_control_configure.png)  
    Then enable *Virtual COM UART* under its configuration
    ![vcom configure](images/enable_vir_com.png)
 
-   - Install the **Log** component (found under Bluetooth > Utility group).  
-  ![log configure](images/log.png)
+   - Install the **Legacy Advertising** component, if it is not yet installed (Bluetooth > Feature)
+   ![legacy advertising](images/legacy.png)
+
+   - Install the **Log** component (found under Application > Utility group).  
+   ![log configure](images/log.png)
 
 3. The device has the central role (#D1):
    - Install **NVM Support** component to manage the user data in the flash.
-  ![nvm configure](images/nvm.png)
+   ![nvm configure](images/nvm.png)
 
    - Replace the *app.c* file in the project with the provided app_central.c.
   

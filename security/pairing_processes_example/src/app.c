@@ -15,13 +15,13 @@
  *
  ******************************************************************************/
 #include "em_common.h"
-#include "sl_app_assert.h"
+#include "app_assert.h"
 #include "sl_bluetooth.h"
 #include "gatt_db.h"
 #include "app.h"
 #include "sl_simple_button_instances.h"
 #include "sl_simple_led_instances.h"
-#include "sl_app_log.h"
+#include "app_log.h"
 #include "dmd.h"
 #include "glib.h"
 #include "sl_board_control.h"
@@ -170,7 +170,7 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
   // Do not call any stack command before receiving this boot event!
   case sl_bt_evt_system_boot_id:
 
-    sl_app_log("Stack version: %u.%u.%u\r\r\n",
+    app_log("Stack version: %u.%u.%u\r\r\n",
                evt->data.evt_system_boot.major,
                evt->data.evt_system_boot.minor,
                evt->data.evt_system_boot.patch);
@@ -179,12 +179,12 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
     connection = 0xFF;
     // Extract unique ID from BT Address.
     sc = sl_bt_system_get_identity_address(&address, &address_type);
-    sl_app_assert(sc == SL_STATUS_OK,
+    app_assert(sc == SL_STATUS_OK,
                   "[E: 0x%04x] Failed to get Bluetooth address\n",
                   (int)sc);
 
     /* Print Bluetooth address */
-    sl_app_log("Bluetooth %s address: %02X:%02X:%02X:%02X:%02X:%02X\r\n",
+    app_log("Bluetooth %s address: %02X:%02X:%02X:%02X:%02X:%02X\r\n",
                      address_type ? "static random" : "public device",
                      address.addr[5],
                      address.addr[4],
@@ -206,13 +206,13 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
                                                  0,
                                                  sizeof(system_id),
                                                  system_id);
-    sl_app_assert(sc == SL_STATUS_OK,
+    app_assert(sc == SL_STATUS_OK,
                   "[E: 0x%04x] Failed to write attribute\n",
                   (int)sc);
 
     // Configuration according to constants set at compile time.
     sc = sl_bt_sm_configure(MITM_PROTECTION, IO_CAPABILITY);
-    sl_app_assert(sc == SL_STATUS_OK,
+    app_assert(sc == SL_STATUS_OK,
                   "[E: 0x%04x] Failed to configure security\r\n",
                   (int)sc);
 #if (IO_CAPABILITY == KEYBOARDONLY)
@@ -222,25 +222,25 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
     passkey = make_passkey_from_address(address);
 #endif
     sc = sl_bt_sm_set_passkey(passkey);
-    sl_app_assert(sc == SL_STATUS_OK,
+    app_assert(sc == SL_STATUS_OK,
                   "[E: 0x%04x] Failed to set using random passkeys\r\n",
                   (int)sc);
     sc = sl_bt_sm_set_bondable_mode(1);
-    sl_app_assert(sc == SL_STATUS_OK,
+    app_assert(sc == SL_STATUS_OK,
                   "[E: 0x%04x] Failed to set the device accept new bondings\r\n",
                   (int)sc);
-    sl_app_log("Boot event - %s\r\n",
+    app_log("Boot event - %s\r\n",
                is_initiator ? "Starting advertising" : "Starting discovery");
 
     sc = sl_bt_sm_delete_bondings();
-    sl_app_assert(sc == SL_STATUS_OK,
+    app_assert(sc == SL_STATUS_OK,
                   "[E: 0x%04x] Failed to delete all bonding information\n",
                   (int)sc);
-    sl_app_log("All bonding deleted\r\n");
+    app_log("All bonding deleted\r\n");
     setup_advertising_or_scanning();
     // Start timer to refresh display
     sc = sl_bt_system_set_soft_timer(32768 / 4, 0, 0);
-    sl_app_assert(sc == SL_STATUS_OK,
+    app_assert(sc == SL_STATUS_OK,
                   "[E: 0x%04x] Failed to start a software timer\r\n",
                   (int)sc);
     break;
@@ -249,21 +249,21 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
     if (process_scan_response_for_uuid(&evt->data.evt_scanner_scan_report))
     {
       sc = sl_bt_scanner_stop();
-      sl_app_assert(sc == SL_STATUS_OK,
+      app_assert(sc == SL_STATUS_OK,
                     "[E: 0x%04x] Failed to stop scanning for advertising devices\n",
                     (int)sc);
-      sl_app_log("Connecting to device at address: ");
+      app_log("Connecting to device at address: ");
 
       for (int i = 0; i < 5; i++)
       {
-        sl_app_log("%2.2x:", evt->data.evt_scanner_scan_report.address.addr[5 - i]);
+        app_log("%2.2x:", evt->data.evt_scanner_scan_report.address.addr[5 - i]);
       }
-      sl_app_log("%2.2x\r\n", evt->data.evt_scanner_scan_report.address.addr[0]);
+      app_log("%2.2x\r\n", evt->data.evt_scanner_scan_report.address.addr[0]);
       sc = sl_bt_connection_open(evt->data.evt_scanner_scan_report.address,
                                  evt->data.evt_scanner_scan_report.address_type,
                                  sl_bt_gap_1m_phy,
                                  &connection);
-      sl_app_assert(sc == SL_STATUS_OK,
+      app_assert(sc == SL_STATUS_OK,
                     "[E: 0x%04x] Failed to connect to an advertising device\n",
                     (int)sc);
     }
@@ -275,7 +275,7 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
     if (is_initiator)
     {
       sc = sl_bt_sm_increase_security(connection);
-      sl_app_assert(sc == SL_STATUS_OK,
+      app_assert(sc == SL_STATUS_OK,
                     "[E: 0x%04x] Failed to enhance the security of a connection\n",
                     (int)sc);
     }
@@ -284,13 +284,13 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
   // -------------------------------
   // This event indicates that a connection was closed.
   case sl_bt_evt_connection_closed_id:
-    sl_app_log("Connection closed, reason: 0x%2.2x\r\n",
+    app_log("Connection closed, reason: 0x%2.2x\r\n",
                evt->data.evt_connection_closed.reason);
     sc = sl_bt_sm_delete_bondings();
-    sl_app_assert(sc == SL_STATUS_OK,
+    app_assert(sc == SL_STATUS_OK,
                   "[E: 0x%04x] Failed to delete all bonding information\n",
                   (int)sc);
-    sl_app_log("All bonding deleted\r\n");
+    app_log("All bonding deleted\r\n");
     connection = 0xFF;
     state = IDLE;
     // Restart advertising after client has disconnected.
@@ -302,16 +302,16 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
     switch (evt->data.evt_connection_parameters.security_mode)
     {
     case connection_mode1_level1:
-      sl_app_log("No Security\r\n");
+      app_log("No Security\r\n");
       break;
     case connection_mode1_level2:
-      sl_app_log("Unauthenticated pairing with encryption (Just Works)\r\n");
+      app_log("Unauthenticated pairing with encryption (Just Works)\r\n");
       break;
     case connection_mode1_level3:
-      sl_app_log("Authenticated pairing with encryption (Legacy Pairing)\r\n");
+      app_log("Authenticated pairing with encryption (Legacy Pairing)\r\n");
       break;
     case connection_mode1_level4:
-      sl_app_log("Authenticated Secure Connections pairing with encryption (BT 4.2 LE Secure Pairing)\r\n");
+      app_log("Authenticated Secure Connections pairing with encryption (BT 4.2 LE Secure Pairing)\r\n");
       break;
     default:
       break;
@@ -320,40 +320,40 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
 
   case sl_bt_evt_sm_passkey_display_id:
     // Display passkey
-    sl_app_log("Passkey: %4lu\r\n", evt->data.evt_sm_passkey_display.passkey);
+    app_log("Passkey: %4lu\r\n", evt->data.evt_sm_passkey_display.passkey);
     passkey = evt->data.evt_sm_passkey_display.passkey;
     state = DISPLAY_PASSKEY;
     break;
 
   case sl_bt_evt_sm_passkey_request_id:
-    sl_app_log("Passkey request\r\n");
+    app_log("Passkey request\r\n");
     state = PROMPT_INPUTTING_PASSKEY;
     break;
 
   case sl_bt_evt_sm_confirm_passkey_id:
-    sl_app_log("Passkey confirm\r\n");
+    app_log("Passkey confirm\r\n");
     passkey = evt->data.evt_sm_confirm_passkey.passkey;
     state = PROMPT_YESNO;
     break;
 
   case sl_bt_evt_sm_confirm_bonding_id:
-    sl_app_log("Bonding confirm\r\n");
+    app_log("Bonding confirm\r\n");
     sc = sl_bt_sm_bonding_confirm(evt->data.evt_sm_confirm_bonding.connection, 1);
-    sl_app_assert(sc == SL_STATUS_OK,
+    app_assert(sc == SL_STATUS_OK,
                   "[E: 0x%04x] Failed to accept or reject the bonding request\n",
                   (int)sc);
     break;
 
   case sl_bt_evt_sm_bonded_id:
-    sl_app_log("Bond success\r\n");
+    app_log("Bond success\r\n");
     state = BOND_SUCCESS;
     break;
 
   case sl_bt_evt_sm_bonding_failed_id:
-    sl_app_log("Bonding failed, reason 0x%2X\r\n",
+    app_log("Bonding failed, reason 0x%2X\r\n",
                evt->data.evt_sm_bonding_failed.reason);
     sc = sl_bt_connection_close(evt->data.evt_sm_bonding_failed.connection);
-    sl_app_assert(sc == SL_STATUS_OK,
+    app_assert(sc == SL_STATUS_OK,
                   "[E: 0x%04x] Failed to close a Bluetooth connection\n",
                   (int)sc);
     state = BOND_FAILURE;
@@ -367,29 +367,29 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
     switch (evt->data.evt_system_external_signal.extsignals)
     {
     case REJECT_COMPARISON:
-      sl_app_log("Rejecting prompt.\r\n");
+      app_log("Rejecting prompt.\r\n");
       sc = sl_bt_sm_passkey_confirm(connection, 0);
-      sl_app_assert(sc == SL_STATUS_OK,
+      app_assert(sc == SL_STATUS_OK,
                     "[E: 0x%04x] Failed to reject the reported passkey confirm value\n",
                     (int)sc);
       break;
     case ACCEPT_COMPARISON:
-      sl_app_log("Accepting prompt.\r\n");
+      app_log("Accepting prompt.\r\n");
       sc = sl_bt_sm_passkey_confirm(connection, 1);
-      sl_app_assert(sc == SL_STATUS_OK,
+      app_assert(sc == SL_STATUS_OK,
                     "[E: 0x%04x] Failed to accept the reported passkey confirm value\n",
                     (int)sc);
       break;
     case REENTER_PASSKEY:
-      sl_app_log("Still fixing the passkey.\r\n");
+      app_log("Still fixing the passkey.\r\n");
       break;
     case SUBMIT_PASSKEY:
     {
-      sl_app_log("Submitting passkey...\r\n");
+      app_log("Submitting passkey...\r\n");
       char *_temp;
       passkey = strtoul(passkey_digits, &_temp, 10);
       sc = sl_bt_sm_enter_passkey(connection, passkey);
-      sl_app_assert(sc == SL_STATUS_OK,
+      app_assert(sc == SL_STATUS_OK,
                     "[E: 0x%04x] Failed to enter a passkey\n",
                     (int)sc);
     }
@@ -473,7 +473,7 @@ static void setup_advertising_or_scanning(void)
     // 1M PHY Advertising
     // Create an advertising set.
     sc = sl_bt_advertiser_create_set(&advertising_set_handle);
-    sl_app_assert(sc == SL_STATUS_OK,
+    app_assert(sc == SL_STATUS_OK,
                   "[E: 0x%04x] Failed to create advertising set\n",
                   (int)sc);
 
@@ -484,15 +484,18 @@ static void setup_advertising_or_scanning(void)
         160, // max. adv. interval (milliseconds * 1.6)
         0,   // adv. duration
         0);  // max. num. adv. events
-    sl_app_assert(sc == SL_STATUS_OK,
+    app_assert(sc == SL_STATUS_OK,
                   "[E: 0x%04x] Failed to set advertising timing\n",
                   (int)sc);
     // Start general advertising and enable connections.
-    sc = sl_bt_advertiser_start(
-        advertising_set_handle,
-        advertiser_general_discoverable,
-        advertiser_connectable_scannable);
-    sl_app_assert(sc == SL_STATUS_OK,
+    sc = sl_bt_legacy_advertiser_generate_data(advertising_set_handle,
+                                                advertiser_general_discoverable);
+    app_assert(sc == SL_STATUS_OK,
+                  "[E: 0x%04x] Failed to generate data\n",
+                  (int)sc);
+    sc = sl_bt_legacy_advertiser_start(advertising_set_handle,
+                                        advertiser_connectable_scannable);
+    app_assert(sc == SL_STATUS_OK,
                   "[E: 0x%04x] Failed to start advertising\n",
                   (int)sc);
   }
@@ -500,7 +503,7 @@ static void setup_advertising_or_scanning(void)
   {
     // Start scanning
     sc = sl_bt_scanner_start(sl_bt_gap_1m_phy, sl_bt_scanner_discover_generic);
-    sl_app_assert(sc == SL_STATUS_OK,
+    app_assert(sc == SL_STATUS_OK,
                   "[E: 0x%04x] Failed to start the GAP discovery procedure to scan for advertising devices\n",
                   (int)sc);
   }
@@ -543,7 +546,7 @@ static bool process_scan_response_for_uuid(sl_bt_evt_scanner_scan_report_t *pRes
       // Type 0x07 = Complete List of 128-bit Service Class UUIDs
       if (memcmp(SERVICE_UUID, &(pResp->data.data[i + 2]), 16) == 0)
       {
-        sl_app_log("Found Secure Service \r\n");
+        app_log("Found Secure Service \r\n");
         ad_match_found = 1;
       }
     }

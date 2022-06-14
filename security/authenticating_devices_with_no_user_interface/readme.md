@@ -45,7 +45,7 @@ static void set_random_public_address(void)
   uint8_t data[16];
 
   sc = sl_bt_system_get_random_data(6, sizeof(data), &data_len, data);
-  sl_app_assert(sc == SL_STATUS_OK,
+  app_assert(sc == SL_STATUS_OK,
                 "[E: 0x%04x] Failed to get random data\n",
                 (int)sc);
 
@@ -54,7 +54,7 @@ static void set_random_public_address(void)
   address.addr[5] |= 0xC0;
 
   sc = sl_bt_system_set_identity_address(address, sl_bt_gap_static_address);
-  sl_app_assert(sc == SL_STATUS_OK,
+  app_assert(sc == SL_STATUS_OK,
                 "[E: 0x%04x] Failed to set identity address\n",
                 (int)sc);
 }
@@ -93,7 +93,11 @@ To be able to test this example do as follows:
 
 - Find the **Board Control** component  and enable *Virtual COM UART* under its configuration.
 
-- Install the **Log** component (found under Bluetooth > Utility group).
+- Install the **Legacy Advertising** component, if it is not yet installed (Bluetooth > Feature)
+
+![](images/legacy.png)
+
+- Install the **Log** component (found under Application > Utility group).
 
 4. Build and flash the project to your device.
 

@@ -15,13 +15,13 @@
  *
  ******************************************************************************/
 #include "em_common.h"
-#include "sl_app_assert.h"
+#include "app_assert.h"
 #include "sl_bluetooth.h"
 #include "gatt_db.h"
 #include "app.h"
 
 #include "sl_bt_api.h"
-#include "sl_app_log.h"
+#include "app_log.h"
 
 #define EXT_ADV_PDU_FLAG   0x80
 
@@ -38,13 +38,13 @@ static uint8_t find_service_in_advertisement(uint8_t *data, uint8_t len)
   uint8_t adFieldLength;
   uint8_t adFieldType;
   uint8_t i = 0;
-  sl_app_log("packet length %d\r\n", len);
+  app_log("packet length %d\r\n", len);
   // Parse advertisement packet
   while (i < len) {
     adFieldLength = data[i];
     adFieldType = data[i + 1];
     // Partial ($02) or complete ($03) list of 128-bit UUIDs
-  sl_app_log("adField type %d \r\n", adFieldType);
+  app_log("adField type %d \r\n", adFieldType);
     if (adFieldType == 0x06 || adFieldType == 0x07) {
       // compare UUID to service UUID
       if (memcmp(&data[i + 2], periodicSyncService, 16) == 0) {
@@ -103,7 +103,7 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
 
       // Extract unique ID from BT Address.
       sc = sl_bt_system_get_identity_address(&address, &address_type);
-      sl_app_assert(sc == SL_STATUS_OK,
+      app_assert(sc == SL_STATUS_OK,
                     "[E: 0x%04x] Failed to get Bluetooth address\n",
                     (int)sc);
 
@@ -121,11 +121,11 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
                                                    0,
                                                    sizeof(system_id),
                                                    system_id);
-      sl_app_assert(sc == SL_STATUS_OK,
+      app_assert(sc == SL_STATUS_OK,
                     "[E: 0x%04x] Failed to write attribute\n",
                     (int)sc);
 
-      sl_app_log("Scanner boot event\n");
+      app_log("Scanner boot event\n");
 
       // periodic scanner setting
       sl_bt_scanner_set_timing(gap_1m_phy, 200, 200);
@@ -139,30 +139,30 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
     case sl_bt_evt_scanner_scan_report_id:
       /* only look at extended advertisements */
       if(evt->data.evt_scanner_scan_report.packet_type & EXT_ADV_PDU_FLAG){
-        sl_app_log("got ext adv indication with tx_power = %d\r\n",
+        app_log("got ext adv indication with tx_power = %d\r\n",
             evt->data.evt_scanner_scan_report.tx_power );
         if (find_service_in_advertisement(&(evt->data.evt_scanner_scan_report.data.data[0]),
                                           evt->data.evt_scanner_scan_report.data.len) != 0) {
 
-          sl_app_log("found periodic sync service, attempting to open sync\r\n");
+          app_log("found periodic sync service, attempting to open sync\r\n");
 
           sc = sl_bt_sync_open(evt->data.evt_scanner_scan_report.address,
                                evt->data.evt_scanner_scan_report.address_type,
                                evt->data.evt_scanner_scan_report.adv_sid,
                                &sync);
-          sl_app_log("cmd_sync_open() sync = 0x%2X\r\n", sc);
+          app_log("cmd_sync_open() sync = 0x%2X\r\n", sc);
         }
       }
       break;
 
     case sl_bt_evt_sync_opened_id:
       /* now that sync is open, we can stop scanning*/
-      sl_app_log("evt_sync_opened\r\n");
+      app_log("evt_sync_opened\r\n");
       sl_bt_scanner_stop();
       break;
 
     case sl_bt_evt_sync_closed_id:
-       sl_app_log("periodic sync closed. reason 0x%2X, sync handle %d",
+       app_log("periodic sync closed. reason 0x%2X, sync handle %d",
                   evt->data.evt_sync_closed.reason,
                   evt->data.evt_sync_closed.sync);
        /* restart discovery */
@@ -179,20 +179,20 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
          switch(evt->data.evt_sync_data.data_status)
            {
            case 0:
-             sl_app_log("complete sync %d bytes received.\r\n",
+             app_log("complete sync %d bytes received.\r\n",
                         evt->data.evt_sync_data.data.len);
              memcpy(&sync_rx_buffer[sync_data_index], evt->data.evt_sync_data.data.data, len);
              sync_data_index = 0;
              break;
            case 1:
              /* */
-             sl_app_log("sync data received, %d bytes, more to come\r\n",
+             app_log("sync data received, %d bytes, more to come\r\n",
                         evt->data.evt_sync_data.data.len);
              memcpy(&sync_rx_buffer[sync_data_index], evt->data.evt_sync_data.data.data, len);
              sync_data_index += len;
              break;
            case 2:
-             sl_app_log("data corrupted, discard entire sync. sync_data_index was %d and %d bytes received in this event\r\n",
+             app_log("data corrupted, discard entire sync. sync_data_index was %d and %d bytes received in this event\r\n",
                         sync_data_index,
                         len);
              memset(sync_rx_buffer,0,sizeof(sync_rx_buffer));

@@ -15,13 +15,13 @@
  *
  ******************************************************************************/
 #include "em_common.h"
-#include "sl_app_assert.h"
+#include "app_assert.h"
 #include "sl_bluetooth.h"
 #include "gatt_db.h"
 #include "app.h"
 
 #include "sl_bt_api.h"
-#include "sl_app_log.h"
+#include "app_log.h"
 
 // The advertising set handle allocated from Bluetooth stack.
 static uint8_t advertising_set_handle = 0xff;
@@ -70,11 +70,11 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
 
       // Extract unique ID from BT Address.
       sc = sl_bt_system_get_identity_address(&address, &address_type);
-      sl_app_assert(sc == SL_STATUS_OK,
+      app_assert(sc == SL_STATUS_OK,
                     "[E: 0x%04x] Failed to get Bluetooth address\n",
                     (int)sc);
 
-      sl_app_log("Bluetooth %s address: %02X:%02X:%02X:%02X:%02X:%02X\n",
+      app_log("Bluetooth %s address: %02X:%02X:%02X:%02X:%02X:%02X\n",
                  address_type ? "static random" : "public device",
                  address.addr[5],
                  address.addr[4],
@@ -97,37 +97,30 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
                                                    0,
                                                    sizeof(system_id),
                                                    system_id);
-      sl_app_assert(sc == SL_STATUS_OK,
+      app_assert(sc == SL_STATUS_OK,
                     "[E: 0x%04x] Failed to write attribute\n",
                     (int)sc);
 
       // Create an advertising set.
       sc = sl_bt_advertiser_create_set(&advertising_set_handle);
-      sl_app_assert(sc == SL_STATUS_OK,
+      app_assert(sc == SL_STATUS_OK,
                     "[E: 0x%04x] Failed to create advertising set\n",
                     (int)sc);
 
       // disable report scan request
       sc = sl_bt_advertiser_set_report_scan_request(advertising_set_handle,
                                                0);
-      sl_app_assert(sc == SL_STATUS_OK,
+      app_assert(sc == SL_STATUS_OK,
                     "[E: 0x%04x] Failed to disable report scan request\n",
                     (int)sc);
 
       // set phy
-      sc = sl_bt_advertiser_set_phy(advertising_set_handle,
-                               gap_coded_phy,
-                               gap_coded_phy);
-      sl_app_assert(sc == SL_STATUS_OK,
+      sc = sl_bt_extended_advertiser_set_phy(advertising_set_handle,
+                                             sl_bt_gap_phy_coded,
+                                             sl_bt_gap_phy_coded);
+      app_assert(sc == SL_STATUS_OK,
                     "[E: 0x%04x] Failed to set phy\n",
                     (int)sc);
-
-      // Do not use legacy PDU - use extended advertisement instead.
-      sc = sl_bt_advertiser_clear_configuration(advertising_set_handle,
-                                           1);
-      sl_app_assert(sc == SL_STATUS_OK,
-                          "[E: 0x%04x] Failed to clear config\n",
-                          (int)sc);
 
       // Set advertising interval to 100ms.
       sc = sl_bt_advertiser_set_timing(
@@ -136,25 +129,26 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
         160, // max. adv. interval (milliseconds * 1.6)
         0,   // adv. duration
         0);  // max. num. adv. events
-      sl_app_assert(sc == SL_STATUS_OK,
+      app_assert(sc == SL_STATUS_OK,
                     "[E: 0x%04x] Failed to set advertising timing\n",
                     (int)sc);
 
       // all primary advertising channels
       sc = sl_bt_advertiser_set_channel_map(advertising_set_handle,
                                        7);
-      sl_app_assert(sc == SL_STATUS_OK,
+      app_assert(sc == SL_STATUS_OK,
                     "[E: 0x%04x] Failed to set channel map\n",
                     (int)sc);
 
       // Start general advertising and enable connections.
-      sc = sl_bt_advertiser_start(
+      sc = sl_bt_extended_advertiser_start(
         advertising_set_handle,
-        advertiser_general_discoverable,
-        advertiser_connectable_non_scannable);
-      sl_app_assert(sc == SL_STATUS_OK,
+        sl_bt_extended_advertiser_connectable,
+        0);
+      app_assert(sc == SL_STATUS_OK,
                     "[E: 0x%04x] Failed to start advertising\n",
                     (int)sc);
+      app_log("Start advertising ...\n");
       break;
 
     // -------------------------------
@@ -166,11 +160,11 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
     // This event indicates that a connection was closed.
     case sl_bt_evt_connection_closed_id:
       // Restart advertising after client has disconnected.
-      sc = sl_bt_advertiser_start(
+      sc = sl_bt_extended_advertiser_start(
         advertising_set_handle,
-        advertiser_general_discoverable,
-        advertiser_connectable_non_scannable);
-      sl_app_assert(sc == SL_STATUS_OK,
+        sl_bt_extended_advertiser_connectable,
+        0);
+      app_assert(sc == SL_STATUS_OK,
                     "[E: 0x%04x] Failed to start advertising\n",
                     (int)sc);
       break;

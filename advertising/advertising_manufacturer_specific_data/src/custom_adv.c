@@ -59,14 +59,14 @@ void start_adv(CustomAdv_t *pData, uint8_t advertising_set_handle)
 {
   sl_status_t sc;
   // Set custom advertising payload 
-  sc = sl_bt_advertiser_set_data(advertising_set_handle,0, pData->data_size, (const uint8_t *)pData);
-  sl_app_assert(sc == SL_STATUS_OK,
+  sc = sl_bt_legacy_advertiser_set_data(advertising_set_handle, 0, pData->data_size, (const uint8_t *)pData);
+  app_assert(sc == SL_STATUS_OK,
                 "[E: 0x%04x] Failed to set advertising data\n",
                 (int)sc);
 
   // Start advertising using custom data 
-  sc = sl_bt_advertiser_start(advertising_set_handle, advertiser_user_data, advertiser_connectable_scannable);
-  sl_app_assert(sc == SL_STATUS_OK,
+  sc = sl_bt_legacy_advertiser_start(advertising_set_handle, sl_bt_legacy_advertiser_connectable);
+  app_assert(sc == SL_STATUS_OK,
                   "[E: 0x%04x] Failed to start advertising\n",
                   (int)sc);
 }
@@ -79,8 +79,8 @@ void update_adv_data(CustomAdv_t *pData, uint8_t advertising_set_handle, uint8_t
   pData->last_press = last_press;
 
   // Set custom advertising payload 
-  sc = sl_bt_advertiser_set_data(advertising_set_handle,0, pData->data_size, (const uint8_t *)pData);
-  sl_app_assert(sc == SL_STATUS_OK,
+  sc = sl_bt_legacy_advertiser_set_data(advertising_set_handle, 0, pData->data_size, (const uint8_t *)pData);
+  app_assert(sc == SL_STATUS_OK,
                   "[E: 0x%04x] Failed to set advertising data\n",
                   (int)sc);
 }

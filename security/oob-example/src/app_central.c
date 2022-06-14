@@ -15,11 +15,11 @@
  *
  ******************************************************************************/
 #include "em_common.h"
-#include "sl_app_assert.h"
+#include "app_assert.h"
 #include "sl_bluetooth.h"
 #include "gatt_db.h"
 #include "app.h"
-#include "sl_app_log.h"
+#include "app_log.h"
 
 /** Timer Frequency used. */
 #define TIMER_CLK_FREQ ((uint32_t)32768)
@@ -168,7 +168,7 @@ static void writeToPeripheral()
     memset(writeBuf, i + 1, 20);
   }
   ret = sl_bt_gatt_write_characteristic_value(_conn_handle, wrt_char_handle, 20, writeBuf);
-  sl_app_assert(ret == SL_STATUS_OK,
+  app_assert(ret == SL_STATUS_OK,
                 "[E: 0x%04x] Write operation failed\n",
                 (int)ret);
 }
@@ -218,19 +218,19 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
   // Do not call any stack command before receiving this boot event!
   case sl_bt_evt_system_boot_id:
   case sl_bt_evt_connection_closed_id:
-    sl_app_log("stack version: %u.%u.%u\r\r\n", evt->data.evt_system_boot.major, evt->data.evt_system_boot.minor, evt->data.evt_system_boot.patch);
-    sl_app_log("Central Boot\r\n");
+    app_log("stack version: %u.%u.%u\r\r\n", evt->data.evt_system_boot.major, evt->data.evt_system_boot.minor, evt->data.evt_system_boot.patch);
+    app_log("Central Boot\r\n");
     // Extract unique ID from BT Address.
     sc = sl_bt_system_get_identity_address(&address, &address_type);
-    sl_app_assert(sc == SL_STATUS_OK,
+    app_assert(sc == SL_STATUS_OK,
                   "[E: 0x%04x] Failed to get Bluetooth address\n",
                   (int)sc);
-    sl_app_log("local BT device address: ");
+    app_log("local BT device address: ");
     for (uint8_t i = 0; i < 5; i++)
     {
-      sl_app_log("%2.2x:", address.addr[5 - i]);
+      app_log("%2.2x:", address.addr[5 - i]);
     }
-    sl_app_log("%2.2x\r\n", address.addr[0]);
+    app_log("%2.2x\r\n", address.addr[0]);
     // Pad and reverse unique ID to get System ID.
     system_id[0] = address.addr[5];
     system_id[1] = address.addr[4];
@@ -245,53 +245,53 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
                                                  0,
                                                  sizeof(system_id),
                                                  system_id);
-    sl_app_assert(sc == SL_STATUS_OK,
+    app_assert(sc == SL_STATUS_OK,
                   "[E: 0x%04x] Failed to write attribute\n",
                   (int)sc);
 
     /* delete all bondings to force the pairing process */
-    sl_app_log("All bonding deleted\r\n");
+    app_log("All bonding deleted\r\n");
     sc = sl_bt_sm_delete_bondings();
-    sl_app_assert(sc == SL_STATUS_OK,
+    app_assert(sc == SL_STATUS_OK,
                   "[E: 0x%04x] Failed to delete bondings\r\n",
                   (int)sc);
 
     sl_bt_sm_configure(0x0B, sm_io_capability_keyboarddisplay);
-    sl_app_assert(sc == SL_STATUS_OK,
+    app_assert(sc == SL_STATUS_OK,
                   "[E: 0x%04x] Failed to configure security requirements and I/O capabilities of the system\r\n",
                   (int)sc);
 
     sl_bt_sm_set_bondable_mode(1);
-    sl_app_assert(sc == SL_STATUS_OK,
+    app_assert(sc == SL_STATUS_OK,
                   "[E: 0x%04x] Failed to set the device accept new bondings\r\n",
                   (int)sc);
 
 #if (PAIRING_MODE == SECURE_CONNECTION_PAIRING)
-    sl_app_log("Use Secure Connection Pairing.\r\n");
+    app_log("Use Secure Connection Pairing.\r\n");
     sc = sl_bt_sm_use_sc_oob(1, sizeof(oobData), NULL, (uint8_t *)&oobData);
-    sl_app_assert(sc == SL_STATUS_OK,
+    app_assert(sc == SL_STATUS_OK,
                   "[E: 0x%04x] Failed to enable the use of OOB data\r\n",
                   (int)sc);
 
-    sl_app_log("Enable OOB with Secure Connection Pairing - Success.\r\n");
-    sl_app_log("16-byte OOB data: ");
+    app_log("Enable OOB with Secure Connection Pairing - Success.\r\n");
+    app_log("16-byte OOB data: ");
     for (uint8_t i = 0; i < 16; i++)
     {
-      sl_app_log("0x%02X ", oobData[i]);
+      app_log("0x%02X ", oobData[i]);
     }
-    sl_app_log("\r\n");
-    sl_app_log("16-byte confirm value: ");
+    app_log("\r\n");
+    app_log("16-byte confirm value: ");
     for (uint8_t i = 16; i < 32; i++)
     {
-      sl_app_log("0x%02X ", oobData[i]);
+      app_log("0x%02X ", oobData[i]);
     }
-    sl_app_log("\r\n");
+    app_log("\r\n");
 #elif (PAIRING_MODE == LEGACY_PAIRING)
-    sl_app_log("Use Legacy Pairing.\r\n");
+    app_log("Use Legacy Pairing.\r\n");
     uint32_t value_data;
     size_t value_len;
     sc = sl_bt_nvm_load(0x4000, 4, &value_len, (uint8_t *)&value_data);
-    sl_app_assert(sc == SL_STATUS_OK || sc == SL_STATUS_BT_PS_KEY_NOT_FOUND,
+    app_assert(sc == SL_STATUS_OK || sc == SL_STATUS_BT_PS_KEY_NOT_FOUND,
                   "[E: 0x%04x] Failed to retrieve the value of the specified NVM key\r\n",
                   (int)sc);
 
@@ -306,27 +306,27 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
       psData32++;
       sc = sl_bt_nvm_save(0x4000, 4, (uint8_t *)&psData32);
     }
-    sl_app_assert(sc == SL_STATUS_OK,
+    app_assert(sc == SL_STATUS_OK,
                   "[E: 0x%04x] Failed to store a value into the specified NVM key\r\n",
                   (int)sc);
 
-    sl_app_log("16-byte array PIN: ");
+    app_log("16-byte array PIN: ");
     srand(psData32);
     for (uint8_t i = 0; i < 16; i++)
     {
       oobData[i] = rand() % 0xFF;
-      sl_app_log("0x%02X ", oobData[i]);
+      app_log("0x%02X ", oobData[i]);
     }
-    sl_app_log("\r\n");
+    app_log("\r\n");
     sc = sl_bt_sm_set_oob_data(16, oobData);
-    sl_app_assert(sc == SL_STATUS_OK,
+    app_assert(sc == SL_STATUS_OK,
                   "[E: 0x%04x] Failed to set OOB data\r\n",
                   (int)sc);
 #endif
     Reset_variables();
     // start discovery
     sl_bt_scanner_start(0x01, sl_bt_scanner_discover_generic);
-    sl_app_assert(sc == SL_STATUS_OK,
+    app_assert(sc == SL_STATUS_OK,
                   "[E: 0x%04x] Failed to start scanning for advertising devices\r\n",
                   (int)sc);
     break;
@@ -338,12 +338,12 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
 
       // match found -> stop discovery and try to connect
       sc = sl_bt_scanner_stop();
-      sl_app_assert(sc == SL_STATUS_OK,
+      app_assert(sc == SL_STATUS_OK,
                     "[E: 0x%04x] Failed to stop scanning for advertising devices\r\n",
                     (int)sc);
 
       sc = sl_bt_connection_open(evt->data.evt_scanner_scan_report.address, evt->data.evt_scanner_scan_report.address_type, 0x01, &pResp_connection);
-      sl_app_assert(sc == SL_STATUS_OK,
+      app_assert(sc == SL_STATUS_OK,
                     "[E: 0x%04x] Failed to connect to an advertising device\r\n",
                     (int)sc);
 
@@ -355,9 +355,9 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
   // This event indicates that a new connection was opened.
   case sl_bt_evt_connection_opened_id:
     // Start service discovery (we are only interested in one UUID)
-    sl_app_log("Connected\r\n");
+    app_log("Connected\r\n");
     sc = sl_bt_gatt_discover_primary_services_by_uuid(_conn_handle, 16, Svc_uuid);
-    sl_app_assert(sc == SL_STATUS_OK,
+    app_assert(sc == SL_STATUS_OK,
                   "[E: 0x%04x] Failed to start service discovery\r\n",
                   (int)sc);
     _main_state = FIND_SERVICE;
@@ -369,7 +369,7 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
       if (memcmp(Svc_uuid, evt->data.evt_gatt_service.uuid.data, 16) == 0)
       {
         // Service Found.
-        sl_app_log("Specified Service Found.\r\n");
+        app_log("Specified Service Found.\r\n");
         _service_handle = evt->data.evt_gatt_service.service;
       }
     }
@@ -398,7 +398,7 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
       {
         // Service found, next search for characteristics
         sc = sl_bt_gatt_discover_characteristics(_conn_handle, _service_handle);
-        sl_app_assert(sc == SL_STATUS_OK,
+        app_assert(sc == SL_STATUS_OK,
                       "[E: 0x%04x] Failed to discover all characteristics\r\n",
                       (int)sc);
         _main_state = FIND_CHAR;
@@ -407,7 +407,7 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
       {
         // no service found -> disconnect
         sc = sl_bt_connection_close(_conn_handle);
-        sl_app_assert(sc == SL_STATUS_OK,
+        app_assert(sc == SL_STATUS_OK,
                       "[E: 0x%04x] Failed to disconnect\r\n",
                       (int)sc);
       }
@@ -418,7 +418,7 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
       {
         // Char found, turn on indications
         sc = sl_bt_gatt_set_characteristic_notification(_conn_handle, ntf_char_handle, gatt_notification);
-        sl_app_assert(sc == SL_STATUS_OK,
+        app_assert(sc == SL_STATUS_OK,
                       "[E: 0x%04x] Failed to enable the notification\r\n",
                       (int)sc);
         _main_state = ENABLE_NOTIF;
@@ -427,7 +427,7 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
       {
         // no characteristic found? -> disconnect
         sc = sl_bt_connection_close(_conn_handle);
-        sl_app_assert(sc == SL_STATUS_OK,
+        app_assert(sc == SL_STATUS_OK,
                       "[E: 0x%04x] Failed to disconnect\r\n",
                       (int)sc);
       }
@@ -436,7 +436,7 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
     case ENABLE_NOTIF:
       _main_state = DATA_MODE;
       sc = sl_bt_system_set_soft_timer(TIMER_MS_2_TIMERTICK(3000), WRITE_TIMER, true);
-      sl_app_assert(sc == SL_STATUS_OK,
+      app_assert(sc == SL_STATUS_OK,
                     "[E: 0x%04x] Failed to set soft timer\n",
                     (int)sc);
       break;
@@ -451,12 +451,12 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
     {
       // TODO: data notification is received here
 #ifdef PRINT_GATT_INFO
-      sl_app_log("Gatt Notification Received: ");
+      app_log("Gatt Notification Received: ");
       for (uint8_t i = 0; i < evt->data.evt_gatt_characteristic_value.value.len; i++)
       {
-        sl_app_log("%c", evt->data.evt_gatt_characteristic_value.value.data[i]);
+        app_log("%c", evt->data.evt_gatt_characteristic_value.value.data[i]);
       }
-      sl_app_log("\r\n");
+      app_log("\r\n");
 #endif
       ntf_char_handle = ntf_char_handle;
     }
@@ -471,7 +471,7 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
       {
         writeToPeripheral();
         sc = sl_bt_system_set_soft_timer(TIMER_MS_2_TIMERTICK(3000), WRITE_TIMER, true);
-        sl_app_assert(sc == SL_STATUS_OK,
+        app_assert(sc == SL_STATUS_OK,
                       "[E: 0x%04x] Failed to set soft timer\n",
                       (int)sc);
       }
@@ -483,93 +483,93 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
     break;
 
   case sl_bt_evt_sm_confirm_bonding_id:
-    sl_app_log("Bonding confirmed\r\n");
+    app_log("Bonding confirmed\r\n");
     sc = sl_bt_sm_bonding_confirm(evt->data.evt_sm_confirm_bonding.connection, 1);
-    sl_app_assert(sc == SL_STATUS_OK,
+    app_assert(sc == SL_STATUS_OK,
                   "[E: 0x%04x] Failed to confirm bonding requests\r\n",
                   (int)sc);
     break;
 
   case sl_bt_evt_sm_passkey_display_id:
-    sl_app_log("Passkey display\r\n");
-    //      sl_app_log("Enter this passkey on the tablet:\r\n%d\r\n",
+    app_log("Passkey display\r\n");
+    //      app_log("Enter this passkey on the tablet:\r\n%d\r\n",
     //          evt->data.evt_sm_passkey_display.passkey);
     break;
 
   case sl_bt_evt_sm_passkey_request_id:
-    sl_app_log("Passkey request\r\n");
-    //      sl_app_log("Enter the passkey you see on the tablet\r\n");
+    app_log("Passkey request\r\n");
+    //      app_log("Enter the passkey you see on the tablet\r\n");
     break;
 
   case sl_bt_evt_sm_confirm_passkey_id:
-    sl_app_log("Confirm passkey\r\n");
-    //                  sl_app_log("Are you see the same passkey on the tablet: %d (y/n)?\r\n",evt->data.evt_sm_confirm_passkey.passkey);
+    app_log("Confirm passkey\r\n");
+    //                  app_log("Are you see the same passkey on the tablet: %d (y/n)?\r\n",evt->data.evt_sm_confirm_passkey.passkey);
     break;
 
   case sl_bt_evt_sm_bonded_id:
     /* The bonding/pairing was successful so set the flag to allow indications to proceed */
-    sl_app_log("Bonding completed\r\n");
+    app_log("Bonding completed\r\n");
     break;
 
   case sl_bt_evt_sm_bonding_failed_id:
     /* If the attempt at bonding/pairing failed, clear the bonded flag and display the reason */
-    sl_app_log("Bonding failed: ");
+    app_log("Bonding failed: ");
     switch (evt->data.evt_sm_bonding_failed.reason)
     {
     case SL_STATUS_BT_SMP_PASSKEY_ENTRY_FAILED:
-      sl_app_log("The user input of passkey failed\r\n");
+      app_log("The user input of passkey failed\r\n");
       break;
 
     case SL_STATUS_BT_SMP_OOB_NOT_AVAILABLE:
-      sl_app_log("Out of Band data is not available for authentication\r\n");
+      app_log("Out of Band data is not available for authentication\r\n");
       break;
 
     case SL_STATUS_BT_SMP_AUTHENTICATION_REQUIREMENTS:
-      sl_app_log("The pairing procedure cannot be performed as authentication requirements cannot be met due to IO capabilities of one or both devices\r\n");
+      app_log("The pairing procedure cannot be performed as authentication requirements cannot be met due to IO capabilities of one or both devices\r\n");
       break;
 
     case SL_STATUS_BT_SMP_CONFIRM_VALUE_FAILED:
-      sl_app_log("The confirm value does not match the calculated compare value\r\n");
+      app_log("The confirm value does not match the calculated compare value\r\n");
       break;
 
     case SL_STATUS_BT_SMP_PAIRING_NOT_SUPPORTED:
-      sl_app_log("Pairing is not supported by the device\r\n");
+      app_log("Pairing is not supported by the device\r\n");
       break;
 
     case SL_STATUS_BT_SMP_ENCRYPTION_KEY_SIZE:
-      sl_app_log("The resultant encryption key size is insufficient for the security requirements of this device\r\n");
+      app_log("The resultant encryption key size is insufficient for the security requirements of this device\r\n");
       break;
 
     case SL_STATUS_BT_SMP_COMMAND_NOT_SUPPORTED:
-      sl_app_log("The SMP command received is not supported on this device\r\n");
+      app_log("The SMP command received is not supported on this device\r\n");
       break;
 
     case SL_STATUS_BT_SMP_UNSPECIFIED_REASON:
-      sl_app_log("Pairing failed due to an unspecified reason\r\n");
+      app_log("Pairing failed due to an unspecified reason\r\n");
       break;
 
     case SL_STATUS_BT_SMP_REPEATED_ATTEMPTS:
-      sl_app_log("Pairing or authentication procedure is disallowed because too little time has elapsed since last pairing request or security request\r\n");
+      app_log("Pairing or authentication procedure is disallowed because too little time has elapsed since last pairing request or security request\r\n");
       break;
 
     case SL_STATUS_BT_SMP_INVALID_PARAMETERS:
-      sl_app_log("Invalid Parameters\r\n");
+      app_log("Invalid Parameters\r\n");
       break;
 
     case SL_STATUS_BT_SMP_DHKEY_CHECK_FAILED:
-      sl_app_log("The bonding does not exist\r\n");
+      app_log("The bonding does not exist\r\n");
       break;
 
     case SL_STATUS_BT_CTRL_PIN_OR_KEY_MISSING:
-      sl_app_log("Pairing failed because of missing PIN, or authentication failed because of missing Key\r\n");
+      app_log("Pairing failed because of missing PIN, or authentication failed because of missing Key\r\n");
       break;
 
     case SL_STATUS_TIMEOUT:
-      sl_app_log("Operation timed out\r\n");
+      app_log("Operation timed out\r\n");
       break;
 
     default:
-      sl_app_log("Unknown error: 0x%X\r\n", evt->data.evt_sm_bonding_failed.reason);
+      app_log("Unknown error: 0x%X\r\n", evt->data.evt_sm_bonding_failed.reason);
       break;
     }
 

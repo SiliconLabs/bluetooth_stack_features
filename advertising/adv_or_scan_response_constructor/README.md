@@ -2,7 +2,7 @@
 
 ## Description ##
 
-In Silicon Labs Bluetooth SDK v3.x you can use the API [sl_bt_advertiser_set_data()](https://docs.silabs.com/bluetooth/3.1/group-sl-bt-advertiser#ga706aeaf60049280fe9cc256f20ad4113) to set the advertisement and scan response data. Data has a standard format, whereas the data passed to above API is raw data uint8array. This example focuses on adding a middle layer between user application and the Bluetooth stack API to set the advertisement payload, which makes the payload more straightforward, visible, and easier to understand.
+In Silicon Labs Bluetooth SDK v3.x you can use the API [sl_bt_legacy_advertiser_set_data()](https://docs.silabs.com/bluetooth/3.3/a00043#gacfa5efdd898d261318b013713dda15ff) and [sl_bt_extended_advertiser_set_data()](https://docs.silabs.com/bluetooth/3.3/a00044#gac039eff642bda360752cfe15a12a4801) to set the advertisement and scan response data. Data has a standard format, whereas the data passed to above API is raw data uint8array. This example focuses on adding a middle layer between user application and the Bluetooth stack API to set the advertisement payload, which makes the payload more straightforward, visible, and easier to understand.
 
 To learn more about the payload of Bluetooth advertisement, see [Bluetooth Advertising Data Basics](https://docs.silabs.com/bluetooth/latest/general/adv-and-scanning/bluetooth-adv-data-basics).
 
@@ -56,7 +56,9 @@ GSDK v3.1.1
     Then enable *Virtual COM UART* under its configuration
     ![board control configure](images/enable_vir_com.png)  
 
-   - Install the **Log** component (found under Bluetooth > Utility group)
+   - Install the **Legacy Advertising** and **Extended Advertising** components, if they are not yet installed
+
+   - Install the **Log** component (found under Application > Utility group)
 
 3. Replace the *app.c* and *app.h* file in the project with the provided *app.c*, *app.h*
 

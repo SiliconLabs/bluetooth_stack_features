@@ -16,13 +16,9 @@ Before an advertising set could be used, it must be initialized with `sl_bt_adve
 
 ### Advertising Data
 
-To set the advertising data, use the API `sl_bt_advertiser_set_data(handle, packet_type, adv_data_len, adv_data)`, where:
+To set the advertising data, use the API `sl_bt_extended_advertiser_set_data(handle, adv_data_len, adv_data)`, where:
 
 - `handle`: advertising set handle
-- `packet_type`: tells whether the data is
-    - **0**: Advertising packets
-    - **1**: Scan response packets
-    - **8**: Periodic advertising packets
 - `adv_data_len`: array length
 - `adv_data`: data to be set
 
@@ -44,10 +40,10 @@ To control advertising parameters , use `sl_bt_advertiser_set_timing(handle, int
 
 ### Start Advertising
 
-Finally, advertising on a given advertising set can be started using `sl_bt_advertiser_start(handle, discover, connect)`, where
+Finally, advertising on a given advertising set can be started using `sl_bt_extended_advertiser_start(handle, connect, flags)`, where
 
-- `discover`: the discoverable mode of the advertising set
 - `connect`: the connectable mode of the advertising set
+- `flags`: additional extended advertising options
 
 Note that the number of concurrent advertising is limited by the `Max number of advertisers reserved for user` configuration discussed above. Similarly, the number of **connectable** advertising is also limited by `Max number of connections` configuration. For example, only one connectable advertising can be enabled if the device has (`Max number of connections` - 1) connections when this command is called. The limitation does not apply to **non-connectable** advertising, though.
 
@@ -81,7 +77,9 @@ GSDK v3.1.1
    Then enable *Virtual COM UART* under its configuration
    ![vcom configure](images/enable_vir_com.png)
 
-   - Install the **Log** component (found under Bluetooth > Utility group).  
+   - Install the **Extended Advertising** component, if it is not yet installed
+
+   - Install the **Log** component (found under Application > Utility group).  
     ![log configure](images/log.png)
 
 3. Set the `Max number of advertisers reserved for user` value in **Bluetooth Core** to 2 for multiple advertising.

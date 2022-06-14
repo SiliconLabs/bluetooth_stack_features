@@ -84,13 +84,11 @@ typedef struct {
  *
  *     - <b>0:</b> Advertising packets
  *     - <b>1:</b> Scan response packets
- *     - <b>8:</b> Periodic advertising packets
  *
  */
 typedef enum {
   adv_packet = 0,
-  scan_rsp = 1,
-  periodic_adv = 8
+  scan_rsp = 1
 } adv_packet_type_t;
 
 /**
@@ -110,14 +108,14 @@ typedef struct {
 /**
  * @brief construct_adv - set the corresponding advertising data to the stack.
  * Do not forget to modify the second parameter of
- * sl_bt_advertiser_start function to advertiser_user_data
+ * sl_bt_legacy_advertiser_start function to advertiser_user_data
  *
  * @param adv - pointer to the @ref{adv_t} structure
  *
  * @param ext_adv - enable or disable the extended advertising. If extended
  * advertising is disabled, the maximum data length for advertising or scan
  * response is 31 bytes, otherwise, it's 253 or 191 bytes depending on the
- * advertising type. @ref{sl_bt_advertiser_set_data} API for more details.
+ * advertising type. @ref{sl_bt_extended_advertiser_set_data} API for more details.
  *
  * @return status code base on the specific error that comes along with a
  * message for user to understand it

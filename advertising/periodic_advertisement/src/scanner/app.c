@@ -15,13 +15,13 @@
  *
  ******************************************************************************/
 #include "em_common.h"
-#include "sl_app_assert.h"
+#include "app_assert.h"
 #include "sl_bluetooth.h"
 #include "gatt_db.h"
 #include "app.h"
 
 #include "sl_bt_api.h"
-#include "sl_app_log.h"
+#include "app_log.h"
 
 // This constant is UUID of periodic synchronous service
 const uint8_t periodicSyncService[16] = {0x81,0xc2,0x00,0x2d,0x31,0xf4,0xb0,0xbf,0x2b,0x42,0x49,0x68,0xc7,0x25,0x71,0x41};
@@ -36,13 +36,13 @@ static uint8_t findServiceInAdvertisement(uint8_t *data, uint8_t len)
   uint8_t adFieldLength;
   uint8_t adFieldType;
   uint8_t i = 0;
-  sl_app_log("packet length %d\r\n", len);
+  app_log("packet length %d\r\n", len);
   // Parse advertisement packet
   while (i < len) {
     adFieldLength = data[i];
     adFieldType = data[i + 1];
     // Partial ($02) or complete ($03) list of 128-bit UUIDs
-  sl_app_log("adField type %d \r\n", adFieldType);
+  app_log("adField type %d \r\n", adFieldType);
     if (adFieldType == 0x06 || adFieldType == 0x07) {
       // compare UUID to service UUID
       if (memcmp(&data[i + 2], periodicSyncService, 16) == 0) {
@@ -101,7 +101,7 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
 
       // Extract unique ID from BT Address.
       sc = sl_bt_system_get_identity_address(&address, &address_type);
-      sl_app_assert(sc == SL_STATUS_OK,
+      app_assert(sc == SL_STATUS_OK,
                     "[E: 0x%04x] Failed to get Bluetooth address\n",
                     (int)sc);
 
@@ -119,7 +119,7 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
                                                    0,
                                                    sizeof(system_id),
                                                    system_id);
-      sl_app_assert(sc == SL_STATUS_OK,
+      app_assert(sc == SL_STATUS_OK,
                     "[E: 0x%04x] Failed to write attribute\n",
                     (int)sc);
 
@@ -135,30 +135,30 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
     case sl_bt_evt_scanner_scan_report_id:
       /* only look at extended advertisements */
       if(evt->data.evt_scanner_scan_report.packet_type & 0x80){
-        sl_app_log("got ext adv indication with tx_power = %d\r\n",
+        app_log("got ext adv indication with tx_power = %d\r\n",
             evt->data.evt_scanner_scan_report.tx_power );
         if (findServiceInAdvertisement(&(evt->data.evt_scanner_scan_report.data.data[0]), evt->data.evt_scanner_scan_report.data.len) != 0) {
 
-          sl_app_log("found periodic sync service, attempting to open sync\r\n");
+          app_log("found periodic sync service, attempting to open sync\r\n");
 
           sc = sl_bt_sync_open(evt->data.evt_scanner_scan_report.address,
                                evt->data.evt_scanner_scan_report.address_type,
                                evt->data.evt_scanner_scan_report.adv_sid,
                                &sync);
-          sl_app_log("cmd_sync_open() sync = 0x%2X\r\n", sc);
+          app_log("cmd_sync_open() sync = 0x%2X\r\n", sc);
         }
       }
       break;
 
     case sl_bt_evt_sync_opened_id:
       /* now that sync is open, we can stop scanning*/
-      sl_app_log("evt_sync_opened\r\n");
+      app_log("evt_sync_opened\r\n");
 //      sl_bt_system_set_soft_timer(0,1,0);
       sl_bt_scanner_stop();
       break;
 
     case sl_bt_evt_sync_closed_id:
-       sl_app_log("periodic sync closed. reason 0x%2X, sync handle %d",
+       app_log("periodic sync closed. reason 0x%2X, sync handle %d",
            evt->data.evt_sync_closed.reason,
            evt->data.evt_sync_closed.sync);
        /* restart discovery */
@@ -168,16 +168,16 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
 
      case sl_bt_evt_sync_data_id:
 
-       sl_app_log("periodic sync handle %d\r\n", evt->data.evt_sync_data.sync);
-       sl_app_log("got following sync data: \r\n ");
+       app_log("periodic sync handle %d\r\n", evt->data.evt_sync_data.sync);
+       app_log("got following sync data: \r\n ");
        for(int i = 0; i < evt->data.evt_sync_data.data.len ; i++){
-         sl_app_log(" %X", evt->data.evt_sync_data.data.data[i]);
+         app_log(" %X", evt->data.evt_sync_data.data.data[i]);
        }
-       sl_app_log("\r\n");
-       sl_app_log("periodic sync RSSI %d and Tx power %d\r\n",
+       app_log("\r\n");
+       app_log("periodic sync RSSI %d and Tx power %d\r\n",
            evt->data.evt_sync_data.rssi,
            evt->data.evt_sync_data.tx_power);
-       sl_app_log("periodic data status %d\r\n", evt->data.evt_sync_data.data_status);
+       app_log("periodic data status %d\r\n", evt->data.evt_sync_data.data_status);
        break;
 
     ///////////////////////////////////////////////////////////////////////////

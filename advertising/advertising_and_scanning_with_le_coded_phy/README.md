@@ -37,9 +37,9 @@ The sync info field is used for Periodic Advertisement synchronization, not disc
 Another feature of these extended advertisements is that it is possible to specify the PHY used for the primary and secondary advertisements separately. To set the PHY used for advertisements, the following API function is used:
 
 ```C
-sl_bt_advertiser_set_phy(advertising_set_handle,
-                        gap_coded_phy,
-                        gap_coded_phy);
+sl_bt_extended_advertiser_set_phy(advertising_set_handle,
+                                  gap_coded_phy,
+                                  gap_coded_phy);
 ```
 
 The parameters indicate the advertisement set to be used, the PHY for primary advertisements, and the PHY used for secondary advertisements.
@@ -49,9 +49,9 @@ Advertisements on the coded PHY do not support active scanning. This means that 
 To start advertising, the following API function is used:
 
 ```C
-sc = sl_bt_advertiser_start(advertising_set_handle,
-                            advertiser_general_discoverable,
-                            advertiser_connectable_non_scannable);
+sc = sl_bt_extended_advertiser_start(advertising_set_handle,
+                                     connect,
+                                     flags);
 ```
 
 Remaining advertising parameters can be set as they would with the traditional 1 Mbps PHY.
@@ -91,7 +91,9 @@ To test the example, you need to setup two radio boards as advertiser and scanne
     - Install **Retarget STDIO** component:
     ![board control configure](images/add_log_3.png)
 
-    - Install the **Log** component (found under Bluetooth > Utility group)
+    - Install the **Extended Advertising** component, if it is not yet installed
+
+    - Install the **Log** component (found under Application > Utility group)
     ![add log driver](images/add_log_4.png)  
 
 4. Import the GATT configuration:

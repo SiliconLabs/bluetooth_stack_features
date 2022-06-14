@@ -6,7 +6,7 @@ extern "C" {
 #endif
 
 #include "sl_bt_api.h"
-#include "sl_app_assert.h"
+#include "app_assert.h"
 
 #define NAME_MAX_LENGTH 20
 

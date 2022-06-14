@@ -176,9 +176,10 @@ At this point, you should be able to connect to your part with the Bluetooth NCP
             sl_bt_advertiser_create_set(&advertising_set_handle);
 
             // Start advertising
-            sl_bt_advertiser_start(advertising_set_handle,
-                                  advertiser_general_discoverable,
-                                  advertiser_connectable_scannable);
+            sl_bt_legacy_advertiser_generate_data(advertising_set_handle,
+                                                  advertiser_general_discoverable);
+            sl_bt_legacy_advertiser_start(advertising_set_handle,
+                                          advertiser_connectable_scannable);
           }
           break;
 
@@ -224,9 +225,10 @@ At this point, you should be able to connect to your part with the Bluetooth NCP
             sl_bt_advertiser_create_set(&advertising_set_handle);
     
             // Start advertising
-            sl_bt_advertiser_start(advertising_set_handle,
-                                  advertiser_general_discoverable,
-                                  advertiser_connectable_scannable);
+            sl_bt_legacy_advertiser_generate_data(advertising_set_handle,
+                                                  advertiser_general_discoverable);
+            sl_bt_legacy_advertiser_start(advertising_set_handle,
+                                          advertiser_connectable_scannable);
           }
           break;
     

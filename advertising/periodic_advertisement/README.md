@@ -11,19 +11,18 @@ The scanner starts scanning for the extended advertisements to find the sync inf
 To start periodic advertisement, the advertiser uses the function:
 
 ```C
-sl_bt_advertiser_start_periodic_advertising(advertising_set_handle,
-                                            160, // periodic interval min
-                                            160, // periodic interval max
-                                            1); //Include TX power in advertising PDU
+sl_bt_periodic_advertiser_start(advertising_set_handle,
+                                160, // periodic interval min
+                                160, // periodic interval max
+                                1); //Include TX power in advertising PDU
 ```
 
 To set the periodic advertisement data, the advertiser use the function:
 
 ```C
-sl_bt_advertiser_set_data(advertising_set_handle,
-                          8, // 8 : Periodic advertising packets
-                          sizeof(periodic_adv_data),
-                          periodic_adv_data);
+sl_bt_periodic_advertiser_set_data(advertising_set_handle,
+                                   sizeof(periodic_adv_data),
+                                   periodic_adv_data);
 ```
 
 The scanner will find the periodic advertiser by the UUID of the Synchronous service, then start syncing with the advertiser by using the function:
@@ -72,9 +71,11 @@ To try this example, you need two radio boards, one for the advertiser side and 
 
     - Enable **Virtual COM UART** in the **Board Control** component  
     ![board control configure](images/add_log_3.png)  
-    ![board control configure](images/add_log_4.png)  
+    ![board control configure](images/add_log_4.png)
 
-    - Install the **Log** component (found under Bluetooth > Utility group)
+   - Install the **Extended Advertising** and **Periodic Advertising** components, if they are not yet installed
+
+    - Install the **Log** component (found under Application > Utility group)
     ![add log driver](images/add_log_5.png)  
 
 4. Import the GATT configuration:

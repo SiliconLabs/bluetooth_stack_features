@@ -25,8 +25,7 @@ static int16_t write_system_data_buffer(size_t size, uint8_t * data);
 to simplify writing up to 1650 bytes to the system data buffer. After the desired advertising data has been written to the buffer, the advertiser will start extended advertisement to advertise the sync info needed for the periodic advertising (include a **Synchronous service** UUID, which the synchronizer will look for, and another sync info, on which the synchronizer can sync on). Next, the periodic advertisement is started. Finally, the data assembled in the system data buffer is transferred to the periodic advertisement by calling the API:
 
 ```C
-sl_bt_advertiser_set_long_data(advertising_set_handle,
-                                8); //8: periodic advertising packets
+sl_bt_periodic_advertiser_set_long_data(advertising_set_handle);
 ```
 
 ### Scanner
@@ -99,7 +98,9 @@ To try this example, you need two radio boards, one for the advertiser side and 
     ![board control configure](images/add_log_3.png)  
     ![board control configure](images/add_log_4.png)  
 
-    - Install the **Log** component (found under Bluetooth > Utility group)
+   - Install the **Extended Advertising** and **Periodic Advertising** components, if they are not yet installed
+
+    - Install the **Log** component (found under Application > Utility group)
     ![add log driver](images/add_log_5.png)  
 
 4. Import the GATT configuration:

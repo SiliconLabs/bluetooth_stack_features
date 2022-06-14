@@ -15,13 +15,13 @@
  *
  ******************************************************************************/
 #include "em_common.h"
-#include "sl_app_assert.h"
+#include "app_assert.h"
 #include "sl_bluetooth.h"
 #include "gatt_db.h"
 #include "app.h"
 
 #include "sl_bt_api.h"
-#include "sl_app_log.h"
+#include "app_log.h"
 
 
 /**************************************************************************//**
@@ -100,11 +100,11 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
 
       // Extract unique ID from BT Address.
       sc = sl_bt_system_get_identity_address(&address, &address_type);
-      sl_app_assert(sc == SL_STATUS_OK,
+      app_assert(sc == SL_STATUS_OK,
                     "[E: 0x%04x] Failed to get Bluetooth address\n",
                     (int)sc);
 
-      sl_app_log("Bluetooth %s address: %02X:%02X:%02X:%02X:%02X:%02X\n",
+      app_log("Bluetooth %s address: %02X:%02X:%02X:%02X:%02X:%02X\n",
                  address_type ? "static random" : "public device",
                  address.addr[5],
                  address.addr[4],
@@ -127,13 +127,13 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
                                                    0,
                                                    sizeof(system_id),
                                                    system_id);
-      sl_app_assert(sc == SL_STATUS_OK,
+      app_assert(sc == SL_STATUS_OK,
                     "[E: 0x%04x] Failed to write attribute\n",
                     (int)sc);
 
       // Create an advertising set.
       sc = sl_bt_advertiser_create_set(&advertising_set_handle);
-      sl_app_assert(sc == SL_STATUS_OK,
+      app_assert(sc == SL_STATUS_OK,
                     "[E: 0x%04x] Failed to create advertising set\n",
                     (int)sc);
 
@@ -143,15 +143,8 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
                                        160, // max. adv. interval. Value in units of 0.625 ms
                                        0,   // adv. duration
                                        0);  // max. num. adv. events
-      sl_app_assert(sc == SL_STATUS_OK,
+      app_assert(sc == SL_STATUS_OK,
                     "[E: 0x%04x] Failed to set advertising timing\n",
-                    (int)sc);
-
-      // Clear the legacy PDU config bit
-      sc = sl_bt_advertiser_clear_configuration(advertising_set_handle,
-                                                1);
-      sl_app_assert(sc == SL_STATUS_OK,
-                    "[E: 0x%04x] Failed to set advertising configuration\n",
                     (int)sc);
 
       // Initialize advertising data for testing
@@ -161,7 +154,7 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
 
       // Clear the system data buffer
       sc = sl_bt_system_data_buffer_clear();
-      sl_app_assert(sc == SL_STATUS_OK,
+      app_assert(sc == SL_STATUS_OK,
                     "[E: 0x%04x] Failed to clear system data buffer\n",
                     (int)sc);
 
@@ -169,28 +162,26 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
       write_system_data_buffer(CHAINED_ADV_PACKET_BUFFER_SIZE,
                                advertising_data_buffer);
 
-      // Start general advertising and disable connections.
-      sc = sl_bt_advertiser_start(advertising_set_handle,
-                                  advertiser_general_discoverable,
-                                  advertiser_non_connectable);
-      sl_app_assert(sc == SL_STATUS_OK,
+      sc = sl_bt_extended_advertiser_start(advertising_set_handle,
+                                           sl_bt_extended_advertiser_non_connectable,
+                                           0);
+      app_assert(sc == SL_STATUS_OK,
                     "[E: 0x%04x] Failed to start advertising\n",
                     (int)sc);
 
       // Start periodic advertising with periodic interval 200ms
-      sc = sl_bt_advertiser_start_periodic_advertising(advertising_set_handle,
-                                                       160, //min periodic advertising interval. Value in units of 1.25 ms
-                                                       160, //max periodic advertising interval. Value in units of 1.25 ms
-                                                       1);  //include TX power in advertising PDU
-      sl_app_assert(sc == SL_STATUS_OK,
+      sc = sl_bt_periodic_advertiser_start(advertising_set_handle,
+                                           160, //min periodic advertising interval. Value in units of 1.25 ms
+                                           160, //max periodic advertising interval. Value in units of 1.25 ms
+                                           1);  //include TX power in advertising PDU
+      app_assert(sc == SL_STATUS_OK,
                     "[E: 0x%04x] Failed to start periodic advertising\n",
                     (int)sc);
 
       // Set the long advertising data for periodic advertisements
       // The system data buffer will be used as advertising data after call this function
-      sc = sl_bt_advertiser_set_long_data(advertising_set_handle,
-                                          8);
-      sl_app_assert(sc == SL_STATUS_OK,
+      sc = sl_bt_periodic_advertiser_set_long_data(advertising_set_handle);
+      app_assert(sc == SL_STATUS_OK,
                     "[E: 0x%04x] Failed to set advertising data\n",
                     (int)sc);
 
@@ -222,7 +213,7 @@ static int16_t write_system_data_buffer(size_t size, uint8_t * data){
     if(bytesRemaining <= MAX_UINT8ARRAY_SIZE){
       result = sl_bt_system_data_buffer_write(bytesRemaining, data);
       if(result){
-          sl_app_log("result of sl_bt_system_data_buffer_write() is 0x%X\r\n", result);
+          app_log("result of sl_bt_system_data_buffer_write() is 0x%X\r\n", result);
           return result;
       }
       count += bytesRemaining;
@@ -231,7 +222,7 @@ static int16_t write_system_data_buffer(size_t size, uint8_t * data){
     else{
       result = sl_bt_system_data_buffer_write(MAX_UINT8ARRAY_SIZE, data);
       if(result){
-          sl_app_log("result of sl_bt_system_data_buffer_write() is 0x%X\r\n", result);
+          app_log("result of sl_bt_system_data_buffer_write() is 0x%X\r\n", result);
           return result;
       }
       count += MAX_UINT8ARRAY_SIZE;
@@ -239,7 +230,7 @@ static int16_t write_system_data_buffer(size_t size, uint8_t * data){
       data += MAX_UINT8ARRAY_SIZE;
     }
   }
-  sl_app_log("write_system_data_buffer is happy now, wrote %d bytes to system buffer\r\n", count);
+  app_log("write_system_data_buffer is happy now, wrote %d bytes to system buffer\r\n", count);
   return size;
 }
 /*** end of  writeSystemDataBuffer ***/

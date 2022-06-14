@@ -48,7 +48,11 @@ GSDK v3.1.1
 
 - Find the **Board Control** component  and enable *Virtual COM UART* under its configuration.
 
-- Install the **Log** component (found under Bluetooth > Utility group).
+- Install the **Legacy Advertising** component, if it is not yet installed (Bluetooth > Feature)
+
+![](images/legacy.png)
+
+- Install the **Log** component (found under Application > Utility group).
 
 - Install **Simple Button** component with the default instance name: **btn0**.
 

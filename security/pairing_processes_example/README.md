@@ -77,7 +77,7 @@ GSDK v3.1.1
 
 ## How It Works ##
 
-The attached demo code enables testing all pairing combinations shown in the table of [Pairing Processes](https://docs.silabs.com/bluetooth/latest/general/security/pairing-processes). It implements both the initiator and responder roles in the same firmware. The roles are configured by pressing and holding down PB0 on the starter kit during reset and they are shown on the LCD screen. Pressing the button during reset puts the device into responder role. Leaving the button released during reset puts the device into initiator role. [If the Gecko Bootloader uses the GPIO Activation feature, please ensure the Gecko Bootloader's GPIO Activation button does not conflict with the demo application's GPIO button.](#Special-Notes)
+The attached demo code enables testing all pairing combinations shown in the table of [Pairing Processes](https://docs.silabs.com/bluetooth/latest/general/security/pairing-processes). It implements both the initiator and responder roles in the same firmware. The roles are configured by pressing and holding down PB0 on the starter kit during reset and they are shown on the LCD screen. Pressing the button during reset puts the device into responder role. Leaving the button released during reset puts the device into initiator role.
 
 A mobile phone with EFR Connect App can also be used as the responder, which covers the bottom row of the table.
 
@@ -218,4 +218,4 @@ To change the pairing process and try out other combinations, modify the macros 
 
 ## Special Notes ##
 
-The Gecko Bootloader has a feature called GPIO Activation that allows the device to enter bootloader firmware upgrade mode if the particular GPIO pin has a given state at reset. The default GPIO pin used for the GPIO Activation is Button 0, which conflicts with the roles selection when the application runs. Use a different GPIO pin for GPIO Activation to prevent the bootloader from running when selecting the responder role.
+The Gecko Bootloader's GPIO activation pin is enabled by default up to Gecko SDK version 4.0.0. This GPIO Activation feature allows the device to enter bootloader firmware upgrade mode if the particular GPIO pin has a given state at reset. The default GPIO pin used for the GPIO Activation is Button 0, which conflicts with the roles selection when the application runs. Use a different GPIO pin if the GPIO Activation feature is enabled to prevent the bootloader from running when selecting the responder role.

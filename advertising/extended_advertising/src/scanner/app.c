@@ -29,7 +29,9 @@
 
 static void on_system_boot(void);
 static void scanner_on_event(sl_bt_msg_t *evt);
+void sleeptimer_callback(sl_sleeptimer_timer_handle_t *handle, void *data);
 
+sl_sleeptimer_timer_handle_t sleeptimer_handle;
 /**************************************************************************//**
  * Application Init.
  *****************************************************************************/
@@ -135,7 +137,7 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
 static int counter = 0;
 static rsp_queue_t rsp_queue = { 0 };
 
-static void on_rsp_recv(const sl_bt_evt_scanner_scan_report_t *rsp)
+static void on_rsp_recv(const sl_bt_evt_scanner_extended_advertisement_report_t *rsp)
 {
   rsp_t *r;
 
@@ -153,7 +155,6 @@ static void on_rsp_recv(const sl_bt_evt_scanner_scan_report_t *rsp)
  */
 static void update_display(void)
 {
-  int ext = -1, conn = -1, scan = -1;
   rsp_t *r;
   LOGD(RTT_CTRL_CLEAR);
   LOGD("Scan result ---> Number of ADV = %d\n", rsp_queue.num);
@@ -162,50 +163,10 @@ static void update_display(void)
   }
 
   r = rsp_queue.head;
-  do {
-    switch (r->data.packet_type & 0x80) {
-      case 0x80:
-        ext = 1;
-        break;
-      case 0:
-        ext = 0;
-        break;
-    }
-
-    switch (r->data.packet_type & 0x07) {
-      case 0:
-        conn = 1;
-        scan = 1;
-        break;
-      case 1:
-        conn = 1;
-        scan = 0;
-        break;
-      case 2:
-        conn = 0;
-        scan = 1;
-        break;
-      case 3:
-        conn = 0;
-        scan = 0;
-        break;
-      default:
-        LOGE("---> ERROR Adv packet type = 0x%02x\n", r->data.packet_type);
-        break;
-    }
-
-    if (ext == -1 || conn == -1 || scan == -1) {
-      /* ERROR */
-      rsp_t *tmp = r;
-      remove_item(&rsp_queue, tmp);
-      r = r->next;
-      continue;
-    }
-    LOGI("---%s---RSSI:%d---Connectable:%s---Scan:%s---%s Addr---\n",
-         ext ? "Extended ADV" : "Legacy ADV",
+do {
+    LOGI("---%s---RSSI:%d-------%s Addr--- ",
+         "Extended ADV",
          r->data.rssi,
-         conn ? "Y" : "N",
-         scan ? "Y" : "N",
          r->data.address_type == 1 ? "Random"
          : r->data.address_type == 0 ? "Public" : "Anonymous");
     if (r->data.address_type != 255) {
@@ -246,27 +207,18 @@ static void on_system_boot(void)
   sl_status_t sc;
   /* Use the maximum scan window and interval to minimize the impact of channel
    * switching */
-  sc = sl_bt_scanner_set_timing(sl_bt_gap_1m_phy,
-                                                0xFFFF,
-                                                0xFFFF);
+  sc = sl_bt_scanner_set_parameters(sl_bt_scanner_scan_mode_passive, 0xFFFF, 0xFFFF);
   app_assert(sc == SL_STATUS_OK,
                       "[E: 0x%04x] Failed to set discovery timing\n",
                       (int)sc);
-   /*Passive scanning*/
-  sc = sl_bt_scanner_set_mode(sl_bt_gap_1m_phy, 0);
-  app_assert(sc == SL_STATUS_OK,
-                        "[E: 0x%04x] Failed to set scanner mode\n",
-                        (int)sc);
    /*Start discovering*/
   sc = sl_bt_scanner_start(sl_bt_gap_1m_phy, scanner_discover_generic);
   app_assert(sc == SL_STATUS_OK,
                       "[E: 0x%04x] Failed to start discovery\n",
                       (int)sc);
-   /*Start refreshing timer*/
-  sc = sl_bt_system_set_soft_timer(REFRESH_PERIOD, REFRESH_TIMER_ID, 0);
-  app_assert(sc == SL_STATUS_OK,
-                        "[E: 0x%04x] Failed to set soft-timer\n",
-                        (int)sc);
+  /* Start refreshing timer */
+  sc = sl_sleeptimer_start_periodic_timer(&sleeptimer_handle, REFRESH_PERIOD, sleeptimer_callback, (void*)NULL, 0, 0);
+  app_assert_status(sc);
   LOGD("Scanning and timer started.\n");
 }
 
@@ -276,19 +228,31 @@ static void scanner_on_event(sl_bt_msg_t *evt)
     case sl_bt_evt_system_boot_id:
       on_system_boot();
       break;
-    case sl_bt_evt_system_soft_timer_id:
-      switch (evt->data.evt_system_soft_timer.handle) {
-        case REFRESH_TIMER_ID:
-          period_check();
-          break;
-        default:
-          break;
-      }
+   case sl_bt_evt_system_external_signal_id:
+     if(evt->data.evt_system_external_signal.extsignals == REFRESH_TIMER_ID){
+         period_check();
+       }
       break;
-    case sl_bt_evt_scanner_scan_report_id:
-      if (run_filters(&evt->data.evt_scanner_scan_report)) {
-        on_rsp_recv(&evt->data.evt_scanner_scan_report);
+    case sl_bt_evt_scanner_extended_advertisement_report_id:
+      if (run_filters(&evt->data.evt_scanner_extended_advertisement_report)) {
+        on_rsp_recv(&evt->data.evt_scanner_extended_advertisement_report);
       }
       break;
   }
+}
+
+/***************************************************************************//**
+ * Sleeptimer callback
+ *
+ * Note: This function is called from interrupt context
+ *
+ * @param[in] handle Handle of the sleeptimer instance
+ * @param[in] data  Callback data
+ ******************************************************************************/
+void sleeptimer_callback(sl_sleeptimer_timer_handle_t *handle, void *data){
+  (void)handle;
+  (void)data;
+
+  sl_bt_external_signal(REFRESH_TIMER_ID);
+
 }

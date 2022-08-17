@@ -26,9 +26,6 @@
 // This constant is UUID of periodic synchronous service
 const uint8_t periodicSyncService[16] = {0x81,0xc2,0x00,0x2d,0x31,0xf4,0xb0,0xbf,0x2b,0x42,0x49,0x68,0xc7,0x25,0x71,0x41};
 
-// The advertising set handle allocated from Bluetooth stack.
-static uint8_t advertising_set_handle = 0xff;
-
 
 // Parse advertisements looking for advertised periodicSync Service.
 static uint8_t findServiceInAdvertisement(uint8_t *data, uint8_t len)
@@ -132,22 +129,18 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
       break;
 
     // scan response
-    case sl_bt_evt_scanner_scan_report_id:
-      /* only look at extended advertisements */
-      if(evt->data.evt_scanner_scan_report.packet_type & 0x80){
-        app_log("got ext adv indication with tx_power = %d\r\n",
-            evt->data.evt_scanner_scan_report.tx_power );
-        if (findServiceInAdvertisement(&(evt->data.evt_scanner_scan_report.data.data[0]), evt->data.evt_scanner_scan_report.data.len) != 0) {
+    case sl_bt_evt_scanner_extended_advertisement_report_id:
+      app_log("got ext adv indication with tx_power = %d\r\n",
+                  evt->data.evt_scanner_extended_advertisement_report.tx_power );
 
-          app_log("found periodic sync service, attempting to open sync\r\n");
-
-          sc = sl_bt_sync_open(evt->data.evt_scanner_scan_report.address,
-                               evt->data.evt_scanner_scan_report.address_type,
-                               evt->data.evt_scanner_scan_report.adv_sid,
-                               &sync);
-          app_log("cmd_sync_open() sync = 0x%2X\r\n", sc);
-        }
-      }
+      if (findServiceInAdvertisement(&(evt->data.evt_scanner_extended_advertisement_report.data.data[0]), evt->data.evt_scanner_extended_advertisement_report.data.len) != 0) {
+           app_log("found periodic sync service, attempting to open sync\r\n");
+           sc = sl_bt_sync_open(evt->data.evt_scanner_extended_advertisement_report.address,
+                                evt->data.evt_scanner_extended_advertisement_report.address_type,
+                                evt->data.evt_scanner_extended_advertisement_report.adv_sid,
+                                &sync);
+           app_log("cmd_sync_open() sync = 0x%2X\r\n", sc);
+         }
       break;
 
     case sl_bt_evt_sync_opened_id:

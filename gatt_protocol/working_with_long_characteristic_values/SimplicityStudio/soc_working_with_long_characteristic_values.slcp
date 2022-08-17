@@ -1,0 +1,77 @@
+project_name: soc_working_with_long_characteristic_values
+package: Bluetooth
+label: Bluetooth - SoC Working With Long Characteristic Values
+description: >
+  According to the Bluetooth specification, the maximum size of any attribute is 512 bytes.
+  However, the Maximum Transmission Unit (MTU), i.e., the largest amount of data that can be
+  exchanged in a single GATT operation is usually less than this value. As a result, some
+  characteristics may not be read/written with a single GATT operation. If the data to be
+  read or written is larger than the MTU, a long read/write operation must be used.
+  This example demonstrates how to implement this. The attached application handles reading
+  and writing a characteristic of 512 bytes.
+category: Bluetooth Examples
+quality: development
+
+component:
+  - id: bluetooth_stack
+  - id: gatt_configuration
+  - id: bluetooth_feature_legacy_advertiser
+  - id: bluetooth_feature_connection
+  - id: bluetooth_feature_gatt
+  - id: bluetooth_feature_gatt_server
+  - id: bluetooth_feature_scanner
+  - id: bluetooth_feature_sm
+  - id: bluetooth_feature_system
+  - id: in_place_ota_dfu
+  - id: bootloader_interface
+  - id: rail_util_pti
+  - id: app_assert
+  - id: component_catalog
+  - id: mpu
+  - id: iostream_usart
+    instance:
+    - vcom
+  - id: iostream_retarget_stdio
+  - id: app_log
+  - id: simple_button
+    instance:
+    - btn0
+    - btn1
+
+source:
+  - path: ../src/app.c
+  - path: ../src/main.c
+
+include:
+  - path: .
+    file_list:
+    - path: ../inc/app.h
+
+readme:
+  - path: ./readme.md
+
+config_file:
+  - override:
+      component: gatt_configuration
+      file_id: gatt_configuration_file_id
+    path: ../config/gatt_configuration.btconf
+    directory: btconf
+
+configuration:
+  - name: SL_STACK_SIZE
+    value: "2752"
+  - name: SL_HEAP_SIZE
+    value: "9200"
+  - name: SL_BOARD_ENABLE_VCOM
+    value: 1
+  - name: SL_BT_CONFIG_BUFFER_SIZE
+    value: "3200"
+
+tag:
+  - hardware:rf:band:2400
+
+ui_hints:
+  highlight:
+    - path: config/btconf/gatt_configuration.btconf
+    - path: readme.md
+      focus: true

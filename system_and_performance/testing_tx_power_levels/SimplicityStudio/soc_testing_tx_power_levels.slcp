@@ -1,0 +1,61 @@
+project_name: soc_testing_tx_power_levels
+package: Bluetooth
+label: Bluetooth - SoC Testing TX Power Levels
+description: >
+  The command sl_bt_system_set_tx_power can be used to set the global minimum and maximum radiated TX power levels for Bluetooth, but the value
+  which is actually set by the Bluetooth stack may not be the same as the input to the command. The actual set value can be read from the command
+  response.This example iterates through a power level range between a minimum and a maximum value given to sl_bt_system_set_tx_power command and
+  prints out both the input parameter and the response.
+category: Bluetooth Examples
+quality: development
+
+component:
+  - id: bluetooth_stack
+  - id: gatt_configuration
+  - id: bluetooth_feature_legacy_advertiser
+  - id: bluetooth_feature_connection
+  - id: bluetooth_feature_gatt
+  - id: bluetooth_feature_gatt_server
+  - id: bluetooth_feature_scanner
+  - id: bluetooth_feature_sm
+  - id: bluetooth_feature_system
+  - id: in_place_ota_dfu
+  - id: bootloader_interface
+  - id: rail_util_pti
+  - id: app_assert
+  - id: component_catalog
+  - id: mpu
+  - id: iostream_usart
+    instance:
+    - vcom
+  - id: iostream_retarget_stdio
+  - id: app_log
+
+source:
+  - path: ../src/app.c
+  - path: ../src/main.c
+
+include:
+  - path: .
+    file_list:
+    - path: ../inc/app.h
+
+readme:
+  - path: ./readme.md
+
+configuration:
+  - name: SL_STACK_SIZE
+    value: "2752"
+  - name: SL_HEAP_SIZE
+    value: "9200"
+  - name: SL_BOARD_ENABLE_VCOM
+    value: 1
+
+tag:
+  - hardware:rf:band:2400
+
+ui_hints:
+  highlight:
+    - path: config/btconf/gatt_configuration.btconf
+    - path: readme.md
+      focus: true

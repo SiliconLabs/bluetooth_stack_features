@@ -28,7 +28,7 @@ static bd_addr addrs[] = {
 
 static const uint8_t dev_cnt = sizeof(addrs) / sizeof(bd_addr);
 
-typedef int (*filter)(const sl_bt_evt_scanner_scan_report_t *rsp);
+typedef int (*filter)(const sl_bt_evt_scanner_extended_advertisement_report_t *rsp);
 
 /* Filters, the advertisement or scan response will only be passed for further
  * process if all the filters below are passed. */
@@ -39,12 +39,12 @@ static filter filters[] = {
 };
 static const uint8_t filter_cnt = sizeof(filters) / sizeof(filter);
 
-int rssi_filter(const sl_bt_evt_scanner_scan_report_t *rsp)
+int rssi_filter(const sl_bt_evt_scanner_extended_advertisement_report_t *rsp)
 {
   return (rsp->rssi > RSSI_THRESHOLD);
 }
 
-int addr_filter(const sl_bt_evt_scanner_scan_report_t *rsp)
+int addr_filter(const sl_bt_evt_scanner_extended_advertisement_report_t *rsp)
 {
   for (int i = 0; i < dev_cnt; i++) {
     if (!memcmp(addrs[i].addr, rsp->address.addr, 6)) {
@@ -54,7 +54,7 @@ int addr_filter(const sl_bt_evt_scanner_scan_report_t *rsp)
   return 0;
 }
 
-int run_filters(const sl_bt_evt_scanner_scan_report_t *rsp)
+int run_filters(const sl_bt_evt_scanner_extended_advertisement_report_t *rsp)
 {
   for (int i = 0; i < filter_cnt; i++) {
     if (filters[i]) {

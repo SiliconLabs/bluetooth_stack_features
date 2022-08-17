@@ -29,12 +29,16 @@
 // Use APP_VERSION to build two slightly different variants of the same example
 #define APP_VERSION 1
 
+#define TICKS_PER_SECOND        32768
+#define SIGNAL_TOGGLE_LED       1
 
 #define DEBUG_MESSAGE_BTN_PRESS          0x01
 
 // The advertising set handle allocated from Bluetooth stack.
 static uint8_t advertising_set_handle = 0xff;
 
+sl_sleeptimer_timer_handle_t sleep_timer_handle;
+void sleeptimer_callback(sl_sleeptimer_timer_handle_t *handle, void *data);
 /***************************************************************************//**
  * Application Init.
  ******************************************************************************/
@@ -98,7 +102,7 @@ void sl_ncp_user_cmd_message_to_target_cb(void *data)
       sl_ncp_user_cmd_message_to_target_rsp(SL_STATUS_OK, cmd->len, cmd->data);
       // Send user event too.
       // Example: sending back received command as an event.
-      sl_ncp_user_evt_message_to_target(cmd->len, cmd->data);
+      sl_ncp_user_evt_message_to_host(cmd->len, cmd->data);
       break;
 
     // -------------------------------
@@ -149,7 +153,7 @@ bool sl_ncp_local_evt_process(sl_bt_msg_t *evt)
                                                 &debug_message);
             sl_led_turn_on(&sl_led_led0);
             bootloader_eraseStorageSlot(0);
-            sl_bt_system_set_soft_timer(32768, 10, 0);
+            sl_sleeptimer_start_periodic_timer(&sleep_timer_handle, TICKS_PER_SECOND, sleeptimer_callback, (void*)NULL, 0, 0);
             slot_erased = '*';
         }
 
@@ -174,15 +178,14 @@ bool sl_ncp_local_evt_process(sl_bt_msg_t *evt)
       }
       break;
 
-    case sl_bt_evt_system_soft_timer_id:
-      {
-        if (evt->data.evt_system_soft_timer.handle == 10) {
-            sl_led_toggle(&sl_led_led0);
-        }
 
-        // not pass to host
-        evt_handled = true;
+    case sl_bt_evt_system_external_signal_id:
+
+      if(evt->data.evt_system_external_signal.extsignals == SIGNAL_TOGGLE_LED){
+          sl_led_toggle(&sl_led_led0);
       }
+      // do not pass to host
+      evt_handled = true;
       break;
 
     case sl_bt_evt_gatt_server_user_write_request_id:
@@ -272,4 +275,20 @@ bool sl_ncp_local_evt_process(sl_bt_msg_t *evt)
   }
 
   return evt_handled;
+}
+
+/***************************************************************************//**
+ * Sleeptimer callback
+ *
+ * Note: This function is called from interrupt context
+ *
+ * @param[in] handle Handle of the sleeptimer instance
+ * @param[in] data  Callback data
+ ******************************************************************************/
+void sleeptimer_callback(sl_sleeptimer_timer_handle_t *handle, void *data){
+  (void)handle;
+  (void)data;
+
+  sl_bt_external_signal(SIGNAL_TOGGLE_LED);
+
 }

@@ -23,6 +23,11 @@
 #include "sl_bt_api.h"
 #include "app_log.h"
 
+#define SCAN_TIMEOUT        327680 //10 sec
+#define SIGNAL_SCAN_TIMEOUT 1
+
+sl_sleeptimer_timer_handle_t sleep_timer_handle;
+void sleeptimer_callback(sl_sleeptimer_timer_handle_t *handle, void *data);
 
 /**************************************************************************//**
  * Application Init.
@@ -70,9 +75,7 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
 
       // Extract unique ID from BT Address.
       sc = sl_bt_system_get_identity_address(&address, &address_type);
-      app_assert(sc == SL_STATUS_OK,
-                    "[E: 0x%04x] Failed to get Bluetooth address\n",
-                    (int)sc);
+      app_assert_status(sc);
 
       // Pad and reverse unique ID to get System ID.
       system_id[0] = address.addr[5];
@@ -88,36 +91,29 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
                                                    0,
                                                    sizeof(system_id),
                                                    system_id);
-      app_assert(sc == SL_STATUS_OK,
-                    "[E: 0x%04x] Failed to write attribute\n",
-                    (int)sc);
+      app_assert_status(sc);
 
 
-      app_log("System Boot\r\n");
+      app_log_info("System Boot\r\n");
 
       // set scan mode
       sc = sl_bt_scanner_set_mode(gap_coded_phy,
                              0); // 0 mean passive scanning mode
-      app_assert(sc == SL_STATUS_OK,
-                    "[E: 0x%04x] Failed to set scanner mode \n",
-                    (int)sc);
+      app_assert_status(sc);
 
       // set scan timming
       sc = sl_bt_scanner_set_timing(gap_coded_phy,
                                     200,
                                     200);
-      app_assert(sc == SL_STATUS_OK,
-                    "[E: 0x%04x] Failed to set scanner timming \n",
-                    (int)sc);
+      app_assert_status(sc);
 
       // start scanning
       sl_bt_scanner_start(gap_coded_phy,
                           scanner_discover_observation);
 
-      // start the soft timer 1 to notice if cannot find any advertiser
-      sl_bt_system_set_soft_timer(327680,
-                                  1,
-                                  1);
+      // Start a timer for checking scan timeout
+      sc = sl_sleeptimer_start_timer(&sleep_timer_handle, SCAN_TIMEOUT, sleeptimer_callback, (void*)NULL, 0, 0);
+      app_assert_status(sc);
       break;
 
     // -------------------------------
@@ -133,12 +129,12 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
                           scanner_discover_observation);
       break;
 
-    // soft timer event to stop the scanner
-    case sl_bt_evt_system_soft_timer_id:
-      if(1==evt->data.evt_system_soft_timer.handle){
+    case sl_bt_evt_system_external_signal_id:
+      if(evt->data.evt_system_external_signal.extsignals == SIGNAL_SCAN_TIMEOUT)
+        {
           sl_bt_scanner_stop();
-          app_log("no connectable devices in range\r\n");
-      }
+          app_log_info("no connectable devices in range\r\n");
+        }
       break;
 
     // scan response
@@ -148,7 +144,7 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
       // add the filter if it is needed
       remote_address = &(evt->data.evt_scanner_scan_report.address);
 
-      app_log("advertisement/scan response from %2.2X:%2.2X:%2.2X:%2.2X:%2.2X:%2.2X\r\n",
+      app_log_info("advertisement/scan response from %2.2X:%2.2X:%2.2X:%2.2X:%2.2X:%2.2X\r\n",
              remote_address->addr[5],
              remote_address->addr[4],
              remote_address->addr[3],
@@ -156,37 +152,34 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
              remote_address->addr[1],
              remote_address->addr[0]);
 
-      app_log("RSSI %d\r\n", evt->data.evt_scanner_scan_report.rssi);
+      app_log_info("RSSI %d\r\n", evt->data.evt_scanner_scan_report.rssi);
 
 
-      app_log("data len: %d\r\n", evt->data.evt_scanner_scan_report.data.len);
+      app_log_info("data len: %d\r\n", evt->data.evt_scanner_scan_report.data.len);
 
-      app_log("\r\n data raw: \r\n");
+      app_log_info("\r\n data raw: \r\n");
       for(int i = 0; i< evt->data.evt_scanner_scan_report.data.len; i++){
-          app_log("%c ", evt->data.evt_scanner_scan_report.data.data[i]);
+          app_log_info("%c ", evt->data.evt_scanner_scan_report.data.data[i]);
       }
 
-      app_log("\r\n data hex: \r\n");
+      app_log_info("\r\n data hex: \r\n");
       for(int i = 0; i< evt->data.evt_scanner_scan_report.data.len; i++){
-          app_log("%x ", evt->data.evt_scanner_scan_report.data.data[i]);
+          app_log_info("%x ", evt->data.evt_scanner_scan_report.data.data[i]);
       }
 
       //stop the tracking timer
-      sl_bt_system_set_soft_timer(0,
-                                  1,
-                                  0);
+      sl_sleeptimer_stop_timer(&sleep_timer_handle);
+
       sl_bt_scanner_stop();
       sc = sl_bt_connection_open(*remote_address,
                             sl_bt_gap_public_address,
                             gap_coded_phy,
                             &app_connection);
-      app_assert(sc == SL_STATUS_OK,
-                    "[E: 0x%04x] Failed to open connection\n",
-                    (int)sc);
+      app_assert_status(sc);
       break;
 
     case sl_bt_evt_connection_phy_status_id:
-      app_log("using PHY %d\r\n", evt->data.evt_connection_phy_status.phy );
+      app_log_info("using PHY %d\r\n", evt->data.evt_connection_phy_status.phy );
       break;
 
     ///////////////////////////////////////////////////////////////////////////
@@ -198,4 +191,20 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
     default:
       break;
   }
+}
+
+/***************************************************************************//**
+ * Sleeptimer callback
+ *
+ * Note: This function is called from interrupt context
+ *
+ * @param[in] handle Handle of the sleeptimer instance
+ * @param[in] data  Callback data
+ ******************************************************************************/
+void sleeptimer_callback(sl_sleeptimer_timer_handle_t *handle, void *data){
+  (void)handle;
+  (void)data;
+
+  sl_bt_external_signal(SIGNAL_SCAN_TIMEOUT);
+
 }

@@ -23,9 +23,14 @@
 #include "sl_bt_api.h"
 #include "app_log.h"
 
+#define SIGNAL_REFRESH_DATA   1
+#define TICKS_PER_SECOND      32768
+
 // The advertising set handle allocated from Bluetooth stack.
 static uint8_t advertising_set_handle = 0xff;
 
+sl_sleeptimer_timer_handle_t sleep_timer_handle;
+void sleeptimer_callback(sl_sleeptimer_timer_handle_t *handle, void *data);
 /**************************************************************************//**
  * Application Init.
  *****************************************************************************/
@@ -72,11 +77,9 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
     case sl_bt_evt_system_boot_id:
       // Extract unique ID from BT Address.
       sc = sl_bt_system_get_identity_address(&address, &address_type);
-      app_assert(sc == SL_STATUS_OK,
-                    "[E: 0x%04x] Failed to get Bluetooth address\n",
-                    (int)sc);
+      app_assert_status(sc);
 
-      app_log("Bluetooth %s address: %02X:%02X:%02X:%02X:%02X:%02X\n",
+      app_log_info("Bluetooth %s address: %02X:%02X:%02X:%02X:%02X:%02X\n",
                  address_type ? "static random" : "public device",
                  address.addr[5],
                  address.addr[4],
@@ -97,21 +100,17 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
                                                    0,
                                                    sizeof(system_id),
                                                    system_id);
-      app_assert(sc == SL_STATUS_OK,
-                    "[E: 0x%04x] Failed to write attribute\n",
-                    (int)sc);
+      app_assert_status(sc);
 
       // Create an advertising set.
       sc = sl_bt_advertiser_create_set(&advertising_set_handle);
-      app_assert(sc == SL_STATUS_OK,
-                    "[E: 0x%04x] Failed to create advertising set\n",
-                    (int)sc);
+      app_assert_status(sc);
 
       // Set TX power
       sc = sl_bt_advertiser_set_tx_power(advertising_set_handle, 30, &result);
-      app_assert(sc == SL_STATUS_OK,
-                    "[E: 0x%04x] Failed to set power\n",
-                    (int)sc);
+      app_assert_status(sc);
+
+      app_assert_status(sc);
 
       // Set advertising interval to 100ms.
       sc = sl_bt_advertiser_set_timing(advertising_set_handle,
@@ -119,47 +118,34 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
                                        160, // max. adv. interval. Value in units of 0.625 ms
                                        0,   // adv. duration
                                        0);  // max. num. adv. events
-      app_assert(sc == SL_STATUS_OK,
-                    "[E: 0x%04x] Failed to set advertising timing\n",
-                    (int)sc);
+      app_assert_status(sc);
 
       // Start general advertising
       sc = sl_bt_extended_advertiser_generate_data(advertising_set_handle,
-                                                   advertiser_general_discoverable);
-      app_assert(sc == SL_STATUS_OK,
-                    "[E: 0x%04x] Failed to generate data\n",
-                    (int)sc);
+                                                 advertiser_general_discoverable);
+
+      app_assert_status(sc);
+
       sc = sl_bt_extended_advertiser_start(advertising_set_handle,
-                                           sl_bt_extended_advertiser_non_connectable,
-                                           0);
-      app_assert(sc == SL_STATUS_OK,
-                    "[E: 0x%04x] Failed to start advertising\n",
-                    (int)sc);
+                                           advertiser_non_connectable,
+                                           SL_BT_EXTENDED_ADVERTISER_INCLUDE_TX_POWER );
+
+      app_assert_status(sc);
 
       // Start periodic advertising with periodic interval 200ms
-      sc = sl_bt_periodic_advertiser_start(advertising_set_handle,
-                                           160, //min periodic advertising interval. Value in units of 1.25 ms
-                                           160, //max periodic advertising interval. Value in units of 1.25 ms
-                                           1);  //include TX power in advertising PDU
-      app_assert(sc == SL_STATUS_OK,
-                    "[E: 0x%04x] Failed to start periodic advertising\n",
-                    (int)sc);
+      sc = sl_bt_periodic_advertiser_start(advertising_set_handle, 160, 160,
+                                           SL_BT_PERIODIC_ADVERTISER_AUTO_START_EXTENDED_ADVERTISING);
+      app_assert_status(sc);
 
       // Set the advertising data
-      sc = sl_bt_periodic_advertiser_set_data(advertising_set_handle,
-                                              sizeof(periodic_adv_data),
-                                              periodic_adv_data);
-      app_assert(sc == SL_STATUS_OK,
-                    "[E: 0x%04x] Failed to set adv data\n",
-                    (int)sc);
+      sc = sl_bt_periodic_advertiser_set_data(advertising_set_handle, sizeof(periodic_adv_data), periodic_adv_data);
 
-      // Start soft timer to change advertising data every 1s
-      sc = sl_bt_system_set_soft_timer(32768, // 32768 ticks for 1 second
-                                       0,     // soft timer handle
-                                       0);    // single_shot = false
-      app_assert(sc == SL_STATUS_OK,
-                    "[E: 0x%04x] Failed to set soft-timer\n",
-                    (int)sc);
+      app_assert_status(sc);
+
+      // Start a timer to change advertising data every 1s
+      sc = sl_sleeptimer_start_periodic_timer(&sleep_timer_handle, TICKS_PER_SECOND, sleeptimer_callback, (void*)NULL, 0, 0);
+
+      app_assert_status(sc);
       break;
 
     // -------------------------------
@@ -167,20 +153,19 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
     case sl_bt_evt_connection_opened_id:
       break;
 
-    // Change advertisement data
-    case sl_bt_evt_system_soft_timer_id:
-      app_log("\r\n");
-      for (int i = 0; i < 190; i++) {
-          periodic_adv_data[i] = rand()%9;
-          app_log(" %X", periodic_adv_data[i]);
+    case sl_bt_evt_system_external_signal_id:
+      if(evt->data.evt_system_external_signal.extsignals == SIGNAL_REFRESH_DATA)
+      {
+        app_log_info("\r\n");
+        for (int i = 0; i < 190; i++) {
+            periodic_adv_data[i] = rand()%9;
+            app_log_info(" %X", periodic_adv_data[i]);
+        }
+        app_log_info("\r\n");
+
+        sc = sl_bt_periodic_advertiser_set_data(advertising_set_handle, sizeof(periodic_adv_data), periodic_adv_data);
+        app_assert_status(sc);
       }
-      app_log("\r\n");
-      sc = sl_bt_periodic_advertiser_set_data(advertising_set_handle,
-                                              sizeof(periodic_adv_data),
-                                              periodic_adv_data);
-      app_assert(sc == SL_STATUS_OK,
-                    "[E: 0x%04x] Failed to set adv data\n",
-                    (int)sc);
       break;
     ///////////////////////////////////////////////////////////////////////////
     // Add additional event handlers here as your application requires!      //
@@ -193,3 +178,18 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
   }
 }
 
+/***************************************************************************//**
+ * Sleeptimer callback
+ *
+ * Note: This function is called from interrupt context
+ *
+ * @param[in] handle Handle of the sleeptimer instance
+ * @param[in] data  Callback data
+ ******************************************************************************/
+void sleeptimer_callback(sl_sleeptimer_timer_handle_t *handle, void *data){
+  (void)handle;
+  (void)data;
+
+  sl_bt_external_signal(SIGNAL_REFRESH_DATA);
+
+}

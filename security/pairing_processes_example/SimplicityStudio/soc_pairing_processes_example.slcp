@@ -1,0 +1,75 @@
+project_name: soc_pairing_processes_example
+package: Bluetooth
+label: Bluetooth - SoC Pairing Processes Example
+description: >
+  This code example is created to demonstrate different Bluetooth pairing processes and help implement firmware, which is able to securely connect
+  to other Bluetooth devices. Read https://docs.silabs.com/bluetooth/latest/general/security/pairing-processes to get a better understanding of the processes.
+category: Bluetooth Examples
+quality: development
+
+component:
+  - id: bluetooth_stack
+  - id: gatt_configuration
+  - id: bluetooth_feature_legacy_advertiser
+  - id: bluetooth_feature_connection
+  - id: bluetooth_feature_gatt
+  - id: bluetooth_feature_gatt_server
+  - id: bluetooth_feature_scanner
+  - id: bluetooth_feature_sm
+  - id: bluetooth_feature_system
+  - id: in_place_ota_dfu
+  - id: bootloader_interface
+  - id: rail_util_pti
+  - id: app_assert
+  - id: component_catalog
+  - id: mpu
+  - id: iostream_usart
+    instance:
+    - vcom
+  - id: iostream_retarget_stdio
+  - id: app_log
+  - id: glib
+  - id: simple_button
+    instance:
+    - btn0
+    - btn1
+  - id: simple_led
+    instance:
+    - led0
+    - led1
+
+source:
+  - path: ../src/app.c
+  - path: ../src/main.c
+
+include:
+  - path: .
+    file_list:
+    - path: ../inc/app.h
+
+readme:
+  - path: ./readme.md
+  
+config_file:
+  - override:
+      component: gatt_configuration
+      file_id: gatt_configuration_file_id
+    path: ../config/gatt_configuration.btconf
+    directory: btconf
+
+configuration:
+  - name: SL_STACK_SIZE
+    value: "2752"
+  - name: SL_HEAP_SIZE
+    value: "9200"
+  - name: SL_BOARD_ENABLE_VCOM
+    value: 1
+
+tag:
+  - hardware:rf:band:2400
+
+ui_hints:
+  highlight:
+    - path: config/btconf/gatt_configuration.btconf
+    - path: readme.md
+      focus: true

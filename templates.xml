@@ -1,0 +1,279 @@
+<?xml version="1.0" encoding="ASCII"?>
+<model:MDescriptors xmlns:model="http://www.silabs.com/ss/Studio.ecore">
+  <descriptors name="soc_adv_or_scan_response_constructor" label="Bluetooth - SoC Advertisement or Scan response constructor" description="This example focuses on adding a middle layer between user application and the Bluetooth stack API to set the advertisement payload, which makes the payload more straightforward, visible, and easier to understand.&#xA;">
+    <properties key="namespace" value="template.uc"/>
+    <properties key="keywords" value="universal\ configurator"/>
+    <properties key="projectFilePaths" value="advertising/adv_or_scan_response_constructor/SimplicityStudio/soc_adv_or_scan_response_constructor.slcp"/>
+    <properties key="readmeFiles" value="advertising/adv_or_scan_response_constructor/README.md"/>
+    <properties key="boardCompatibility" value="brd2601a brd2601b brd4100a brd4101a brd4101b brd4103a brd4104a brd4108a brd4111a brd4150a brd4150b brd4150c brd4151a brd4152a brd4153a brd4154a brd4155a brd4158a brd4159a brd4161a brd4162a brd4163a brd4164a brd4165b brd4166a brd4167a brd4168a brd4169a brd4169b brd4170a brd4171a brd4172a brd4172b brd4173a brd4174a brd4174b brd4175a brd4176a brd4177a brd4179b brd4180a brd4180b brd4181a brd4181b brd4181c brd4182a brd4183a brd4183b brd4183c brd4184a brd4184b brd4185a brd4186a brd4186b brd4186c brd4187a brd4187b brd4187c brd4188a brd4188b brd4190a brd4191a brd4194a brd4195a brd4196a brd4300a brd4300b brd4301a brd4302a brd4303a brd4304a brd4305a brd4305c brd4305d brd4305e brd4306a brd4306b brd4306c brd4306d brd4308a brd4308b brd4308c brd4308d brd4309a brd4309b brd4310a brd4311a brd4311b brd4312a brd4314a  brd4316a brd4317a brd4319a brd4330a brd4331a com.silabs.board.none"/>
+    <properties key="partCompatibility" value=".*bgm1.* .*bgm13.* .*bgm21.* .*bgm22.* .*bgm27.* .*efr32bg12p.* .*efr32bg13p.* .*efr32bg1b.* .*efr32bg1p.* .*efr32bg21.* .*efr32bg22.* .*efr32bg24.* .*efr32bg27.* .*efr32mg12p.* .*efr32mg13p.* .*efr32mg14p.* .*efr32mg1p.* .*efr32mg21.* .*efr32mg22.* .*efr32mg24.* .*efr32mg27.* .*mgm1.* .*mgm12.* .*mgm13.* .*mgm21.* .*mgm22.* .*mgm24.* .*mgm27.*"/>
+    <properties key="ideCompatibility" value="iar-embedded-workbench makefile-ide simplicity-ide"/>
+    <properties key="toolchainCompatibility" value="gcc iar segger"/>
+    <properties key="category" value="Bluetooth Examples"/>
+    <properties key="quality" value="development"/>
+  </descriptors>
+  <descriptors name="soc_le_coded_phy_advertiser" label="Bluetooth - SoC LE Coded PHY Advertiser" description="This example shows how to advertising on the LE coded PHY.&#xA;">
+    <properties key="namespace" value="template.uc"/>
+    <properties key="keywords" value="universal\ configurator"/>
+    <properties key="projectFilePaths" value="advertising/advertising_and_scanning_with_le_coded_phy/SimplicityStudio/soc_le_coded_phy_advertiser.slcp"/>
+    <properties key="readmeFiles" value="advertising/advertising_and_scanning_with_le_coded_phy/README.md"/>
+    <properties key="boardCompatibility" value="brd2601a brd2601b   brd4104a brd4108a brd4111a  brd4158a brd4159a  brd4165b  brd4167a brd4168a   brd4171a  brd4174a brd4174b brd4175a brd4176a brd4177a brd4179b brd4180a brd4180b brd4181a brd4181b brd4181c brd4182a brd4183a brd4183b brd4183c brd4184a brd4184b brd4185a brd4186a brd4186b brd4186c brd4187a brd4187b brd4187c brd4188a brd4188b  brd4191a brd4194a brd4195a brd4196a   brd4305a brd4305c brd4305d brd4305e brd4306a brd4306b brd4306c brd4306d brd4308a brd4308b brd4308c brd4308d brd4309a brd4309b brd4310a brd4311a brd4311b brd4312a brd4314a  brd4316a brd4317a brd4319a brd4330a brd4331a  com.silabs.board.none"/>
+    <properties key="partCompatibility" value=".*bgm13.* .*bgm21.* .*bgm22.* .*bgm27.* .*efr32bg13p.* .*efr32bg21.* .*efr32bg22.* .*efr32bg24.* .*efr32bg27.* .*efr32mg13p.* .*efr32mg21.* .*efr32mg22.* .*efr32mg24.* .*efr32mg27.* .*mgm13.* .*mgm21.* .*mgm22.* .*mgm24.* .*mgm27.*"/>
+    <properties key="ideCompatibility" value="iar-embedded-workbench makefile-ide simplicity-ide"/>
+    <properties key="toolchainCompatibility" value="gcc iar segger"/>
+    <properties key="category" value="Bluetooth Examples"/>
+    <properties key="quality" value="development"/>
+  </descriptors>
+  <descriptors name="soc_le_coded_phy_scanner" label="Bluetooth - SoC LE Coded PHY Scanner" description="This example shows how to scanning on the LE coded PHY.&#xA;">
+    <properties key="namespace" value="template.uc"/>
+    <properties key="keywords" value="universal\ configurator"/>
+    <properties key="projectFilePaths" value="advertising/advertising_and_scanning_with_le_coded_phy/SimplicityStudio/soc_le_coded_phy_scanner.slcp"/>
+    <properties key="readmeFiles" value="advertising/advertising_and_scanning_with_le_coded_phy/README.md"/>
+    <properties key="boardCompatibility" value="brd2601a brd2601b   brd4104a brd4108a brd4111a  brd4158a brd4159a  brd4165b  brd4167a brd4168a   brd4171a  brd4174a brd4174b brd4175a brd4176a brd4177a brd4179b brd4180a brd4180b brd4181a brd4181b brd4181c brd4182a brd4183a brd4183b brd4183c brd4184a brd4184b brd4185a brd4186a brd4186b brd4186c brd4187a brd4187b brd4187c brd4188a brd4188b  brd4191a brd4194a brd4195a brd4196a   brd4305a brd4305c brd4305d brd4305e brd4306a brd4306b brd4306c brd4306d brd4308a brd4308b brd4308c brd4308d brd4309a brd4309b brd4310a brd4311a brd4311b brd4312a brd4314a  brd4316a brd4317a brd4319a brd4330a brd4331a  com.silabs.board.none"/>
+    <properties key="partCompatibility" value=".*bgm13.* .*bgm21.* .*bgm22.* .*bgm27.* .*efr32bg13p.* .*efr32bg21.* .*efr32bg22.* .*efr32bg24.* .*efr32bg27.* .*efr32mg13p.* .*efr32mg21.* .*efr32mg22.* .*efr32mg24.* .*efr32mg27.* .*mgm13.* .*mgm21.* .*mgm22.* .*mgm24.* .*mgm27.*"/>
+    <properties key="ideCompatibility" value="iar-embedded-workbench makefile-ide simplicity-ide"/>
+    <properties key="toolchainCompatibility" value="gcc iar segger"/>
+    <properties key="category" value="Bluetooth Examples"/>
+    <properties key="quality" value="development"/>
+  </descriptors>
+  <descriptors name="soc_advertising_manufacturer_specific_data" label="Bluetooth - SoC Advertising Manufacturer Specific Data" description="This example focuses on a Manufacturer-Specific Data (type 0xFF) as a specific advertising type.&#xA;">
+    <properties key="namespace" value="template.uc"/>
+    <properties key="keywords" value="universal\ configurator"/>
+    <properties key="projectFilePaths" value="advertising/advertising_manufacturer_specific_data/SimplicityStudio/soc_advertising_manufacturer_specific_data.slcp"/>
+    <properties key="readmeFiles" value="advertising/advertising_manufacturer_specific_data/README.md"/>
+    <properties key="boardCompatibility" value="brd2601a brd2601b brd4100a brd4101a brd4101b brd4103a brd4104a brd4108a brd4111a brd4150a brd4150b brd4150c brd4151a brd4152a brd4153a brd4154a brd4155a brd4158a brd4159a brd4161a brd4162a brd4163a brd4164a brd4165b brd4166a brd4167a brd4168a brd4169a brd4169b brd4170a brd4171a brd4172a brd4172b brd4173a brd4174a brd4174b brd4175a brd4176a brd4177a brd4179b brd4180a brd4180b brd4181a brd4181b brd4181c brd4182a brd4183a brd4183b brd4183c brd4184a brd4184b brd4185a brd4186a brd4186b brd4186c brd4187a brd4187b brd4187c brd4188a brd4188b brd4190a brd4191a brd4194a brd4195a brd4196a brd4300a brd4300b brd4301a brd4302a brd4303a brd4304a brd4305a brd4305c brd4305d brd4305e brd4306a brd4306b brd4306c brd4306d brd4308a brd4308b brd4308c brd4308d brd4309a brd4309b brd4310a brd4311a brd4311b brd4312a brd4314a  brd4316a brd4317a brd4319a brd4330a brd4331a com.silabs.board.none"/>
+    <properties key="partCompatibility" value=".*bgm1.* .*bgm13.* .*bgm21.* .*bgm22.* .*bgm27.* .*efr32bg12p.* .*efr32bg13p.* .*efr32bg1b.* .*efr32bg1p.* .*efr32bg21.* .*efr32bg22.* .*efr32bg24.* .*efr32bg27.* .*efr32mg12p.* .*efr32mg13p.* .*efr32mg14p.* .*efr32mg1p.* .*efr32mg21.* .*efr32mg22.* .*efr32mg24.* .*efr32mg27.* .*mgm1.* .*mgm12.* .*mgm13.* .*mgm21.* .*mgm22.* .*mgm24.* .*mgm27.*"/>
+    <properties key="ideCompatibility" value="iar-embedded-workbench makefile-ide simplicity-ide"/>
+    <properties key="toolchainCompatibility" value="gcc iar segger"/>
+    <properties key="category" value="Bluetooth Examples"/>
+    <properties key="quality" value="development"/>
+  </descriptors>
+  <descriptors name="soc_chained_advertisement_advertiser" label="Bluetooth - SoC Chained Advertisement Advertiser" description="This example shows how to advertiser work in chained advertisement. Chained advertising allows advertising packets to be linked or chained together to allow for larger advertisements, up to 1650 bytes, to be sent. A new packet type, AUX_CHAIN_IND, is used to transmit the individual portions of these advertisements. Chained advertising works together with Extended advertising and Periodic advertising. The following example allows a synchronizer, i.e., the receiver of a periodic advertisement, to synchronize to a chained periodic advertisement and begin receiving these advertisements.&#xA;">
+    <properties key="namespace" value="template.uc"/>
+    <properties key="keywords" value="universal\ configurator"/>
+    <properties key="projectFilePaths" value="advertising/chained_advertisement/SimplicityStudio/soc_chained_advertisement_advertiser.slcp"/>
+    <properties key="readmeFiles" value="advertising/chained_advertisement/README.md"/>
+    <properties key="boardCompatibility" value="brd2601a brd2601b  brd4103a brd4104a brd4108a brd4111a  brd4158a brd4159a brd4161a brd4162a brd4163a brd4164a brd4165b brd4166a brd4167a brd4168a  brd4170a brd4171a brd4172a brd4172b brd4173a brd4174a brd4174b brd4175a brd4176a brd4177a brd4179b brd4180a brd4180b brd4181a brd4181b brd4181c brd4182a brd4183a brd4183b brd4183c brd4184a brd4184b brd4185a brd4186a brd4186b brd4186c brd4187a brd4187b brd4187c brd4188a brd4188b brd4190a brd4191a brd4194a brd4195a brd4196a  brd4304a brd4305a brd4305c brd4305d brd4305e brd4306a brd4306b brd4306c brd4306d brd4308a brd4308b brd4308c brd4308d brd4309a brd4309b brd4310a brd4311a brd4311b brd4312a brd4314a  brd4316a brd4317a brd4319a brd4330a brd4331a  com.silabs.board.none"/>
+    <properties key="partCompatibility" value=".*bgm13.* .*bgm21.* .*bgm22.* .*bgm27.* .*efr32bg12p.* .*efr32bg13p.* .*efr32bg21.* .*efr32bg22.* .*efr32bg24.* .*efr32bg27.* .*efr32mg12p.* .*efr32mg13p.* .*efr32mg21.* .*efr32mg22.* .*efr32mg24.* .*efr32mg27.* .*mgm12.* .*mgm13.* .*mgm21.* .*mgm22.* .*mgm24.* .*mgm27.*"/>
+    <properties key="ideCompatibility" value="iar-embedded-workbench makefile-ide simplicity-ide"/>
+    <properties key="toolchainCompatibility" value="gcc iar segger"/>
+    <properties key="category" value="Bluetooth Examples"/>
+    <properties key="quality" value="development"/>
+  </descriptors>
+  <descriptors name="soc_chained_advertisement_scanner" label="Bluetooth - SoC Chained Advertisement Scanner" description="This example shows how to scanner work in chained advertisement. Chained advertising allows advertising packets to be linked or chained together to allow for larger advertisements, up to 1650 bytes, to be sent. A new packet type, AUX_CHAIN_IND, is used to transmit the individual portions of these advertisements. Chained advertising works together with Extended advertising and Periodic advertising. The following example allows a synchronizer, i.e., the receiver of a periodic advertisement, to synchronize to a chained periodic advertisement and begin receiving these advertisements.&#xA;">
+    <properties key="namespace" value="template.uc"/>
+    <properties key="keywords" value="universal\ configurator"/>
+    <properties key="projectFilePaths" value="advertising/chained_advertisement/SimplicityStudio/soc_chained_advertisement_scanner.slcp"/>
+    <properties key="readmeFiles" value="advertising/chained_advertisement/README.md"/>
+    <properties key="boardCompatibility" value="brd2601a brd2601b  brd4103a brd4104a brd4108a brd4111a  brd4158a brd4159a brd4161a brd4162a brd4163a brd4164a brd4165b brd4166a brd4167a brd4168a  brd4170a brd4171a brd4172a brd4172b brd4173a brd4174a brd4174b brd4175a brd4176a brd4177a brd4179b brd4180a brd4180b brd4181a brd4181b brd4181c brd4182a brd4183a brd4183b brd4183c brd4184a brd4184b brd4185a brd4186a brd4186b brd4186c brd4187a brd4187b brd4187c brd4188a brd4188b brd4190a brd4191a brd4194a brd4195a brd4196a  brd4304a brd4305a brd4305c brd4305d brd4305e brd4306a brd4306b brd4306c brd4306d brd4308a brd4308b brd4308c brd4308d brd4309a brd4309b brd4310a brd4311a brd4311b brd4312a brd4314a  brd4316a brd4317a brd4319a brd4330a brd4331a  com.silabs.board.none"/>
+    <properties key="partCompatibility" value=".*bgm13.* .*bgm21.* .*bgm22.* .*bgm27.* .*efr32bg12p.* .*efr32bg13p.* .*efr32bg21.* .*efr32bg22.* .*efr32bg24.* .*efr32bg27.* .*efr32mg12p.* .*efr32mg13p.* .*efr32mg21.* .*efr32mg22.* .*efr32mg24.* .*efr32mg27.* .*mgm12.* .*mgm13.* .*mgm21.* .*mgm22.* .*mgm24.* .*mgm27.*"/>
+    <properties key="ideCompatibility" value="iar-embedded-workbench makefile-ide simplicity-ide"/>
+    <properties key="toolchainCompatibility" value="gcc iar segger"/>
+    <properties key="category" value="Bluetooth Examples"/>
+    <properties key="quality" value="development"/>
+  </descriptors>
+  <descriptors name="soc_creating_an_eddystone_url_beacon" label="Bluetooth - SoC Creating An Eddystone URL Beacon" description="This example demonstrates how to create an Eddystone beacon with Silicon Labs' Bluetooth SDK.&#xA;">
+    <properties key="namespace" value="template.uc"/>
+    <properties key="keywords" value="universal\ configurator"/>
+    <properties key="projectFilePaths" value="advertising/creating_an_eddystone_url_beacon/SimplicityStudio/soc_creating_an_eddystone_url_beacon.slcp"/>
+    <properties key="readmeFiles" value="advertising/creating_an_eddystone_url_beacon/README.md"/>
+    <properties key="boardCompatibility" value="brd2601a brd2601b brd4100a brd4101a brd4101b brd4103a brd4104a brd4108a brd4111a brd4150a brd4150b brd4150c brd4151a brd4152a brd4153a brd4154a brd4155a brd4158a brd4159a brd4161a brd4162a brd4163a brd4164a brd4165b brd4166a brd4167a brd4168a brd4169a brd4169b brd4170a brd4171a brd4172a brd4172b brd4173a brd4174a brd4174b brd4175a brd4176a brd4177a brd4179b brd4180a brd4180b brd4181a brd4181b brd4181c brd4182a brd4183a brd4183b brd4183c brd4184a brd4184b brd4185a brd4186a brd4186b brd4186c brd4187a brd4187b brd4187c brd4188a brd4188b brd4190a brd4191a brd4194a brd4195a brd4196a brd4300a brd4300b brd4301a brd4302a brd4303a brd4304a brd4305a brd4305c brd4305d brd4305e brd4306a brd4306b brd4306c brd4306d brd4308a brd4308b brd4308c brd4308d brd4309a brd4309b brd4310a brd4311a brd4311b brd4312a brd4314a  brd4316a brd4317a brd4319a brd4330a brd4331a com.silabs.board.none"/>
+    <properties key="partCompatibility" value=".*bgm1.* .*bgm13.* .*bgm21.* .*bgm22.* .*bgm27.* .*efr32bg12p.* .*efr32bg13p.* .*efr32bg1b.* .*efr32bg1p.* .*efr32bg21.* .*efr32bg22.* .*efr32bg24.* .*efr32bg27.* .*efr32mg12p.* .*efr32mg13p.* .*efr32mg14p.* .*efr32mg1p.* .*efr32mg21.* .*efr32mg22.* .*efr32mg24.* .*efr32mg27.* .*mgm1.* .*mgm12.* .*mgm13.* .*mgm21.* .*mgm22.* .*mgm24.* .*mgm27.*"/>
+    <properties key="ideCompatibility" value="iar-embedded-workbench makefile-ide simplicity-ide"/>
+    <properties key="toolchainCompatibility" value="gcc iar segger"/>
+    <properties key="category" value="Bluetooth Examples"/>
+    <properties key="quality" value="development"/>
+  </descriptors>
+  <descriptors name="soc_extended_advertising_advertiser" label="Bluetooth - SoC Extended Advertising Advertiser" description="This code example demonstrates an advertiser, sending extended advertisements.&#xA;">
+    <properties key="namespace" value="template.uc"/>
+    <properties key="keywords" value="universal\ configurator"/>
+    <properties key="projectFilePaths" value="advertising/extended_advertising/SimplicityStudio/soc_extended_advertising_advertiser.slcp"/>
+    <properties key="readmeFiles" value="advertising/extended_advertising/README.md"/>
+    <properties key="boardCompatibility" value="brd2601a brd2601b  brd4103a brd4104a brd4108a brd4111a  brd4158a brd4159a brd4161a brd4162a brd4163a brd4164a brd4165b brd4166a brd4167a brd4168a  brd4170a brd4171a brd4172a brd4172b brd4173a brd4174a brd4174b brd4175a brd4176a brd4177a brd4179b brd4180a brd4180b brd4181a brd4181b brd4181c brd4182a brd4183a brd4183b brd4183c brd4184a brd4184b brd4185a brd4186a brd4186b brd4186c brd4187a brd4187b brd4187c brd4188a brd4188b brd4190a brd4191a brd4194a brd4195a brd4196a  brd4304a brd4305a brd4305c brd4305d brd4305e brd4306a brd4306b brd4306c brd4306d brd4308a brd4308b brd4308c brd4308d brd4309a brd4309b brd4310a brd4311a brd4311b brd4312a brd4314a  brd4316a brd4317a brd4319a brd4330a brd4331a  com.silabs.board.none"/>
+    <properties key="partCompatibility" value=".*bgm13.* .*bgm21.* .*bgm22.* .*bgm27.* .*efr32bg12p.* .*efr32bg13p.* .*efr32bg21.* .*efr32bg22.* .*efr32bg24.* .*efr32bg27.* .*efr32mg12p.* .*efr32mg13p.* .*efr32mg21.* .*efr32mg22.* .*efr32mg24.* .*efr32mg27.* .*mgm12.* .*mgm13.* .*mgm21.* .*mgm22.* .*mgm24.* .*mgm27.*"/>
+    <properties key="ideCompatibility" value="iar-embedded-workbench makefile-ide simplicity-ide"/>
+    <properties key="toolchainCompatibility" value="gcc iar segger"/>
+    <properties key="category" value="Bluetooth Examples"/>
+    <properties key="quality" value="development"/>
+  </descriptors>
+  <descriptors name="soc_extended_advertising_scanner" label="Bluetooth - SoC Extended Advertising Scanner" description="This code example demonstrates a scanner which is able to receive extended advertisements.&#xA;">
+    <properties key="namespace" value="template.uc"/>
+    <properties key="keywords" value="universal\ configurator"/>
+    <properties key="projectFilePaths" value="advertising/extended_advertising/SimplicityStudio/soc_extended_advertising_scanner.slcp"/>
+    <properties key="readmeFiles" value="advertising/extended_advertising/README.md"/>
+    <properties key="boardCompatibility" value="brd2601a brd2601b  brd4103a brd4104a brd4108a brd4111a  brd4158a brd4159a brd4161a brd4162a brd4163a brd4164a brd4165b brd4166a brd4167a brd4168a  brd4170a brd4171a brd4172a brd4172b brd4173a brd4174a brd4174b brd4175a brd4176a brd4177a brd4179b brd4180a brd4180b brd4181a brd4181b brd4181c brd4182a brd4183a brd4183b brd4183c brd4184a brd4184b brd4185a brd4186a brd4186b brd4186c brd4187a brd4187b brd4187c brd4188a brd4188b brd4190a brd4191a brd4194a brd4195a brd4196a  brd4304a brd4305a brd4305c brd4305d brd4305e brd4306a brd4306b brd4306c brd4306d brd4308a brd4308b brd4308c brd4308d brd4309a brd4309b brd4310a brd4311a brd4311b brd4312a brd4314a  brd4316a brd4317a brd4319a brd4330a brd4331a  com.silabs.board.none"/>
+    <properties key="partCompatibility" value=".*bgm13.* .*bgm21.* .*bgm22.* .*bgm27.* .*efr32bg12p.* .*efr32bg13p.* .*efr32bg21.* .*efr32bg22.* .*efr32bg24.* .*efr32bg27.* .*efr32mg12p.* .*efr32mg13p.* .*efr32mg21.* .*efr32mg22.* .*efr32mg24.* .*efr32mg27.* .*mgm12.* .*mgm13.* .*mgm21.* .*mgm22.* .*mgm24.* .*mgm27.*"/>
+    <properties key="ideCompatibility" value="iar-embedded-workbench makefile-ide simplicity-ide"/>
+    <properties key="toolchainCompatibility" value="gcc iar segger"/>
+    <properties key="category" value="Bluetooth Examples"/>
+    <properties key="quality" value="development"/>
+  </descriptors>
+  <descriptors name="soc_multiple_adv_sets_bt5" label="Bluetooth - SoC Multiple Adv Sets BT5" description="This example demonstrates how to use multiple advertising sets.&#xA;">
+    <properties key="namespace" value="template.uc"/>
+    <properties key="keywords" value="universal\ configurator"/>
+    <properties key="projectFilePaths" value="advertising/multiple-adv-sets-bt5/SimplicityStudio/soc_multiple_adv_sets_bt5.slcp"/>
+    <properties key="readmeFiles" value="advertising/multiple-adv-sets-bt5/README.md"/>
+    <properties key="boardCompatibility" value="brd2601a brd2601b  brd4103a brd4104a brd4108a brd4111a  brd4158a brd4159a brd4161a brd4162a brd4163a brd4164a brd4165b brd4166a brd4167a brd4168a  brd4170a brd4171a brd4172a brd4172b brd4173a brd4174a brd4174b brd4175a brd4176a brd4177a brd4179b brd4180a brd4180b brd4181a brd4181b brd4181c brd4182a brd4183a brd4183b brd4183c brd4184a brd4184b brd4185a brd4186a brd4186b brd4186c brd4187a brd4187b brd4187c brd4188a brd4188b brd4190a brd4191a brd4194a brd4195a brd4196a  brd4304a brd4305a brd4305c brd4305d brd4305e brd4306a brd4306b brd4306c brd4306d brd4308a brd4308b brd4308c brd4308d brd4309a brd4309b brd4310a brd4311a brd4311b brd4312a brd4314a  brd4316a brd4317a brd4319a brd4330a brd4331a  com.silabs.board.none"/>
+    <properties key="partCompatibility" value=".*bgm13.* .*bgm21.* .*bgm22.* .*bgm27.* .*efr32bg12p.* .*efr32bg13p.* .*efr32bg21.* .*efr32bg22.* .*efr32bg24.* .*efr32bg27.* .*efr32mg12p.* .*efr32mg13p.* .*efr32mg21.* .*efr32mg22.* .*efr32mg24.* .*efr32mg27.* .*mgm12.* .*mgm13.* .*mgm21.* .*mgm22.* .*mgm24.* .*mgm27.*"/>
+    <properties key="ideCompatibility" value="iar-embedded-workbench makefile-ide simplicity-ide"/>
+    <properties key="toolchainCompatibility" value="gcc iar segger"/>
+    <properties key="category" value="Bluetooth Examples"/>
+    <properties key="quality" value="development"/>
+  </descriptors>
+  <descriptors name="soc_periodic_advertisement_advertiser" label="Bluetooth - SoC Periodic Advertisement Advertiser" description="This example demonstrates the periodic advertising feature of Bluetooth 5 in the advertiser side.&#xA;">
+    <properties key="namespace" value="template.uc"/>
+    <properties key="keywords" value="universal\ configurator"/>
+    <properties key="projectFilePaths" value="advertising/periodic_advertisement/SimplicityStudio/soc_periodic_advertisement_advertiser.slcp"/>
+    <properties key="readmeFiles" value="advertising/periodic_advertisement/README.md"/>
+    <properties key="boardCompatibility" value="brd2601a brd2601b  brd4103a brd4104a brd4108a brd4111a  brd4158a brd4159a brd4161a brd4162a brd4163a brd4164a brd4165b brd4166a brd4167a brd4168a  brd4170a brd4171a brd4172a brd4172b brd4173a brd4174a brd4174b brd4175a brd4176a brd4177a brd4179b brd4180a brd4180b brd4181a brd4181b brd4181c brd4182a brd4183a brd4183b brd4183c brd4184a brd4184b brd4185a brd4186a brd4186b brd4186c brd4187a brd4187b brd4187c brd4188a brd4188b brd4190a brd4191a brd4194a brd4195a brd4196a  brd4304a brd4305a brd4305c brd4305d brd4305e brd4306a brd4306b brd4306c brd4306d brd4308a brd4308b brd4308c brd4308d brd4309a brd4309b brd4310a brd4311a brd4311b brd4312a brd4314a  brd4316a brd4317a brd4319a brd4330a brd4331a  com.silabs.board.none"/>
+    <properties key="partCompatibility" value=".*bgm13.* .*bgm21.* .*bgm22.* .*bgm27.* .*efr32bg12p.* .*efr32bg13p.* .*efr32bg21.* .*efr32bg22.* .*efr32bg24.* .*efr32bg27.* .*efr32mg12p.* .*efr32mg13p.* .*efr32mg21.* .*efr32mg22.* .*efr32mg24.* .*efr32mg27.* .*mgm12.* .*mgm13.* .*mgm21.* .*mgm22.* .*mgm24.* .*mgm27.*"/>
+    <properties key="ideCompatibility" value="iar-embedded-workbench makefile-ide simplicity-ide"/>
+    <properties key="toolchainCompatibility" value="gcc iar segger"/>
+    <properties key="category" value="Bluetooth Examples"/>
+    <properties key="quality" value="development"/>
+  </descriptors>
+  <descriptors name="soc_periodic_advertisement_scanner" label="Bluetooth - SoC Periodic Advertisement Scanner" description="This example demonstrates the periodic advertising feature of Bluetooth 5 in the scanner side.&#xA;">
+    <properties key="namespace" value="template.uc"/>
+    <properties key="keywords" value="universal\ configurator"/>
+    <properties key="projectFilePaths" value="advertising/periodic_advertisement/SimplicityStudio/soc_periodic_advertisement_scanner.slcp"/>
+    <properties key="readmeFiles" value="advertising/periodic_advertisement/README.md"/>
+    <properties key="boardCompatibility" value="brd2601a brd2601b  brd4103a brd4104a brd4108a brd4111a  brd4158a brd4159a brd4161a brd4162a brd4163a brd4164a brd4165b brd4166a brd4167a brd4168a  brd4170a brd4171a brd4172a brd4172b brd4173a brd4174a brd4174b brd4175a brd4176a brd4177a brd4179b brd4180a brd4180b brd4181a brd4181b brd4181c brd4182a brd4183a brd4183b brd4183c brd4184a brd4184b brd4185a brd4186a brd4186b brd4186c brd4187a brd4187b brd4187c brd4188a brd4188b brd4190a brd4191a brd4194a brd4195a brd4196a  brd4304a brd4305a brd4305c brd4305d brd4305e brd4306a brd4306b brd4306c brd4306d brd4308a brd4308b brd4308c brd4308d brd4309a brd4309b brd4310a brd4311a brd4311b brd4312a brd4314a  brd4316a brd4317a brd4319a brd4330a brd4331a  com.silabs.board.none"/>
+    <properties key="partCompatibility" value=".*bgm13.* .*bgm21.* .*bgm22.* .*bgm27.* .*efr32bg12p.* .*efr32bg13p.* .*efr32bg21.* .*efr32bg22.* .*efr32bg24.* .*efr32bg27.* .*efr32mg12p.* .*efr32mg13p.* .*efr32mg21.* .*efr32mg22.* .*efr32mg24.* .*efr32mg27.* .*mgm12.* .*mgm13.* .*mgm21.* .*mgm22.* .*mgm24.* .*mgm27.*"/>
+    <properties key="ideCompatibility" value="iar-embedded-workbench makefile-ide simplicity-ide"/>
+    <properties key="toolchainCompatibility" value="gcc iar segger"/>
+    <properties key="category" value="Bluetooth Examples"/>
+    <properties key="quality" value="development"/>
+  </descriptors>
+  <descriptors name="soc_using_characteristics_value_types" label="Bluetooth - SoC Using Characteristics Value Types" description="This is the example code for the Different Value Types of Characteristics, which demonstrates below features: 1) Write and read a characteristic with valuetype 'Hex'. 2) Write and read a characteristic with value type 'User'. 3) If notification to the characteristic are enabled, it sends a notification for every 3 seconds andincrements the first byte. 4) By searching the keyword 'TAG', you will easily find the place for handling the operations above.&#xA;">
+    <properties key="namespace" value="template.uc"/>
+    <properties key="keywords" value="universal\ configurator"/>
+    <properties key="projectFilePaths" value="gatt_protocol/using_characteristics_value_types/SimplicityStudio/soc_using_characteristics_value_types.slcp"/>
+    <properties key="readmeFiles" value="gatt_protocol/using_characteristics_value_types/README.md"/>
+    <properties key="boardCompatibility" value="brd2601a brd2601b brd4100a brd4101a brd4101b brd4103a brd4104a brd4108a brd4111a brd4150a brd4150b brd4150c brd4151a brd4152a brd4153a brd4154a brd4155a brd4158a brd4159a brd4161a brd4162a brd4163a brd4164a brd4165b brd4166a brd4167a brd4168a brd4169a brd4169b brd4170a brd4171a brd4172a brd4172b brd4173a brd4174a brd4174b brd4175a brd4176a brd4177a brd4179b brd4180a brd4180b brd4181a brd4181b brd4181c brd4182a brd4183a brd4183b brd4183c brd4184a brd4184b brd4185a brd4186a brd4186b brd4186c brd4187a brd4187b brd4187c brd4188a brd4188b brd4190a brd4191a brd4194a brd4195a brd4196a brd4300a brd4300b brd4301a brd4302a brd4303a brd4304a brd4305a brd4305c brd4305d brd4305e brd4306a brd4306b brd4306c brd4306d brd4308a brd4308b brd4308c brd4308d brd4309a brd4309b brd4310a brd4311a brd4311b brd4312a brd4314a  brd4316a brd4317a brd4319a brd4330a brd4331a com.silabs.board.none"/>
+    <properties key="partCompatibility" value=".*bgm1.* .*bgm13.* .*bgm21.* .*bgm22.* .*bgm27.* .*efr32bg12p.* .*efr32bg13p.* .*efr32bg1b.* .*efr32bg1p.* .*efr32bg21.* .*efr32bg22.* .*efr32bg24.* .*efr32bg27.* .*efr32mg12p.* .*efr32mg13p.* .*efr32mg14p.* .*efr32mg1p.* .*efr32mg21.* .*efr32mg22.* .*efr32mg24.* .*efr32mg27.* .*mgm1.* .*mgm12.* .*mgm13.* .*mgm21.* .*mgm22.* .*mgm24.* .*mgm27.*"/>
+    <properties key="ideCompatibility" value="iar-embedded-workbench makefile-ide simplicity-ide"/>
+    <properties key="toolchainCompatibility" value="gcc iar segger"/>
+    <properties key="category" value="Bluetooth Examples"/>
+    <properties key="quality" value="development"/>
+  </descriptors>
+  <descriptors name="soc_working_with_long_characteristic_values" label="Bluetooth - SoC Working With Long Characteristic Values" description="According to the Bluetooth specification, the maximum size of any attribute is 512 bytes. However, the Maximum Transmission Unit (MTU), i.e., the largest amount of data that can be exchanged in a single GATT operation is usually less than this value. As a result, some characteristics may not be read/written with a single GATT operation. If the data to be read or written is larger than the MTU, a long read/write operation must be used. This example demonstrates how to implement this. The attached application handles reading and writing a characteristic of 512 bytes.&#xA;">
+    <properties key="namespace" value="template.uc"/>
+    <properties key="keywords" value="universal\ configurator"/>
+    <properties key="projectFilePaths" value="gatt_protocol/working_with_long_characteristic_values/SimplicityStudio/soc_working_with_long_characteristic_values.slcp"/>
+    <properties key="readmeFiles" value="gatt_protocol/working_with_long_characteristic_values/README.md"/>
+    <properties key="boardCompatibility" value="brd2601a brd2601b brd4100a brd4101a brd4101b brd4103a brd4104a brd4108a brd4111a brd4150a brd4150b brd4150c brd4151a brd4152a brd4153a brd4154a brd4155a brd4158a brd4159a brd4161a brd4162a brd4163a brd4164a brd4165b brd4166a brd4167a brd4168a brd4169a brd4169b brd4170a brd4171a brd4172a brd4172b brd4173a brd4174a brd4174b brd4175a brd4176a brd4177a brd4179b brd4180a brd4180b brd4181a brd4181b brd4181c brd4182a brd4183a brd4183b brd4183c brd4184a brd4184b brd4185a brd4186a brd4186b brd4186c brd4187a brd4187b brd4187c brd4188a brd4188b brd4190a brd4191a brd4194a brd4195a brd4196a brd4300a brd4300b brd4301a brd4302a brd4303a brd4304a brd4305a brd4305c brd4305d brd4305e brd4306a brd4306b brd4306c brd4306d brd4308a brd4308b brd4308c brd4308d brd4309a brd4309b brd4310a brd4311a brd4311b brd4312a brd4314a  brd4316a brd4317a brd4319a brd4330a brd4331a com.silabs.board.none" />
+    <properties key="partCompatibility" value=".*bgm1.* .*bgm13.* .*bgm21.* .*bgm22.* .*bgm27.* .*efr32bg12p.* .*efr32bg13p.* .*efr32bg1b.* .*efr32bg1p.* .*efr32bg21.* .*efr32bg22.* .*efr32bg24.* .*efr32bg27.* .*efr32mg12p.* .*efr32mg13p.* .*efr32mg14p.* .*efr32mg1p.* .*efr32mg21.* .*efr32mg22.* .*efr32mg24.* .*efr32mg27.* .*mgm1.* .*mgm12.* .*mgm13.* .*mgm21.* .*mgm22.* .*mgm24.* .*mgm27.*"/>
+    <properties key="ideCompatibility" value="iar-embedded-workbench makefile-ide simplicity-ide"/>
+    <properties key="toolchainCompatibility" value="gcc iar segger"/>
+    <properties key="category" value="Bluetooth Examples"/>
+    <properties key="quality" value="development"/>
+  </descriptors>
+  <descriptors name="ncp_adding_watchdog_in_ncp_mode_series_1" label="Bluetooth - NCP Adding Watchdog In NCP Mode Series 1" description="This example describes how to implement the Watchdog on a Bluetooth NCP firmware. The Watchdog is an EFR32 peripheral which allows to detect and reset/reboot an EFR32/BGM device when it hangs and becomes unresponsive (e.g., software stalemate).&#xA;">
+    <properties key="namespace" value="template.uc"/>
+    <properties key="keywords" value="universal\ configurator"/>
+    <properties key="projectFilePaths" value="ncp/adding_watchdog_in_ncp_mode/SimplicityStudio/ncp_adding_watchdog_in_ncp_mode_series_1.slcp"/>
+    <properties key="readmeFiles" value="ncp/adding_watchdog_in_ncp_mode/README.md"/>
+    <properties key="boardCompatibility" value="brd4100a brd4101a brd4101b brd4103a brd4104a  brd4150a brd4150b brd4150c brd4151a brd4152a brd4153a brd4154a brd4155a brd4158a brd4159a brd4161a brd4162a brd4163a brd4164a brd4165b brd4166a brd4167a brd4168a brd4169a brd4169b brd4170a brd4171a brd4172a brd4172b brd4173a brd4174a brd4174b brd4175a brd4176a brd4177a    brd4190a  brd4300a brd4300b brd4301a brd4302a brd4303a brd4304a brd4305a brd4305c brd4305d brd4305e brd4306a brd4306b brd4306c brd4306d  com.silabs.board.none"/>
+    <properties key="partCompatibility" value=".*bgm1.* .*bgm13.* .*efr32bg12p.* .*efr32bg13p.* .*efr32bg1b.* .*efr32bg1p.* .*efr32mg12p.* .*efr32mg13p.* .*efr32mg14p.* .*efr32mg1p.* .*mgm1.* .*mgm12.* .*mgm13.*"/>
+    <properties key="ideCompatibility" value="iar-embedded-workbench makefile-ide simplicity-ide"/>
+    <properties key="toolchainCompatibility" value="gcc iar segger"/>
+    <properties key="category" value="Bluetooth Examples"/>
+    <properties key="quality" value="development"/>
+  </descriptors>
+  <descriptors name="ncp_adding_watchdog_in_ncp_mode_series_2" label="Bluetooth - NCP Adding Watchdog In NCP Mode Series 2" description="This example describes how to implement the Watchdog on a Bluetooth NCP firmware. The Watchdog is an EFR32 peripheral which allows to detect and reset/reboot an EFR32/BGM device when it hangs and becomes unresponsive (e.g., software stalemate).&#xA;">
+    <properties key="namespace" value="template.uc"/>
+    <properties key="keywords" value="universal\ configurator"/>
+    <properties key="projectFilePaths" value="ncp/adding_watchdog_in_ncp_mode/SimplicityStudio/ncp_adding_watchdog_in_ncp_mode_series_2.slcp"/>
+    <properties key="readmeFiles" value="ncp/adding_watchdog_in_ncp_mode/README.md"/>
+    <properties key="boardCompatibility" value="brd2601a brd2601b    brd4108a brd4111a         brd4171a   brd4176a  brd4179b brd4180a brd4180b brd4181a brd4181b brd4181c brd4182a brd4183a brd4183b brd4183c brd4184a brd4184b brd4185a brd4186a brd4186b brd4186c brd4187a brd4187b brd4187c brd4188a brd4188b  brd4191a brd4194a brd4195a brd4196a   brd4308a brd4308b brd4308c brd4308d brd4309a brd4309b brd4310a brd4311a brd4311b brd4312a brd4314a  brd4316a brd4317a brd4319a brd4330a brd4331a  com.silabs.board.none"/>
+    <properties key="partCompatibility" value=".*bgm21.* .*bgm22.* .*bgm27.* .*efr32bg21.* .*efr32bg22.* .*efr32bg24.* .*efr32bg27.* .*efr32mg21.* .*efr32mg22.* .*efr32mg24.* .*efr32mg27.* .*mgm21.* .*mgm22.* .*mgm24.* .*mgm27.*"/>
+    <properties key="ideCompatibility" value="iar-embedded-workbench makefile-ide simplicity-ide"/>
+    <properties key="toolchainCompatibility" value="gcc iar segger"/>
+    <properties key="category" value="Bluetooth Examples"/>
+    <properties key="quality" value="development"/>
+  </descriptors>
+  <descriptors name="soc_authenticating_devices_with_no_user_interface" label="Bluetooth - SoC Authenticating Devices With No User Interface" description="A common problem with Bluetooth devices is that they often have no user interface, other than the Bluetooth connection, but still need to support authentication. This example demonstrates one method to accomplish this.&#xA;">
+    <properties key="namespace" value="template.uc"/>
+    <properties key="keywords" value="universal\ configurator"/>
+    <properties key="projectFilePaths" value="security/authenticating_devices_with_no_user_interface/SimplicityStudio/soc_authenticating_devices_with_no_user_interface.slcp"/>
+    <properties key="readmeFiles" value="security/authenticating_devices_with_no_user_interface/README.md"/>
+    <properties key="boardCompatibility" value="brd2601a brd2601b brd4100a brd4101a brd4101b brd4103a brd4104a brd4108a brd4111a brd4150a brd4150b brd4150c brd4151a brd4152a brd4153a brd4154a brd4155a brd4158a brd4159a brd4161a brd4162a brd4163a brd4164a brd4165b brd4166a brd4167a brd4168a brd4169a brd4169b brd4170a brd4171a brd4172a brd4172b brd4173a brd4174a brd4174b brd4175a brd4176a brd4177a brd4179b brd4180a brd4180b brd4181a brd4181b brd4181c brd4182a brd4183a brd4183b brd4183c brd4184a brd4184b brd4185a brd4186a brd4186b brd4186c brd4187a brd4187b brd4187c brd4188a brd4188b brd4190a brd4191a brd4194a brd4195a brd4196a brd4300a brd4300b brd4301a brd4302a brd4303a brd4304a brd4305a brd4305c brd4305d brd4305e brd4306a brd4306b brd4306c brd4306d brd4308a brd4308b brd4308c brd4308d brd4309a brd4309b brd4310a brd4311a brd4311b brd4312a brd4314a  brd4316a brd4317a brd4319a brd4330a brd4331a com.silabs.board.none"/>
+    <properties key="partCompatibility" value=".*bgm1.* .*bgm13.* .*bgm21.* .*bgm22.* .*bgm27.* .*efr32bg12p.* .*efr32bg13p.* .*efr32bg1b.* .*efr32bg1p.* .*efr32bg21.* .*efr32bg22.* .*efr32bg24.* .*efr32bg27.* .*efr32mg12p.* .*efr32mg13p.* .*efr32mg14p.* .*efr32mg1p.* .*efr32mg21.* .*efr32mg22.* .*efr32mg24.* .*efr32mg27.* .*mgm1.* .*mgm12.* .*mgm13.* .*mgm21.* .*mgm22.* .*mgm24.* .*mgm27.*"/>
+    <properties key="ideCompatibility" value="iar-embedded-workbench makefile-ide simplicity-ide"/>
+    <properties key="toolchainCompatibility" value="gcc iar segger"/>
+    <properties key="category" value="Bluetooth Examples"/>
+    <properties key="quality" value="development"/>
+  </descriptors>
+  <descriptors name="soc_handling_missing_bonding_keys" label="Bluetooth - SoC Handling Missing Bonding Keys" description="This example demonstrates two scenarios that can occur after a bond has been established between a smartphone and a Bluetooth-Capable EFR32. Case 1: Bonding keys are deletedfrom the smartphone. Potential causes include manually deleting the keys, software/factory reset, app malfunction. Case 2: Bonding keys are deleted from the EFR32. Potential causes include a full chip erase, running out of space for storing bonding keys (in which case the older keys can be deleted).&#xA;">
+    <properties key="namespace" value="template.uc"/>
+    <properties key="keywords" value="universal\ configurator"/>
+    <properties key="projectFilePaths" value="security/handling-missing-bonding-keys/SimplicityStudio/soc_handling_missing_bonding_keys.slcp"/>
+    <properties key="readmeFiles" value="security/handling-missing-bonding-keys/README.md"/>
+    <properties key="boardCompatibility" value="brd2601a brd2601b brd4100a brd4101a brd4101b brd4103a brd4104a brd4108a brd4111a brd4150a brd4150b brd4150c brd4151a brd4152a brd4153a brd4154a brd4155a brd4158a brd4159a brd4161a brd4162a brd4163a brd4164a brd4165b brd4166a brd4167a brd4168a brd4169a brd4169b brd4170a brd4171a brd4172a brd4172b brd4173a brd4174a brd4174b brd4175a brd4176a brd4177a brd4179b brd4180a brd4180b brd4181a brd4181b brd4181c brd4182a brd4183a brd4183b brd4183c brd4184a brd4184b brd4185a brd4186a brd4186b brd4186c brd4187a brd4187b brd4187c brd4188a brd4188b brd4190a brd4191a brd4194a brd4195a brd4196a brd4300a brd4300b brd4301a brd4302a brd4303a brd4304a brd4305a brd4305c brd4305d brd4305e brd4306a brd4306b brd4306c brd4306d brd4308a brd4308b brd4308c brd4308d brd4309a brd4309b brd4310a brd4311a brd4311b brd4312a brd4314a  brd4316a brd4317a brd4319a brd4330a brd4331a com.silabs.board.none"/>
+    <properties key="partCompatibility" value=".*bgm1.* .*bgm13.* .*bgm21.* .*bgm22.* .*bgm27.* .*efr32bg12p.* .*efr32bg13p.* .*efr32bg1b.* .*efr32bg1p.* .*efr32bg21.* .*efr32bg22.* .*efr32bg24.* .*efr32bg27.* .*efr32mg12p.* .*efr32mg13p.* .*efr32mg14p.* .*efr32mg1p.* .*efr32mg21.* .*efr32mg22.* .*efr32mg24.* .*efr32mg27.* .*mgm1.* .*mgm12.* .*mgm13.* .*mgm21.* .*mgm22.* .*mgm24.* .*mgm27.*"/>
+    <properties key="ideCompatibility" value="iar-embedded-workbench makefile-ide simplicity-ide"/>
+    <properties key="toolchainCompatibility" value="gcc iar segger"/>
+    <properties key="category" value="Bluetooth Examples"/>
+    <properties key="quality" value="development"/>
+  </descriptors>
+  <descriptors name="soc_oob_example_central" label="Bluetooth - SoC OOB Example Central" description="OOB (Out-Of-Band) pairing means, that the two devices to be paired exchange some secret on a medium other than Bluetooth, that is out-of-band. The secret information can be exchanged e.g. on NFC. In this example for the sake of simplicity the secret is exchanged manually by the user using terminal programs. This example is for central side.&#xA;">
+    <properties key="namespace" value="template.uc"/>
+    <properties key="keywords" value="universal\ configurator"/>
+    <properties key="projectFilePaths" value="security/oob-example/SimplicityStudio/soc_oob_example_central.slcp"/>
+    <properties key="readmeFiles" value="security/oob-example/README.md"/>
+    <properties key="boardCompatibility" value="brd2601a brd2601b brd4100a brd4101a brd4101b brd4103a brd4104a brd4108a brd4111a brd4150a brd4150b brd4150c brd4151a brd4152a brd4153a brd4154a brd4155a brd4158a brd4159a brd4161a brd4162a brd4163a brd4164a brd4165b brd4166a brd4167a brd4168a brd4169a brd4169b brd4170a brd4171a brd4172a brd4172b brd4173a brd4174a brd4174b brd4175a brd4176a brd4177a brd4179b brd4180a brd4180b brd4181a brd4181b brd4181c brd4182a brd4183a brd4183b brd4183c brd4184a brd4184b brd4185a brd4186a brd4186b brd4186c brd4187a brd4187b brd4187c brd4188a brd4188b brd4190a brd4191a brd4194a brd4195a brd4196a brd4300a brd4300b brd4301a brd4302a brd4303a brd4304a brd4305a brd4305c brd4305d brd4305e brd4306a brd4306b brd4306c brd4306d brd4308a brd4308b brd4308c brd4308d brd4309a brd4309b brd4310a brd4311a brd4311b brd4312a brd4314a  brd4316a brd4317a brd4319a brd4330a brd4331a com.silabs.board.none"/>
+    <properties key="partCompatibility" value=".*bgm1.* .*bgm13.* .*bgm21.* .*bgm22.* .*bgm27.* .*efr32bg12p.* .*efr32bg13p.* .*efr32bg1b.* .*efr32bg1p.* .*efr32bg21.* .*efr32bg22.* .*efr32bg24.* .*efr32bg27.* .*efr32mg12p.* .*efr32mg13p.* .*efr32mg14p.* .*efr32mg1p.* .*efr32mg21.* .*efr32mg22.* .*efr32mg24.* .*efr32mg27.* .*mgm1.* .*mgm12.* .*mgm13.* .*mgm21.* .*mgm22.* .*mgm24.* .*mgm27.*"/>
+    <properties key="ideCompatibility" value="iar-embedded-workbench makefile-ide simplicity-ide"/>
+    <properties key="toolchainCompatibility" value="gcc iar segger"/>
+    <properties key="category" value="Bluetooth Examples"/>
+    <properties key="quality" value="development"/>
+  </descriptors>
+  <descriptors name="soc_oob_example_peripheral" label="Bluetooth - SoC OOB Example Peripheral" description="OOB (Out-Of-Band) pairing means, that the two devices to be paired exchange some secret on a medium other than Bluetooth, that is out-of-band. The secret information can be exchanged e.g. on NFC. In this example for the sake of simplicity the secret is exchanged manually by the user using terminal programs. This example is for peripheral side.&#xA;">
+    <properties key="namespace" value="template.uc"/>
+    <properties key="keywords" value="universal\ configurator"/>
+    <properties key="projectFilePaths" value="security/oob-example/SimplicityStudio/soc_oob_example_peripheral.slcp"/>
+    <properties key="readmeFiles" value="security/oob-example/README.md"/>
+    <properties key="boardCompatibility" value="brd2601a brd2601b brd4100a brd4101a brd4101b brd4103a brd4104a brd4108a brd4111a brd4150a brd4150b brd4150c brd4151a brd4152a brd4153a brd4154a brd4155a brd4158a brd4159a brd4161a brd4162a brd4163a brd4164a brd4165b brd4166a brd4167a brd4168a brd4169a brd4169b brd4170a brd4171a brd4172a brd4172b brd4173a brd4174a brd4174b brd4175a brd4176a brd4177a brd4179b brd4180a brd4180b brd4181a brd4181b brd4181c brd4182a brd4183a brd4183b brd4183c brd4184a brd4184b brd4185a brd4186a brd4186b brd4186c brd4187a brd4187b brd4187c brd4188a brd4188b brd4190a brd4191a brd4194a brd4195a brd4196a brd4300a brd4300b brd4301a brd4302a brd4303a brd4304a brd4305a brd4305c brd4305d brd4305e brd4306a brd4306b brd4306c brd4306d brd4308a brd4308b brd4308c brd4308d brd4309a brd4309b brd4310a brd4311a brd4311b brd4312a brd4314a  brd4316a brd4317a brd4319a brd4330a brd4331a com.silabs.board.none"/>
+    <properties key="partCompatibility" value=".*bgm1.* .*bgm13.* .*bgm21.* .*bgm22.* .*bgm27.* .*efr32bg12p.* .*efr32bg13p.* .*efr32bg1b.* .*efr32bg1p.* .*efr32bg21.* .*efr32bg22.* .*efr32bg24.* .*efr32bg27.* .*efr32mg12p.* .*efr32mg13p.* .*efr32mg14p.* .*efr32mg1p.* .*efr32mg21.* .*efr32mg22.* .*efr32mg24.* .*efr32mg27.* .*mgm1.* .*mgm12.* .*mgm13.* .*mgm21.* .*mgm22.* .*mgm24.* .*mgm27.*"/>
+    <properties key="ideCompatibility" value="iar-embedded-workbench makefile-ide simplicity-ide"/>
+    <properties key="toolchainCompatibility" value="gcc iar segger"/>
+    <properties key="category" value="Bluetooth Examples"/>
+    <properties key="quality" value="development"/>
+  </descriptors>
+  <descriptors name="soc_pairing_processes_example" label="Bluetooth - SoC Pairing Processes Example" description="This code example is created to demonstrate different Bluetooth pairing processes and help implement firmware, which is able to securely connect to other Bluetooth devices. Read https://docs.silabs.com/bluetooth/latest/general/security/pairing-processes to get a better understanding of the processes.&#xA;">
+    <properties key="namespace" value="template.uc"/>
+    <properties key="keywords" value="universal\ configurator"/>
+    <properties key="projectFilePaths" value="security/pairing_processes_example/SimplicityStudio/soc_pairing_processes_example.slcp"/>
+    <properties key="readmeFiles" value="security/pairing_processes_example/README.md"/>
+    <properties key="boardCompatibility" value="brd2601a brd2601b brd4100a brd4101a brd4101b brd4103a brd4104a brd4108a brd4111a brd4150a brd4150b brd4150c brd4151a brd4152a brd4153a brd4154a brd4155a brd4158a brd4159a brd4161a brd4162a brd4163a brd4164a brd4165b brd4166a brd4167a brd4168a brd4169a brd4169b brd4170a brd4171a brd4172a brd4172b brd4173a brd4174a brd4174b brd4175a brd4176a brd4177a brd4179b brd4180a brd4180b brd4181a brd4181b brd4181c brd4182a brd4183a brd4183b brd4183c brd4184a brd4184b brd4185a brd4186a brd4186b brd4186c brd4187a brd4187b brd4187c brd4188a brd4188b brd4190a brd4191a brd4194a brd4195a brd4196a brd4300a brd4300b brd4301a brd4302a brd4303a brd4304a brd4305a brd4305c brd4305d brd4305e brd4306a brd4306b brd4306c brd4306d brd4308a brd4308b brd4308c brd4308d brd4309a brd4309b brd4310a brd4311a brd4311b brd4312a brd4314a  brd4316a brd4317a brd4319a brd4330a brd4331a com.silabs.board.none" />
+    <properties key="partCompatibility" value=".*bgm1.* .*bgm13.* .*bgm21.* .*bgm22.* .*bgm27.* .*efr32bg12p.* .*efr32bg13p.* .*efr32bg1b.* .*efr32bg1p.* .*efr32bg21.* .*efr32bg22.* .*efr32bg24.* .*efr32bg27.* .*efr32mg12p.* .*efr32mg13p.* .*efr32mg14p.* .*efr32mg1p.* .*efr32mg21.* .*efr32mg22.* .*efr32mg24.* .*efr32mg27.* .*mgm1.* .*mgm12.* .*mgm13.* .*mgm21.* .*mgm22.* .*mgm24.* .*mgm27.*"/>
+    <properties key="ideCompatibility" value="iar-embedded-workbench makefile-ide simplicity-ide"/>
+    <properties key="toolchainCompatibility" value="gcc iar segger"/>
+    <properties key="category" value="Bluetooth Examples"/>
+    <properties key="quality" value="development"/>
+  </descriptors>
+  <descriptors name="soc_testing_tx_power_levels" label="Bluetooth - SoC Testing TX Power Levels" description="The command sl_bt_system_set_tx_power can be used to set the global minimum and maximum radiated TX power levels for Bluetooth, but the value which is actually set by the Bluetooth stack may not be the same as the input to the command. The actual set value can be read from the command response.This example iterates through a power level range between a minimum and a maximum value given to sl_bt_system_set_tx_power command and prints out both the input parameter and the response.&#xA;">
+    <properties key="namespace" value="template.uc"/>
+    <properties key="keywords" value="universal\ configurator"/>
+    <properties key="projectFilePaths" value="system_and_performance/testing_tx_power_levels/SimplicityStudio/soc_testing_tx_power_levels.slcp"/>
+    <properties key="readmeFiles" value="system_and_performance/testing_tx_power_levels/README.md"/>
+    <properties key="boardCompatibility" value="brd2601a brd2601b brd4100a brd4101a brd4101b brd4103a brd4104a brd4108a brd4111a brd4150a brd4150b brd4150c brd4151a brd4152a brd4153a brd4154a brd4155a brd4158a brd4159a brd4161a brd4162a brd4163a brd4164a brd4165b brd4166a brd4167a brd4168a brd4169a brd4169b brd4170a brd4171a brd4172a brd4172b brd4173a brd4174a brd4174b brd4175a brd4176a brd4177a brd4179b brd4180a brd4180b brd4181a brd4181b brd4181c brd4182a brd4183a brd4183b brd4183c brd4184a brd4184b brd4185a brd4186a brd4186b brd4186c brd4187a brd4187b brd4187c brd4188a brd4188b brd4190a brd4191a brd4194a brd4195a brd4196a brd4300a brd4300b brd4301a brd4302a brd4303a brd4304a brd4305a brd4305c brd4305d brd4305e brd4306a brd4306b brd4306c brd4306d brd4308a brd4308b brd4308c brd4308d brd4309a brd4309b brd4310a brd4311a brd4311b brd4312a brd4314a  brd4316a brd4317a brd4319a brd4330a brd4331a com.silabs.board.none"/>
+    <properties key="partCompatibility" value=".*bgm1.* .*bgm13.* .*bgm21.* .*bgm22.* .*bgm27.* .*efr32bg12p.* .*efr32bg13p.* .*efr32bg1b.* .*efr32bg1p.* .*efr32bg21.* .*efr32bg22.* .*efr32bg24.* .*efr32bg27.* .*efr32mg12p.* .*efr32mg13p.* .*efr32mg14p.* .*efr32mg1p.* .*efr32mg21.* .*efr32mg22.* .*efr32mg24.* .*efr32mg27.* .*mgm1.* .*mgm12.* .*mgm13.* .*mgm21.* .*mgm22.* .*mgm24.* .*mgm27.*"/>
+    <properties key="ideCompatibility" value="iar-embedded-workbench makefile-ide simplicity-ide"/>
+    <properties key="toolchainCompatibility" value="gcc iar segger"/>
+    <properties key="category" value="Bluetooth Examples"/>
+    <properties key="quality" value="development"/>
+  </descriptors>
+  <descriptors name="ncp_application_level_ota" label="Bluetooth - NCP Application level OTA" description="This example show how to upload new firmware Over-The-Air using application-level OTA in NCP mode. &#xA;">
+    <properties key="namespace" value="template.uc"/>
+    <properties key="keywords" value="universal\ configurator"/>
+    <properties key="projectFilePaths" value="firmware_upgrade/ota_dfu_options_for_ncp_based_designs/SimplicityStudio/ncp_application_level_ota.slcp"/>
+    <properties key="readmeFiles" value="firmware_upgrade/ota_dfu_options_for_ncp_based_designs/README.md"/>
+    <properties key="boardCompatibility" value="brd2601a brd2601b brd4100a brd4101a brd4101b brd4103a brd4104a brd4108a brd4111a brd4150a brd4150b brd4150c brd4151a brd4152a brd4153a brd4154a brd4155a brd4158a brd4159a brd4161a brd4162a brd4163a brd4164a brd4165b brd4166a brd4167a brd4168a brd4169a brd4169b brd4170a brd4171a brd4172a brd4172b brd4173a brd4174a brd4174b brd4175a brd4176a brd4177a brd4179b brd4180a brd4180b brd4181a brd4181b brd4181c brd4182a brd4183a brd4183b brd4183c brd4184a brd4184b brd4185a brd4186a brd4186b brd4186c brd4187a brd4187b brd4187c brd4188a brd4188b brd4190a brd4191a brd4194a brd4195a brd4196a brd4300a brd4300b brd4301a brd4302a brd4303a brd4304a brd4305a brd4305c brd4305d brd4305e brd4306a brd4306b brd4306c brd4306d brd4308a brd4308b brd4308c brd4308d brd4309a brd4309b brd4310a brd4311a brd4311b brd4312a brd4314a  brd4316a brd4317a brd4319a brd4330a brd4331a com.silabs.board.none"/>
+    <properties key="partCompatibility" value=".*bgm1.* .*bgm13.* .*bgm21.* .*bgm22.* .*bgm27.* .*efr32bg12p.* .*efr32bg13p.* .*efr32bg1b.* .*efr32bg1p.* .*efr32bg21.* .*efr32bg22.* .*efr32bg24.* .*efr32bg27.* .*efr32mg12p.* .*efr32mg13p.* .*efr32mg14p.* .*efr32mg1p.* .*efr32mg21.* .*efr32mg22.* .*efr32mg24.* .*efr32mg27.* .*mgm1.* .*mgm12.* .*mgm13.* .*mgm21.* .*mgm22.* .*mgm24.* .*mgm27.*"/>
+    <properties key="ideCompatibility" value="iar-embedded-workbench makefile-ide simplicity-ide"/>
+    <properties key="toolchainCompatibility" value="gcc iar segger"/>
+    <properties key="category" value="Bluetooth Examples"/>
+    <properties key="quality" value="development"/>
+  </descriptors>
+</model:MDescriptors>

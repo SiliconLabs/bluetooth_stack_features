@@ -1,0 +1,69 @@
+project_name: soc_chained_advertisement_scanner
+package: Bluetooth
+label: Bluetooth - SoC Chained Advertisement Scanner
+description: >
+  This example shows how to scanner work in chained advertisement.
+  Chained advertising allows advertising packets to be linked or chained together to allow for larger advertisements, up to 1650 bytes, to be sent.
+  A new packet type, AUX_CHAIN_IND, is used to transmit the individual portions of these advertisements.
+  Chained advertising works together with Extended advertising and Periodic advertising.
+  The following example allows a synchronizer, i.e., the receiver of a periodic advertisement,
+  to synchronize to a chained periodic advertisement and begin receiving these advertisements.
+category: Bluetooth Examples
+quality: development
+
+component:
+  - id: bluetooth_stack
+  - id: gatt_configuration
+  - id: bluetooth_feature_connection
+  - id: bluetooth_feature_gatt
+  - id: bluetooth_feature_gatt_server
+  - id: bluetooth_feature_scanner
+  - id: bluetooth_feature_sm
+  - id: bluetooth_feature_system
+  - id: in_place_ota_dfu
+  - id: bootloader_interface
+  - id: rail_util_pti
+  - id: app_assert
+  - id: component_catalog
+  - id: mpu
+  - id: bluetooth_feature_sync
+  - id: bluetooth_feature_extended_scanner
+  - id: iostream_usart
+    instance:
+    - vcom
+  - id: iostream_retarget_stdio
+  - id: app_log
+
+source:
+  - path: ../src/scanner/app.c
+  - path: ../src/scanner/main.c
+
+include:
+  - path: .
+    file_list:
+    - path: ../inc/scanner/app.h
+
+readme:
+  - path: ./readme.md
+
+
+configuration:
+  - name: SL_STACK_SIZE
+    value: "2752"
+  - name: SL_HEAP_SIZE
+    value: "9200"
+  - name: SL_BT_CONFIG_BUFFER_SIZE
+    value: "4800"
+  - name: SL_BT_CONFIG_MAX_PERIODIC_ADVERTISING_SYNC
+    value: "1"
+  - name: SL_BOARD_ENABLE_VCOM
+    value: 1
+
+tag:
+  - hardware:rf:band:2400
+
+ui_hints:
+  highlight:
+    - path: config/btconf/gatt_configuration.btconf
+    - path: readme.md
+      focus: true

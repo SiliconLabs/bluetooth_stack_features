@@ -23,17 +23,16 @@
 static uint32_t counter = 0;
 
 int __match(
-  const sl_bt_evt_scanner_scan_report_t *rsp,
+  const sl_bt_evt_scanner_extended_advertisement_report_t *rsp,
   rsp_t *r)
 {
   return ((rsp->address_type == r->data.address_type)
           && (!memcmp(rsp->address.addr, r->data.address.addr, 6))
-          && (rsp->packet_type == r->data.packet_type)
           && (rsp->data.len == r->data.data.len)
           && (!memcmp(rsp->data.data, r->data.data.data, rsp->data.len)));
 }
 
-void __copy(const sl_bt_evt_scanner_scan_report_t *rsp,
+void __copy(const sl_bt_evt_scanner_extended_advertisement_report_t *rsp,
                           rsp_t *r)
 {
   memcpy(&r->data, rsp,
@@ -45,7 +44,7 @@ void update_counter(rsp_t *r)
   r->counter = counter;
 }
 
-rsp_t *find_rsp(rsp_queue_t *rsp_queue, const sl_bt_evt_scanner_scan_report_t *rsp)
+rsp_t *find_rsp(rsp_queue_t *rsp_queue, const sl_bt_evt_scanner_extended_advertisement_report_t *rsp)
 {
   rsp_t *r;
 
@@ -111,7 +110,7 @@ void remove_item(rsp_queue_t *rsp_queue, rsp_t *r)
   }
 }
 
-int insert_rsp(rsp_queue_t *rsp_queue, const sl_bt_evt_scanner_scan_report_t *rsp)
+int insert_rsp(rsp_queue_t *rsp_queue, const sl_bt_evt_scanner_extended_advertisement_report_t *rsp)
 {
   rsp_t *r;
   if (rsp_queue->num == MAX_RSP_NUM) {

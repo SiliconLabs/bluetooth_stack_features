@@ -21,6 +21,12 @@
 #include "app.h"
 #include "app_log.h"
 
+
+#define SIGNAL_NOTIFY_HEX    1
+#define SIGNAL_NOTIFY_USER   2
+
+#define TICKS_PER_SECOND    32768
+
 // The advertising set handle allocated from Bluetooth stack.
 static uint8_t advertising_set_handle = 0xff;
 static uint8_t conn_handle = 0xff;
@@ -28,6 +34,9 @@ static uint8_t conn_handle = 0xff;
 static uint8_t user_char_buf[4] = { 0x02, 0x04, 0x08, 0x0A };
 
 static void notify(uint16_t which);
+
+sl_sleeptimer_timer_handle_t timer_handle_user, timer_handle_hex;
+void sleeptimer_callback(sl_sleeptimer_timer_handle_t *handle, void *data);
 
 /**************************************************************************//**
  * Application Init.
@@ -71,7 +80,7 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
     // Do not call any stack command before receiving this boot event!
     case sl_bt_evt_system_boot_id:
       // Print boot message.
-      app_log("Bluetooth stack booted: v%d.%d.%d-b%d\n",
+      app_log_info("Bluetooth stack booted: v%d.%d.%d-b%d\n",
                  evt->data.evt_system_boot.major,
                  evt->data.evt_system_boot.minor,
                  evt->data.evt_system_boot.patch,
@@ -79,9 +88,7 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
 
       // Extract unique ID from BT Address.
       sc = sl_bt_system_get_identity_address(&address, &address_type);
-      app_assert(sc == SL_STATUS_OK,
-                    "[E: 0x%04x] Failed to get Bluetooth address\n",
-                    (int)sc);
+      app_assert_status(sc);
 
       // Pad and reverse unique ID to get System ID.
       system_id[0] = address.addr[5];
@@ -93,7 +100,7 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
       system_id[6] = address.addr[1];
       system_id[7] = address.addr[0];
 
-      app_log("Bluetooth %s address: %02X:%02X:%02X:%02X:%02X:%02X\n",
+      app_log_info("Bluetooth %s address: %02X:%02X:%02X:%02X:%02X:%02X\n",
                  address_type ? "static random" : "public device",
                  address.addr[5],
                  address.addr[4],
@@ -106,17 +113,13 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
                                                    0,
                                                    sizeof(system_id),
                                                    system_id);
-      app_assert(sc == SL_STATUS_OK,
-                    "[E: 0x%04x] Failed to write attribute\n",
-                    (int)sc);
+      app_assert_status(sc);
 
-      app_log("boot event - starting advertising\r\n");
+      app_log_info("boot event - starting advertising\r\n");
 
       // Create an advertising set.
       sc = sl_bt_advertiser_create_set(&advertising_set_handle);
-      app_assert(sc == SL_STATUS_OK,
-                    "[E: 0x%04x] Failed to create advertising set\n",
-                    (int)sc);
+      app_assert_status(sc);
 
       // Set advertising interval to 100ms.
       sc = sl_bt_advertiser_set_timing(
@@ -125,45 +128,38 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
         160, // max. adv. interval (milliseconds * 1.6)
         0,   // adv. duration
         0);  // max. num. adv. events
-      app_assert(sc == SL_STATUS_OK,
-                    "[E: 0x%04x] Failed to set advertising timing\n",
-                    (int)sc);
-      // Start general advertising and enable connections.
+      app_assert_status(sc);
+
       sc = sl_bt_legacy_advertiser_generate_data(advertising_set_handle,
                                                  advertiser_general_discoverable);
-      app_assert(sc == SL_STATUS_OK,
-                    "[E: 0x%04x] Failed to generate data\n",
-                    (int)sc);
-      sc = sl_bt_legacy_advertiser_start(advertising_set_handle,
-                                         advertiser_connectable_scannable);
-      app_assert(sc == SL_STATUS_OK,
-                    "[E: 0x%04x] Failed to start advertising\n",
-                    (int)sc);
+      app_assert_status(sc);
+
+      // Start general advertising and enable connections.
+      sc = sl_bt_legacy_advertiser_start(
+        advertising_set_handle,
+        advertiser_connectable_scannable);
+      app_assert_status(sc);
       break;
 
     // -------------------------------
     // This event indicates that a new connection was opened.
     case sl_bt_evt_connection_opened_id:
-      app_log("connection opened\r\n");
+      app_log_info("connection opened\r\n");
       conn_handle = evt->data.evt_connection_opened.connection;
       break;
 
     // -------------------------------
     // This event indicates that a connection was closed.
     case sl_bt_evt_connection_closed_id:
-      app_log("connection closed, reason: 0x%2.2x\r\n", evt->data.evt_connection_closed.reason);
+      app_log_info("connection closed, reason: 0x%2.2x\r\n", evt->data.evt_connection_closed.reason);
       conn_handle = 0xff;
+      sl_sleeptimer_stop_timer(&timer_handle_hex);
+      sl_sleeptimer_stop_timer(&timer_handle_user);
       // Restart advertising after client has disconnected.
-      sc = sl_bt_legacy_advertiser_generate_data(advertising_set_handle,
-                                                 advertiser_general_discoverable);
-      app_assert(sc == SL_STATUS_OK,
-                    "[E: 0x%04x] Failed to generate data\n",
-                    (int)sc);
-      sc = sl_bt_legacy_advertiser_start(advertising_set_handle,
-                                         advertiser_connectable_scannable);
-      app_assert(sc == SL_STATUS_OK,
-                    "[E: 0x%04x] Failed to start advertising\n",
-                    (int)sc);
+      sc = sl_bt_legacy_advertiser_start(
+        advertising_set_handle,
+        advertiser_connectable_scannable);
+      app_assert_status(sc);
       break;
 
       /* TAG: when the remote device subscribes for notification,
@@ -180,25 +176,37 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
           break;
         }
         /* use the gattdb handle as the timer handle here */
-        sc = sl_bt_system_set_soft_timer(
-            evt->data.evt_gatt_server_characteristic_status.client_config_flags
-            ? 32768 * 3 : 0,
-            evt->data.evt_gatt_server_characteristic_status.characteristic,
-            0);
-        app_assert(sc == SL_STATUS_OK,
-                      "[E: 0x%04x] Failed to start/stop software timer\n",
-                      (int)sc);
+        if(evt->data.evt_gatt_server_characteristic_status.client_config_flags){
+            if(evt->data.evt_gatt_server_characteristic_status.characteristic == gattdb_vt_user){
+                sl_sleeptimer_start_periodic_timer(&timer_handle_user,
+                   3* TICKS_PER_SECOND, sleeptimer_callback, (void*)NULL, 0, 0);
+            }else if(evt->data.evt_gatt_server_characteristic_status.characteristic == gattdb_vt_hex){
+                sl_sleeptimer_start_periodic_timer(&timer_handle_hex,
+                   3* TICKS_PER_SECOND, sleeptimer_callback, (void*)NULL, 0, 0);
+            }
+        } else {
+            if(evt->data.evt_gatt_server_characteristic_status.characteristic == gattdb_vt_user){
+                sl_sleeptimer_stop_timer(&timer_handle_user);
+            }else if(evt->data.evt_gatt_server_characteristic_status.characteristic == gattdb_vt_hex){
+                sl_sleeptimer_stop_timer(&timer_handle_hex);
+            }
+        }
       break;
 
-      case sl_bt_evt_system_soft_timer_id:
-        notify(evt->data.evt_system_soft_timer.handle);
+      case sl_bt_evt_system_external_signal_id:
+        if(evt->data.evt_system_external_signal.extsignals & SIGNAL_NOTIFY_HEX){
+            notify(gattdb_vt_hex);
+        }
+        if(evt->data.evt_system_external_signal.extsignals & SIGNAL_NOTIFY_USER){
+            notify(gattdb_vt_user);
+        }
         break;
 
       /* TAG: When a "hex" type characteristic is written, the Bluetooth stack
        * stores the value and notifies the application about the change with this event */
       case sl_bt_evt_gatt_server_attribute_value_id:
         if (evt->data.evt_gatt_server_attribute_value.attribute == gattdb_vt_hex) {
-          app_log("Characterisitic <%u> value changed by a remote request.\n"
+          app_log_info("Characteristic <%u> value changed by a remote request.\n"
                    "Application callback here\n", gattdb_vt_hex);
         }
         break;
@@ -217,9 +225,7 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
             sizeof(user_char_buf) - evt->data.evt_gatt_server_user_read_request.offset,
             user_char_buf + evt->data.evt_gatt_server_user_read_request.offset,
             &sent_len);
-          app_assert(sc == SL_STATUS_OK,
-                        "[E: 0x%04x] Failed to send a read response\n",
-                        (int)sc);
+          app_assert_status(sc);
         }
       }
       break;
@@ -238,17 +244,13 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
               evt->data.evt_gatt_server_user_write_request.connection,
               evt->data.evt_gatt_server_user_write_request.characteristic,
               (uint8_t)SL_STATUS_OK);
-            app_assert(sc == SL_STATUS_OK,
-                          "[E: 0x%04x] Failed to send a write response\n",
-                          (int)sc);
+            app_assert_status(sc);
           } else {
             sc = sl_bt_gatt_server_send_user_write_response(
               evt->data.evt_gatt_server_user_write_request.connection,
               evt->data.evt_gatt_server_user_write_request.characteristic,
               (uint8_t)SL_STATUS_BT_ATT_INVALID_ATT_LENGTH);
-            app_assert(sc == SL_STATUS_OK,
-                          "[E: 0x%04x] Failed to send a write response\n",
-                          (int)sc);
+            app_assert_status(sc);
           }
         }
         break;
@@ -281,9 +283,7 @@ static void notify(uint16_t which)
                                               which,
                                               sizeof(user_char_buf),
                                               user_char_buf);
-    app_assert(sc == SL_STATUS_OK,
-                  "[E: 0x%04x] Failed to send a notification\n",
-                  (int)sc);
+    app_assert_status(sc);
     user_char_buf[0]++;
   } else if (which  == gattdb_vt_hex) {
     /* TAG: Example of sending notification for a "hex" characteristic value and
@@ -294,25 +294,40 @@ static void notify(uint16_t which)
                                                  4,
                                                  &len,
                                                  data);
-    app_assert(sc == SL_STATUS_OK,
-                  "[E: 0x%04x] Failed to read attribute\n",
-                  (int)sc);
+    app_assert_status(sc);
     memcpy(tmp, data, 4);
 
     sc = sl_bt_gatt_server_send_notification(conn_handle,
                                               which,
                                               4,
                                               tmp);
-    app_assert(sc == SL_STATUS_OK,
-                  "[E: 0x%04x] Failed to send a notification\n",
-                  (int)sc);
+    app_assert_status(sc);
     tmp[0]++;
     sc = sl_bt_gatt_server_write_attribute_value(which,
                                                   0,
                                                   1,
                                                   tmp);
-    app_assert(sc == SL_STATUS_OK,
-                  "[E: 0x%04x] Failed to write attribute\n",
-                  (int)sc);
+    app_assert_status(sc);
   }
+}
+
+/***************************************************************************//**
+ * Sleeptimer callback
+ *
+ * Note: This function is called from interrupt context
+ *
+ * @param[in] handle Handle of the sleeptimer instance
+ * @param[in] data  Callback data
+ ******************************************************************************/
+void sleeptimer_callback(sl_sleeptimer_timer_handle_t *handle, void *data){
+
+  (void)data;
+
+  if(handle == &timer_handle_hex){
+    sl_bt_external_signal(SIGNAL_NOTIFY_HEX);
+  }
+  else{
+    sl_bt_external_signal(SIGNAL_NOTIFY_USER);
+  }
+
 }

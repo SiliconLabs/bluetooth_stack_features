@@ -1,0 +1,67 @@
+project_name: soc_oob_example_peripheral
+package: Bluetooth
+label: Bluetooth - SoC OOB Example Peripheral
+description: >
+  OOB (Out-Of-Band) pairing means, that the two devices to be paired exchange some secret on a medium other than Bluetooth,
+  that is out-of-band. The secret information can be exchanged e.g. on NFC. In this example for the sake of simplicity the
+  secret is exchanged manually by the user using terminal programs. This example is for peripheral side.
+category: Bluetooth Examples
+quality: development
+
+component:
+  - id: bluetooth_stack
+  - id: gatt_configuration
+  - id: bluetooth_feature_legacy_advertiser
+  - id: bluetooth_feature_connection
+  - id: bluetooth_feature_gatt
+  - id: bluetooth_feature_gatt_server
+  - id: bluetooth_feature_scanner
+  - id: bluetooth_feature_sm
+  - id: bluetooth_feature_system
+  - id: in_place_ota_dfu
+  - id: bootloader_interface
+  - id: rail_util_pti
+  - id: app_assert
+  - id: component_catalog
+  - id: mpu
+  - id: iostream_usart
+    instance:
+    - vcom
+  - id: iostream_retarget_stdio
+  - id: app_log
+
+source:
+  - path: ../src/peripheral/app.c
+  - path: ../src/peripheral/main.c
+
+include:
+  - path: .
+    file_list:
+    - path: ../inc/peripheral/app.h
+
+readme:
+  - path: ./readme.md
+
+config_file:
+  - override:
+      component: gatt_configuration
+      file_id: gatt_configuration_file_id
+    path: ../config/gatt_configuration.btconf
+    directory: btconf
+
+configuration:
+  - name: SL_STACK_SIZE
+    value: "2752"
+  - name: SL_HEAP_SIZE
+    value: "9200"
+  - name: SL_BOARD_ENABLE_VCOM
+    value: 1
+
+tag:
+  - hardware:rf:band:2400
+
+ui_hints:
+  highlight:
+    - path: config/btconf/gatt_configuration.btconf
+    - path: readme.md
+      focus: true

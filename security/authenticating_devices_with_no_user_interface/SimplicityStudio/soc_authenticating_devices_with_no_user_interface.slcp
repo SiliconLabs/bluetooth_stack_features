@@ -1,0 +1,62 @@
+project_name: soc_authenticating_devices_with_no_user_interface
+package: Bluetooth
+label: Bluetooth - SoC Authenticating Devices With No User Interface
+description: >
+  A common problem with Bluetooth devices is that they often have no user interface,
+  other than the Bluetooth connection, but still need to support authentication.
+  This example demonstrates one method to accomplish this.
+category: Bluetooth Examples
+quality: development
+
+component:
+  - id: bluetooth_stack
+  - id: gatt_configuration
+  - id: bluetooth_feature_legacy_advertiser
+  - id: bluetooth_feature_connection
+  - id: bluetooth_feature_gatt
+  - id: bluetooth_feature_gatt_server
+  - id: bluetooth_feature_scanner
+  - id: bluetooth_feature_sm
+  - id: bluetooth_feature_system
+  - id: in_place_ota_dfu
+  - id: bootloader_interface
+  - id: rail_util_pti
+  - id: app_assert
+  - id: component_catalog
+  - id: mpu
+  - id: mbedtls_hash
+  - id: iostream_usart
+    instance:
+    - vcom
+  - id: iostream_retarget_stdio
+  - id: app_log
+
+source:
+  - path: ../src/app.c
+  - path: ../src/main.c
+
+include:
+  - path: .
+    file_list:
+    - path: ../inc/app.h
+
+readme:
+  - path: ./readme.md
+
+
+configuration:
+  - name: SL_STACK_SIZE
+    value: "2752"
+  - name: SL_HEAP_SIZE
+    value: "9200"
+  - name: SL_BOARD_ENABLE_VCOM
+    value: 1
+
+tag:
+  - hardware:rf:band:2400
+
+ui_hints:
+  highlight:
+    - path: config/btconf/gatt_configuration.btconf
+    - path: readme.md
+      focus: true

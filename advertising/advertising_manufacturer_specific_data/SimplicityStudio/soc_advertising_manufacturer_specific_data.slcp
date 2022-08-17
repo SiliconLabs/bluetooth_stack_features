@@ -1,0 +1,68 @@
+project_name: soc_advertising_manufacturer_specific_data
+package: Bluetooth
+label: Bluetooth - SoC Advertising Manufacturer Specific Data
+description: >
+  This example focuses on a Manufacturer-Specific Data (type 0xFF) as a specific advertising type.
+category: Bluetooth Examples
+quality: development
+
+component:
+  - id: bluetooth_stack
+  - id: gatt_configuration
+  - id: bluetooth_feature_legacy_advertiser
+  - id: bluetooth_feature_connection
+  - id: bluetooth_feature_gatt
+  - id: bluetooth_feature_gatt_server
+  - id: bluetooth_feature_scanner
+  - id: bluetooth_feature_sm
+  - id: bluetooth_feature_system
+  - id: in_place_ota_dfu
+  - id: bootloader_interface
+  - id: rail_util_pti
+  - id: app_assert
+  - id: component_catalog
+  - id: mpu
+  - id: simple_button
+    instance:
+      - btn0
+      - btn1
+  - id: iostream_usart
+    instance:
+      - vcom
+  - id: iostream_retarget_stdio
+  - id: app_log
+
+source:
+  - path: ../src/app.c
+  - path: ../src/custom_adv.c
+  - path: ../src/main.c
+
+include:
+  - path: .
+    file_list:
+    - path: ../inc/app.h
+    - path: ../inc/custom_adv.h
+
+readme:
+  - path: ./readme.md
+
+
+
+configuration:
+  - name: SL_STACK_SIZE
+    value: "2752"
+  - name: SL_HEAP_SIZE
+    value: "9200"
+  - name: SL_BOARD_ENABLE_VCOM
+    value: "1"
+    condition:
+      - iostream_usart
+
+tag:
+  - hardware:rf:band:2400
+
+ui_hints:
+  highlight:
+    - path: config/btconf/gatt_configuration.btconf
+    - path: readme.md
+      focus: true

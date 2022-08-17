@@ -44,6 +44,10 @@ static const WDOG_Init_TypeDef init =
  .perSel = wdogPeriod_2k,    /* Set the watchdog period to 2049 clock periods (ie ~2 seconds)*/
 };
 
+sl_sleeptimer_timer_handle_t wdog_timer;
+
+void sleeptimer_callback(sl_sleeptimer_timer_handle_t *handle, void *data);
+
 /***************************************************************************//**
  * Application Init.
  ******************************************************************************/
@@ -68,11 +72,9 @@ SL_WEAK void app_init(void)
   // init Watchdog driver
   WDOG_Init(&init);
 
-  // Start the software timer to feed the watchdog every 1s
-  sc = sl_bt_system_set_soft_timer(TICKS_PER_SECOND,0,0);
-  app_assert(sc == SL_STATUS_OK,
-                "[E: 0x%04x] Failed to start soft timer\n",
-                (int)sc);
+  // Start the timer to feed the watchdog every 1s
+  sc = sl_sleeptimer_start_periodic_timer(&wdog_timer, TICKS_PER_SECOND, sleeptimer_callback, (void*)NULL, 0, 0);
+  app_assert_status(sc);
 }
 
 /**************************************************************************//**
@@ -139,32 +141,16 @@ void sl_ncp_user_cmd_message_to_target_cb(void *data)
   }
 }
 
-/**************************************************************************//**
- * Local event processor.
+/***************************************************************************//**
+ * Sleeptimer callback
  *
- * Use this function to process Bluetooth stack events locally on NCP.
- * Set the return value to true, if the event should be forwarded to the
- * NCP-host. Otherwise, the event is discarded locally.
- * Implement your own function to override this default weak implementation.
- *
- * @param[in] evt The event.
- *
- * @return true, if we shall send the event to the host. This is the default.
- *
- * @note Weak implementation.
- *****************************************************************************/
-bool sl_ncp_local_evt_process(sl_bt_msg_t *evt)
-{
-  bool return_value = true;
+ * @param[in] handle Handle of the sleeptimer instance
+ * @param[in] data  Callback data
+ ******************************************************************************/
+void sleeptimer_callback(sl_sleeptimer_timer_handle_t *handle, void *data){
+  (void)handle;
+  (void)data;
 
-  switch (SL_BT_MSG_ID(evt->header)) {
-    // -------------------------------
-    // This event is actived by the software timer
-    case sl_bt_evt_system_soft_timer_id:
-      // Feed the watchdog
-      WDOG_Feed();
-      break;
-  }
+  WDOG_Feed();
 
-  return return_value;
 }

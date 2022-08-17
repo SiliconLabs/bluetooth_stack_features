@@ -1,0 +1,71 @@
+project_name: soc_using_characteristics_value_types
+package: Bluetooth
+label: Bluetooth - SoC - Using Characteristics Value Types
+description: >
+  This is the example code for the Different Value Types of Characteristics,
+  which demonstrates below features: 1) Write and read a characteristic with value
+  type "Hex". 2) Write and read a characteristic with value type "User". 3) If notification
+  to the characteristic are enabled, it sends a notification for every 3 seconds and
+  increments the first byte. 4) By searching the keyword "TAG", you will easily find the
+  place for handling the operations above.
+category: Bluetooth Examples
+quality: development
+
+component:
+  - id: bluetooth_stack
+  - id: gatt_configuration
+  - id: bluetooth_feature_legacy_advertiser
+  - id: bluetooth_feature_connection
+  - id: bluetooth_feature_gatt
+  - id: bluetooth_feature_gatt_server
+  - id: bluetooth_feature_scanner
+  - id: bluetooth_feature_sm
+  - id: bluetooth_feature_system
+  - id: in_place_ota_dfu
+  - id: bootloader_interface
+  - id: rail_util_pti
+  - id: app_assert
+  - id: component_catalog
+  - id: mpu
+  - id: iostream_usart
+    instance:
+    - vcom
+  - id: iostream_retarget_stdio
+  - id: app_log
+
+source:
+  - path: ../src/app.c
+  - path: ../src/main.c
+
+include:
+  - path: .
+    file_list:
+    - path: ../inc/app.h
+
+readme:
+  - path: ./readme.md
+
+config_file:
+  - override:
+      component: gatt_configuration
+      file_id: gatt_configuration_file_id
+    path: ../config/gatt_configuration.btconf
+    directory: btconf
+
+
+configuration:
+  - name: SL_STACK_SIZE
+    value: "2752"
+  - name: SL_HEAP_SIZE
+    value: "9200"
+  - name: SL_BOARD_ENABLE_VCOM
+    value: 1
+
+tag:
+  - hardware:rf:band:2400
+
+ui_hints:
+  highlight:
+    - path: config/btconf/gatt_configuration.btconf
+    - path: readme.md
+      focus: true

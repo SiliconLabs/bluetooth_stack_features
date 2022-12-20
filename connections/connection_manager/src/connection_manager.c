@@ -29,7 +29,6 @@
  ******************************************************************************/
 #include "sl_bluetooth.h"
 #include "connection_manager.h"
-#include "app_log.h"
 
 static connection_t connections[SL_BT_CONFIG_MAX_CONNECTIONS];
 

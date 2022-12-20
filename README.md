@@ -28,6 +28,10 @@ This repo contains example projects which demonstrate the features of the Silico
 - NCP
 - System and Performance
 
+## Libraries/Extensions ##
+
+- Connection Manager
+
 ## Documentation ##
 
 Official documentation can be found at our [Developer Documentation](https://docs.silabs.com/bluetooth/latest/) page.

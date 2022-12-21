@@ -1,8 +1,8 @@
-project_name: soc_directed_advertising_advertiser
+project_name: soc_connection_oriented_channels_peripheral
 package: Bluetooth
-label: Bluetooth - SoC Directed Advertising Advertiser
+label: Bluetooth - SoC Connection-oriented Channels Peripheral
 description: >
-  This code example demonstrates an advertiser, sending directed advertisements.
+  This code example demonstrates a peripheral device capable of opening an L2CAP connection-oriented channel.
 category: Bluetooth Examples
 quality: development
 
@@ -22,18 +22,24 @@ component:
   - id: app_assert
   - id: component_catalog
   - id: mpu
+  - id: simple_button
+    instance:
+      - btn0
+  - id: simple_led
+    instance:
+      - led0
   - id: iostream_usart
     instance:
-    - vcom
+      - vcom
   - id: iostream_retarget_stdio
   - id: app_log
 
 source:
-  - path: ../src/advertiser/app.c
-  - path: ../src/advertiser/main.c
+  - path: ../src/peripheral/app.c
+  - path: ../src/peripheral/main.c
 
 include:
-  - path: ../inc/advertiser
+  - path: ../inc/peripheral
     file_list:
     - path: app.h
 

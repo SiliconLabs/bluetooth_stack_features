@@ -26,7 +26,7 @@ To use this example, you need two radio boards, one for the server side and one 
 
 1. Create a new *SoC-Empty* project for your device.
 
-2. Copy the attached *app_server.c* file into your project, and remove *app.c* from the project.
+2. Copy the attached *src/server/app.c* file into your project, replacing the original *app.c*.
 
 3. Open the Software Components and make the following changes:
               
@@ -36,7 +36,7 @@ To use this example, you need two radio boards, one for the server side and one 
     - In the **Board Control** set the **Enable Virtual COM UART** to enabled
     - Install the **Legacy Advertising** component, if it is not yet installed
 
-4. Open GATT Configurator and import the attached **gatt_configuration.btconf**
+4. Open GATT Configurator and import the attached **config/gatt_configuration.btconf**
 
 5. Build and flash the project to your device.
 
@@ -44,7 +44,7 @@ To use this example, you need two radio boards, one for the server side and one 
 
 1. Create a new *SoC-Empty* project for your device.
 
-2. Copy the attached *app_client.c* file into your project and remove *app.c* from the project.
+2. Copy the attached *src/client/app.c* file into your project replacing the original *app.c*.
 
 3. Open the Software Components and make the following changes:
               
@@ -90,7 +90,7 @@ To test the example
 
 ## Source
 
-* [app_client.c](source/app_client.c)
-* [app_server.c](source/app_server.c)
-* [gatt_configuration.btconf](config/gatt_configuration.btconf)
+* [src/client/app.c](src/client/app.c)
+* [src/server/app.c](src/server/app.c)
+* [config/gatt_configuration.btconf](config/gatt_configuration.btconf)
 

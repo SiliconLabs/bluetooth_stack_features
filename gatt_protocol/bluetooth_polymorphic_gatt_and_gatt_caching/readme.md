@@ -33,7 +33,7 @@ sl_bt_gatt_read_characteristic_value_by_uuid(conn_handle,0x0001FFFF,sizeof(db_ha
 
 After the database version is known, you can also learn the corresponding characteristic handle.
 
-In this example, hard coded values for the characteristic handles are used. In a real application, however, when the server changes to a new database structure (e.g., as a result of a firmware update), the client may encounter an unknown database hash and an unknown database structure. In this case, client needs to re-discover service and characteristic handles in the database, and to store the newly discovered characteristic handles (associated with the newly learned database hash). The database hash is stored in the NVM after dsicovery.
+In this example, hard coded values for the characteristic handles are used. In a real application, however, when the server changes to a new database structure (e.g., as a result of a firmware update), the client may encounter an unknown database hash and an unknown database structure. In this case, client needs to re-discover service and characteristic handles in the database, and to store the newly discovered characteristic handles (associated with the newly learned database hash). The database hash is stored in the NVM after discovery.
 
 ## Setting up
 
@@ -43,9 +43,9 @@ To try this example, you need two radio boards, one for the server side and one 
 
 1. Create a new *SoC-Empty* project for your device.
 
-2. Copy the attached *app_server.c* file into your project, and remove *app.c* from the project.
+2. Copy the attached *src/server/app.c* file into your project, replacing the original *app.c*.
 
-3. Open the Sotware Components, and do the following changes:
+3. Open the Software Components, and do the following changes:
 
    - Add the **IO Stream USART** component, with the instance name: **vcom**
    - Add the **Log** component
@@ -53,24 +53,24 @@ To try this example, you need two radio boards, one for the server side and one 
    - Install the **Legacy Advertising** component, if it is not yet installed
    - Add two instances of the **Simple button**, with the names: **btn0** and **btn1**
 
-5. Open GATT Configurator, and import the attached **gatt_configuration.btconf**
+4. Open GATT Configurator and import the attached **config/gatt_configuration.btconf**
 
-6. Build and flash the project to your device.
+5. Build and flash the project to your device.
 
 ### Client
 
 1. Create a new *SoC-Empty* project for your device.
 
-2. Copy the attached *app_client.c* file into your project, and remove *app.c* from the project.
+2. Copy the attached *src/client/app.c* file into your project replacing the original *app.c*.
 
-3. Open the Sotware Components, and do the following changes:
+3. Open the Software Components, and do the following changes:
 
    - Add the **IO Stream USART** component, with the instance name: **vcom**
    - Add the **Log** component
    - In the **Board control** set the **Enable Virtual COM Port** to enable
    - Install the **Legacy Advertising** component, if it is not yet installed
 
-4. Open the Sotware Components and install **NVM3 Default Instance** component.
+4. Open the Software Components and install **NVM3 Default Instance** component.
 
 5. Build and flash your project to your device.
 
@@ -95,6 +95,6 @@ To test the example
 
 ## Source
 
-* [app_client.c](source/app_client.c)
-* [app_server.c](source/app_server.c)
-* [gatt_configuration.btconf](config/gatt_configuration.btconf)
+* [src/client/app.c](src/client/app.c)
+* [src/server/app.c](src/server/app.c)
+* [config/gatt_configuration.btconf](config/gatt_configuration.btconf)

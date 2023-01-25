@@ -1,0 +1,10 @@
+id: bluetooth_stack_features
+label: Bluetooth Stack Features
+description: >
+  Bluetooth Stack Features
+version: 0.0.1
+sdk:
+ id: "gecko_sdk"
+ version: 4.1.2
+component_path:
+ - path: ./connections/connection_manager

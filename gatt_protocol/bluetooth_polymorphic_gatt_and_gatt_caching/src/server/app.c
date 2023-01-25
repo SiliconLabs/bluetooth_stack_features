@@ -125,6 +125,14 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
       app_log("Bonding created\r\n");
       break;
 
+    case sl_bt_evt_sm_confirm_bonding_id:
+      app_log("Confirming bonding\r\n");
+      sl_bt_sm_bonding_confirm(evt->data.evt_sm_confirm_bonding.connection, 1);
+    break;
+
+    case sl_bt_evt_sm_bonding_failed_id:
+      app_log("bonding failed: %x\r\n", evt->data.evt_sm_bonding_failed.reason);
+      break;
     // -------------------------------
     // This event indicates that a connection was closed.
     case sl_bt_evt_connection_closed_id:
@@ -187,7 +195,6 @@ void sl_button_on_change(const sl_button_t *handle)
       btn_state = sl_simple_button_get_state(sl_button_btn0.context);
       if(btn_state == SL_SIMPLE_BUTTON_PRESSED){
           sl_bt_external_signal(BUTTON0_PRESSED);
-
       }
    }
   else if(SL_SIMPLE_BUTTON_GET_PIN(sl_button_btn1.context) == SL_SIMPLE_BUTTON_GET_PIN(handle->context)){

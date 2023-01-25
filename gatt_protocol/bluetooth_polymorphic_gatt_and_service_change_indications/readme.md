@@ -10,7 +10,7 @@ This code example has related User's Guides, here:
 
 ## Description
 
-In this example, you find a server that can dynamically change its GATT database structure (polymorphic GATT) and a client that can subscribe to service change indications are implemented.
+In this example, you will use a server that can dynamically change its GATT database structure (polymorphic GATT) and a client that can subscribe to service change indications.
 
 The server uses the polymorphic GATT feature i.e., it can enable and disable some of its services / characteristics at runtime. In this example, two versions of the same service (My LED Switch Service) are defined in the database, from which only one at a time is enabled to imitate two different versions of the database. The database versions can be changed by push button presses.
 
@@ -24,27 +24,13 @@ To use this example, you need two radio boards, one for the server side and one 
 
 ### Server
 
-1. Create a new *SoC-Empty* project for your device.
-
-2. Copy the attached *app_server.c* file into your project, and remove *app.c* from the project.
-
-3. Open the Software Components and make the following changes:
-              
-    - Add the **IO Stream: USART** component, with the instance name: **vcom**
-    - Add the **Log** component
-    - Add the **Simple Button** with two instances: **btn0** and **btn1**
-    - In the **Board Control** set the **Enable Virtual COM UART** to enabled
-    - Install the **Legacy Advertising** component, if it is not yet installed
-
-4. Open GATT Configurator and import the attached **gatt_configuration.btconf**
-
-5. Build and flash the project to your device.
+Use the server project from the **bluetooth_polymorphic_gatt_and_gatt_caching** example, see the [readme](../bluetooth_polymorphic_gatt_and_gatt_caching/readme.md) on how to set it up.
 
 ### Client
 
 1. Create a new *SoC-Empty* project for your device.
 
-2. Copy the attached *app_client.c* file into your project and remove *app.c* from the project.
+2. Copy the attached *src/client/app.c* file into your project replacing the original *app.c*.
 
 3. Open the Software Components and make the following changes:
               
@@ -90,7 +76,5 @@ To test the example
 
 ## Source
 
-* [app_client.c](source/app_client.c)
-* [app_server.c](source/app_server.c)
-* [gatt_configuration.btconf](config/gatt_configuration.btconf)
+* [src/client/app.c](src/client/app.c)
 

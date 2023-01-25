@@ -1,0 +1,31 @@
+id: connection_manager
+label: Connection Manager
+package: bluetooth
+description: API for managing multiple connections at once
+category: Connections
+quality: alpha
+root_path: connections/connection_manager/
+source:
+  - path: src/connection_manager.c
+include:
+  - path: inc
+    file_list:
+      - path: connection_manager.h
+provides:
+  - name: connection_manager
+requires:
+  - name: bluetooth_stack
+  - name: gatt_configuration
+  - name: bluetooth_feature_connection
+  - name: bluetooth_feature_gatt_server
+  - name: bluetooth_feature_system
+template_contribution:
+  - name: event_handler
+    value:
+      event: internal_app_init
+      include: connection_manager.h
+      handler: sli_bt_cm_init
+  - name: bluetooth_on_event
+    value:
+      include: connection_manager.h
+      function: sli_bt_cm_on_event

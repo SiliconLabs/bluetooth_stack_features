@@ -33,7 +33,7 @@ More info about RFSense:
 
     ![](images/legacy.png)
 
-3. Replace the *app.c* file in the project with the provided *app.c*
+3. Replace the *app.c* file in the project with the provided *src/rfsense/app.c*
 4. Select the RfSense mode with the **#define RFSENSE_SELECTED_MODE**
 5. Compile and flash to the target
 6. Do not forget to flash a bootloader to your board, if you have not done so already.
@@ -60,6 +60,6 @@ The RfSense callback or reset from EM4 can be triggered with any 2.4 GHz signal 
 
 ### Using in selective mode
 
-With selective mode the device can only be woken up by transmitting the correct syncword. As an example the attached **app_process.c** file can be used. Create a new **Flex (RAIL) - Simple TRX** project in Studio, and replace the app_process with the provided file. Build and flash it to the device. The syncword can be sent with pressing BTN0 on the WSTK.
+With selective mode the device can only be woken up by transmitting the correct syncword. As an example the attached **src/syncword/app_process.c** file can be used. Create a new **RAIL - SoC Simple TRX** project in Studio, and replace the app_process.c with the provided file. Build and flash it to the device. The syncword can be sent with pressing BTN0 on the WSTK.
 
 

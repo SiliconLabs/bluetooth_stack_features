@@ -32,6 +32,28 @@ This repo contains example projects which demonstrate the features of the Silico
 
 - Connection Manager
 
+
+## Setup
+To generate GitHub example projects with Simplicity Studio (only applicable to repositories with slcp files):
+
+1. Open Simplicity Studio and navigate to Window > Preferences > Simplicity Studio > External Repos.
+2. Click Add.
+3. In the URL field enter the repository's HTTPS clone address, for example https://github.com/SiliconLabs/bluetooth_stack_features.git
+   Alternatively, clone the repository onto your hard drive, and provide the path to the .git folder in your local repository, for example
+   C:\MyRepositories\bluetooth_stack_features\.git.
+4. Enter an arbitrary name (such as 'Bluetooth Stack Features') and description for the repository, which will be displayed later.
+5. Click Next. If you have entered the repository's clone address, Simplicity Studio will clone the repository for you.
+6. Click Finish, then click Apply and Close.
+7. If you are not on the Launcher perspective, open it from the Perspectives toolbar in the upper-right corner.
+8. Select your board in the Debug Adapters view or in the My Products view.	
+9. On the General card, verify the Gecko SDK version and change if necessary.
+   Note: Bluetooth stack feature examples are currently compatible with Gecko SDK v4.1 only!
+10. Go to the Example Projects & Demos tab.
+11. Now you should see your repository listed under the Provider filtering class. Select this filter.
+    Note: The repository only shows up if it contains at least one example that is compatible with your device.
+12. All the examples contained in the repository that are compatible with your device are displayed. Click Create on any of them to create a new example project. The example project installs all the software components necessary to demonstrate the given feature, and all the needed code is automatically copied into your project. Additional  configuration might be needed, so read the readme file of the example carefully.  
+
+![](image\Studio.png)
 ## Documentation ##
 
 Official documentation can be found at our [Developer Documentation](https://docs.silabs.com/bluetooth/latest/) page.

@@ -136,7 +136,7 @@ See the [Usage](#usage) section of this readme file.
 
 ## Gecko SDK version
 
-- GSDK v3.1.1
+- GSDK v4.2
 
 ## Hardware Required
 

@@ -59,7 +59,7 @@ The example sets up advertising using the custom format defined earlier in this 
 
 ## Gecko SDK version
 
-GSDK v3.1.1
+GSDK v4.2
 
 ## Hardware Required
 

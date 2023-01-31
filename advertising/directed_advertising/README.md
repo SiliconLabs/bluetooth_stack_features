@@ -11,7 +11,7 @@ This is a special-purpose type of advertising, designed to invite a specific pee
 
 ## Gecko SDK version
 
-GSDK v4.1.2 or newer
+GSDK v4.2.0 or newer
 
 ## Hardware Required
 

@@ -16,7 +16,7 @@ This code example has a related User's Guide, here: [Different Value Types of Ch
  
 ## Gecko SDK version ##
  
-GSDK v3.1.1
+GSDK v4.2
  
 ## Hardware Required ##
  

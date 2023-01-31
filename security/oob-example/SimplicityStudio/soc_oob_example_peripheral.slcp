@@ -35,9 +35,9 @@ source:
   - path: ../src/peripheral/main.c
 
 include:
-  - path: .
+  - path: ../inc/peripheral/
     file_list:
-    - path: ../inc/peripheral/app.h
+    - path: app.h
 
 readme:
   - path: ./readme.md

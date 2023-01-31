@@ -15,7 +15,7 @@ component:
   - id: bluetooth_feature_connection
   - id: bluetooth_feature_gatt
   - id: bluetooth_feature_gatt_server
-  - id: bluetooth_feature_scanner
+  - id: bluetooth_feature_legacy_scanner
   - id: bluetooth_feature_sm
   - id: bluetooth_feature_system
   - id: in_place_ota_dfu
@@ -36,9 +36,9 @@ source:
   - path: ../src/central/main.c
 
 include:
-  - path: .
+  - path: ../inc/central/
     file_list:
-    - path: ../inc/central/app.h
+    - path: app.h
 
 readme:
   - path: ./readme.md

@@ -200,28 +200,26 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
     // -------------------------------
     // This event is generated when an advertisement packet or a scan response
     // is received from a peripheral
-    case sl_bt_evt_scanner_scan_report_id:
+    case sl_bt_evt_scanner_legacy_advertisement_report_id:
       // Parse advertisement packets
-      if (evt->data.evt_scanner_scan_report.packet_type == 0) {
-        // If a advertisement is found...
-        if (find_service_in_advertisement(&(evt->data.evt_scanner_scan_report.data.data[0]),
-                                          evt->data.evt_scanner_scan_report.data.len) != 0) {
-          // then stop scanning for a while
-          sc = sl_bt_scanner_stop();
-          app_assert(sc == SL_STATUS_OK,
-                        "[E: 0x%04x] Failed to stop discovery\n",
-                        (int)sc);
-          // and connect to that device
-          sc = sl_bt_connection_open(evt->data.evt_scanner_scan_report.address,
-                                     evt->data.evt_scanner_scan_report.address_type,
-                                     gap_1m_phy,
-                                     &connection_handle);
-          app_assert(sc == SL_STATUS_OK,
-                        "[E: 0x%04x] Failed to connect\n",
-                        (int)sc);
-          gatt_state = CONNECTED;
-        }
+      if (find_service_in_advertisement(&(evt->data.evt_scanner_legacy_advertisement_report.data.data[0]),
+                                        evt->data.evt_scanner_legacy_advertisement_report.data.len) != 0) {
+        // then stop scanning for a while
+        sc = sl_bt_scanner_stop();
+        app_assert(sc == SL_STATUS_OK,
+                      "[E: 0x%04x] Failed to stop discovery\n",
+                      (int)sc);
+        // and connect to that device
+        sc = sl_bt_connection_open(evt->data.evt_scanner_legacy_advertisement_report.address,
+                                   evt->data.evt_scanner_legacy_advertisement_report.address_type,
+                                   gap_1m_phy,
+                                   &connection_handle);
+        app_assert(sc == SL_STATUS_OK,
+                      "[E: 0x%04x] Failed to connect\n",
+                      (int)sc);
+        gatt_state = CONNECTED;
       }
+
       break;
 
     // -------------------------------
@@ -599,16 +597,11 @@ static void set_mode(void)
                     "[E: 0x%04x] Failed to stop scanning\n",
                     (int)sc);
     }
-    // Set passive scanning on 1Mb PHY
-    sc = sl_bt_scanner_set_mode(gap_1m_phy, 0);
+
+    sc = sl_bt_scanner_set_parameters(sl_bt_scanner_scan_mode_passive, 160, 160);
     app_assert(sc == SL_STATUS_OK,
-                  "[E: 0x%04x] Failed to set discovery type\n",
-                  (int)sc);
-    // Set scan interval and scan window
-    sc = sl_bt_scanner_set_timing(gap_1m_phy, 160, 160);
-    app_assert(sc == SL_STATUS_OK,
-                  "[E: 0x%04x] Failed to set discovery timing\n",
-                  (int)sc);
+                      "[E: 0x%04x] Failed to set scan parameters \n",
+                      (int)sc);
     // Start scanning - looking for peripheral devices
     sc = sl_bt_scanner_start(gap_1m_phy, scanner_discover_observation);
     app_assert(sc == SL_STATUS_OK,

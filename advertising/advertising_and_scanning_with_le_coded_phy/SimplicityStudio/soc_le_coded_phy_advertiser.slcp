@@ -34,9 +34,9 @@ source:
   - path: ../src/advertiser/app.c
 
 include:
-  - path: .
+  - path: ../inc/advertiser
     file_list:
-    - path: ../inc/advertiser/app.h
+    - path: app.h
 
 config_file:
   - override:

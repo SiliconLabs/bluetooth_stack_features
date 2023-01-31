@@ -100,7 +100,7 @@ void sleep_timer_callback(sl_sleeptimer_timer_handle_t *handle, void *data)
  * @param[in] pReso  Pointer to a scan report event
  * @param[in] name   Pointer to the name which is looked for
  *****************************************************************************/
-static uint8_t findDeviceByName(sl_bt_evt_scanner_scan_report_t *pResp, char* name)
+static uint8_t findDeviceByName(sl_bt_evt_scanner_legacy_advertisement_report_t *pResp, char* name)
 {
   uint8_t i = 0;
   uint8_t ad_len,ad_type;
@@ -173,19 +173,19 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
       sc = sl_bt_sm_configure( 2, sl_bt_sm_io_capability_noinputnooutput);
       app_assert_status(sc);
 
-      /* 10ms scan interval, 100% duty cycle, 1M PHY*/
-      sc = sl_bt_scanner_set_timing(gap_1m_phy, 16, 16);
+      /* 10ms scan interval, 100% duty cycle*/
+      sc = sl_bt_scanner_set_parameters(sl_bt_scanner_scan_mode_passive, 16, 16);
       app_assert_status(sc);
 
       sc = sl_bt_scanner_start(gap_1m_phy, sl_bt_scanner_discover_observation);
       app_assert_status(sc);
     break;
 
-    case sl_bt_evt_scanner_scan_report_id:
+    case sl_bt_evt_scanner_legacy_advertisement_report_id:
      /* Find server by name */
-     if (findDeviceByName(&(evt->data.evt_scanner_scan_report),"GATT server")) {
+     if (findDeviceByName(&evt->data.evt_scanner_legacy_advertisement_report, "GATT server")) {
        /* Connect to server */
-       sc = sl_bt_connection_open(evt->data.evt_scanner_scan_report.address, evt->data.evt_scanner_scan_report.address_type, gap_1m_phy, &conn_handle);
+       sc = sl_bt_connection_open(evt->data.evt_scanner_legacy_advertisement_report.address, evt->data.evt_scanner_legacy_advertisement_report.address_type, gap_1m_phy, &conn_handle);
        app_assert_status(sc);
      }
     break;
@@ -318,6 +318,11 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
     // This event indicates that a connection was closed.
     case sl_bt_evt_connection_closed_id:
       robust_caching_enabled = 0;
+      sc = sl_sleeptimer_stop_timer(&write_value_timeout_timer);
+      if(sc != SL_STATUS_INVALID_STATE){
+          //SL_INVALID_STATE indicates that the timer was already stopped
+          app_assert_status(sc);
+      }
       break;
 
     ///////////////////////////////////////////////////////////////////////////

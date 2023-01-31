@@ -35,7 +35,7 @@ To determine whether you recovered from a crash with a Watchdog reset or whether
 
 ## Gecko SDK version ##
 
-- GSDK v3.1.1
+- GSDK v4.2
 
 ## Hardware Required ##
 

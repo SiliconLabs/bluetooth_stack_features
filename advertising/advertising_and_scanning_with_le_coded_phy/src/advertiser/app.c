@@ -140,6 +140,7 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
                     "[E: 0x%04x] Failed to set channel map\n",
                     (int)sc);
 
+      sc = sl_bt_extended_advertiser_generate_data(advertising_set_handle, sl_bt_advertiser_general_discoverable);
       // Start general advertising and enable connections.
       sc = sl_bt_extended_advertiser_start(
         advertising_set_handle,

@@ -191,17 +191,16 @@ void sl_button_on_change(const sl_button_t *handle)
 {
   sl_button_state_t btn_state;
 
-  if (SL_SIMPLE_BUTTON_GET_PIN(sl_button_btn0.context) == SL_SIMPLE_BUTTON_GET_PIN(handle->context)){
+  if(handle->context == sl_button_btn0.context){
       btn_state = sl_simple_button_get_state(sl_button_btn0.context);
-      if(btn_state == SL_SIMPLE_BUTTON_PRESSED){
+      if(btn_state == SL_SIMPLE_BUTTON_RELEASED){
           sl_bt_external_signal(BUTTON0_PRESSED);
       }
    }
-  else if(SL_SIMPLE_BUTTON_GET_PIN(sl_button_btn1.context) == SL_SIMPLE_BUTTON_GET_PIN(handle->context)){
+  else if(handle->context == sl_button_btn1.context){
       btn_state = sl_simple_button_get_state(sl_button_btn1.context);
-      if(btn_state == SL_SIMPLE_BUTTON_PRESSED){
+      if(btn_state == SL_SIMPLE_BUTTON_RELEASED){
           sl_bt_external_signal(BUTTON1_PRESSED);
       }
    }
-
 }

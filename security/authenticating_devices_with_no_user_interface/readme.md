@@ -62,7 +62,7 @@ static void set_random_public_address(void)
  
 ## Gecko SDK version ##
  
-GSDK v3.1.1
+GSDK v4.2
  
 ## Hardware Required ##
  

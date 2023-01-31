@@ -15,7 +15,7 @@ This code example is created to demonstrate different Bluetooth pairing processe
 
 ## Gecko SDK version ##
 
-GSDK v3.1.1
+GSDK v4.2.0
 
 ## Hardware Required ##
 

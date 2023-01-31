@@ -114,7 +114,7 @@ void Reset_variables()
   memset(writeBuf, '0', 20);
 }
 
-uint8_t Process_scan_response(sl_bt_evt_scanner_scan_report_t *pResp)
+uint8_t Process_scan_response(sl_bt_evt_scanner_legacy_advertisement_report_t *pResp)
 {
   // decoding advertising packets is done here. The list of AD types can be found
   // at: https://www.bluetooth.com/specifications/assigned-numbers/Generic-Access-Profile
@@ -269,9 +269,9 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
     sl_bt_scanner_start(0x01, sl_bt_scanner_discover_generic);
     app_assert_status(sc);
     break;
-  case sl_bt_evt_scanner_scan_report_id:
+  case sl_bt_evt_scanner_legacy_advertisement_report_id:
     // process scan responses: this function returns 1 if we found the service we are looking for
-    if (Process_scan_response(&(evt->data.evt_scanner_scan_report)) > 0)
+    if (Process_scan_response(&(evt->data.evt_scanner_legacy_advertisement_report)) > 0)
     {
       uint8_t pResp_connection;
 
@@ -279,7 +279,7 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
       sc = sl_bt_scanner_stop();
       app_assert_status(sc);
 
-      sc = sl_bt_connection_open(evt->data.evt_scanner_scan_report.address, evt->data.evt_scanner_scan_report.address_type, 0x01, &pResp_connection);
+      sc = sl_bt_connection_open(evt->data.evt_scanner_legacy_advertisement_report.address, evt->data.evt_scanner_legacy_advertisement_report.address_type, 0x01, &pResp_connection);
       app_assert_status(sc);
 
       // make copy of connection handle for later use (for example, to cancel the connection attempt)

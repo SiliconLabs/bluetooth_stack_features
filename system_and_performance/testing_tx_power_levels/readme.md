@@ -18,7 +18,7 @@ This code example has related User's Guides, which may be worth reading before. 
 
 ## Gecko SDK version ##
  
-GSDK v3.1.1
+GSDK v4.2
  
 ## Hardware Required ##
  

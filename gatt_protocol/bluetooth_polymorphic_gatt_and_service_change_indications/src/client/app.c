@@ -72,7 +72,7 @@ static uint8_t waiting_for_characteristic_discovery_to_finish = 0;
  * @param[in] pReso  Pointer to a scan report event
  * @param[in] name   Pointer to the name which is looked for
  *****************************************************************************/
-static uint8_t findDeviceByName(sl_bt_evt_scanner_scan_report_t *pResp, char* name)
+static uint8_t findDeviceByName(sl_bt_evt_scanner_legacy_advertisement_report_t *pResp, char* name)
 {
   uint8_t i = 0;
   uint8_t ad_len,ad_type;
@@ -210,17 +210,17 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
       /* Enable bondings in security manager (this is needed for Service Change Indications) */
       sl_bt_sm_configure( 2, sl_bt_sm_io_capability_noinputnooutput);
 
-      /* 10ms scan interval, 100% duty cycle, 1M PHY*/
-      sl_bt_scanner_set_timing(gap_1m_phy, 16, 16);
+      /* 10ms scan interval, 100% duty cycle*/
+      sl_bt_scanner_set_parameters(sl_bt_scanner_scan_mode_passive, 16, 16);
 
       sl_bt_scanner_start(gap_1m_phy, sl_bt_scanner_discover_observation);
       break;
 
-    case sl_bt_evt_scanner_scan_report_id:
+    case sl_bt_evt_scanner_legacy_advertisement_report_id:
       /* Find server by name */
-      if (findDeviceByName(&(evt->data.evt_scanner_scan_report),"GATT server")) {
+      if (findDeviceByName(&(evt->data.evt_scanner_legacy_advertisement_report),"GATT server")) {
         /* Connect to server */
-        sl_bt_connection_open(evt->data.evt_scanner_scan_report.address, evt->data.evt_scanner_scan_report.address_type, gap_1m_phy, &conn_handle);
+        sl_bt_connection_open(evt->data.evt_scanner_legacy_advertisement_report.address, evt->data.evt_scanner_legacy_advertisement_report.address_type, gap_1m_phy, &conn_handle);
       }
       break;
     // -------------------------------

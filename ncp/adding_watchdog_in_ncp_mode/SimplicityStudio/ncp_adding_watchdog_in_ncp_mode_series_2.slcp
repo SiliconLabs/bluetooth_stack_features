@@ -69,6 +69,5 @@ tag:
 
 ui_hints:
   highlight:
-    - path: config/btconf/gatt_configuration.btconf
     - path: readme.md
       focus: true

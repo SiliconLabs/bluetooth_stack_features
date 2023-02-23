@@ -38,7 +38,7 @@ More details of all these commands can be found in [Bluetooth API Reference](htt
 
 ## Gecko SDK version ##
 
-GSDK v3.1.1
+GSDK v4.2
 
 ## Hardware Required ##
 

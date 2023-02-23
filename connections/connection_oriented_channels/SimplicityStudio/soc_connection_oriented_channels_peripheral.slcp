@@ -16,6 +16,7 @@ component:
   - id: bluetooth_feature_scanner
   - id: bluetooth_feature_sm
   - id: bluetooth_feature_system
+  - id: bluetooth_feature_l2cap
   - id: in_place_ota_dfu
   - id: bootloader_interface
   - id: rail_util_pti
@@ -46,6 +47,12 @@ include:
 readme:
   - path: ./readme.md
 
+config_file:
+  - override:
+      component: gatt_configuration
+      file_id: gatt_configuration_file_id
+    path: ../config/gatt_configuration.btconf
+    directory: btconf
 
 configuration:
   - name: SL_STACK_SIZE
@@ -60,6 +67,5 @@ tag:
 
 ui_hints:
   highlight:
-    - path: config/btconf/gatt_configuration.btconf
     - path: readme.md
       focus: true

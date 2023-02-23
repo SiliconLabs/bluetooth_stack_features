@@ -38,10 +38,10 @@ source:
   - path: ../src/main.c
 
 include:
-  - path: .
+  - path: ../inc/
     file_list:
-    - path: ../inc/app.h
-    - path: ../inc/custom_adv.h
+    - path: app.h
+    - path: custom_adv.h
 
 readme:
   - path: ./readme.md
@@ -63,6 +63,5 @@ tag:
 
 ui_hints:
   highlight:
-    - path: config/btconf/gatt_configuration.btconf
     - path: readme.md
       focus: true

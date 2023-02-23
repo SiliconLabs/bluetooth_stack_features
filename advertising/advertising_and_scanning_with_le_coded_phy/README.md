@@ -58,7 +58,7 @@ Remaining advertising parameters can be set as they would with the traditional 1
 
 ## Gecko SDK version ##
 
-- GSDK v3.1.1
+- GSDK v4.2
 
 ## Hardware Required ##
 

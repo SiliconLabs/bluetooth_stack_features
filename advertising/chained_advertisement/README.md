@@ -30,7 +30,7 @@ sl_bt_periodic_advertiser_set_long_data(advertising_set_handle);
 
 ### Scanner
 
-The scanner, or synchronizer, begins by starting scanning for advertisements containing the Synchronous service with the UUID 417125c7-6849-422b-bfb0-f4312d00c281. The scanner sets the discovery timing and type and starts discovery. Advertisements or scan responses are handled by `sl_bt_evt_scanner_scan_report_id` event handler. This event handler first filters out any packets which are not extended advertising packets. Next, the advertisement is searched for the Synchronous service UUID mentioned above by calling function:
+The scanner, or synchronizer, begins by starting scanning for advertisements containing the Synchronous service with the UUID 417125c7-6849-422b-bfb0-f4312d00c281. The scanner sets the discovery timing and type and starts discovery. Advertisements or scan responses are handled by `sl_bt_evt_scanner_extended_advertisement_report_id` event handler. This event handler first filters out any packets which are not extended advertising packets. Next, the advertisement is searched for the Synchronous service UUID mentioned above by calling function:
 
 ```C
 find_service_in_advertisement()
@@ -65,7 +65,7 @@ Some notes when setting up this example:
 
 ## Gecko SDK version ##
 
-- GSDK v3.1.1
+- GSDK v4.2
 
 ## Hardware Required ##
 

@@ -81,7 +81,7 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
     // Do not call any stack command before receiving this boot event!
     case sl_bt_evt_system_boot_id:
 
-      app_log("Booting...\r\n");
+      app_log("Booting..\r\nOperation mode: Advertiser\r\n");
 
       // Extract unique ID from BT Address.
       sc = sl_bt_system_get_identity_address(&address, &address_type);

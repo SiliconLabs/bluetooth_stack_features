@@ -38,7 +38,7 @@
 #define MAX_SDU_SIZE    200       // Max Service Data Unit size used by the L2CAP channel
 #define TX_PACKET_SIZE  200       // Size of the dummy packet to be sent
 #define SPSM            0x81      // Protocol Service Multiplexor (PSM) value used by the L2CAP channel
-
+#define INITIAL_CREDIT_REQUEST  50
 #define TX_PACKET_DUMMY_VALUE 2   // Default value of the dummy packet to be sent
 
 #define SIGNAL_BTN_PRESS      1
@@ -53,7 +53,7 @@ static uint16_t cid = 0;
 static uint8_t tx_packet[TX_PACKET_SIZE] = {TX_PACKET_DUMMY_VALUE};
 static uint16_t max_pdu = MAX_PDU_SIZE, max_sdu = MAX_SDU_SIZE, spsm = SPSM;
 //Initial credit request. It will be overwritten with the value actually provided by the peripheral
-static uint16_t credit = 50;
+static uint16_t credit = 0;
 /**************************************************************************//**
  * Application Init.
  *****************************************************************************/
@@ -126,14 +126,14 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
       app_assert_status(sc);
       break;
 
-    case sl_bt_evt_scanner_scan_report_id:
+    case sl_bt_evt_scanner_legacy_advertisement_report_id:
       //Check scan response packet for the peripheral's name
-      if(find_name_in_advertisement(evt->data.evt_scanner_scan_report.data.data,
-                                        evt->data.evt_scanner_scan_report.data.len))
+      if(find_name_in_advertisement(evt->data.evt_scanner_legacy_advertisement_report.data.data,
+                                        evt->data.evt_scanner_legacy_advertisement_report.data.len))
       {
         sl_bt_scanner_stop();
-        sc = sl_bt_connection_open(evt->data.evt_scanner_scan_report.address,
-                              evt->data.evt_scanner_scan_report.address_type,
+        sc = sl_bt_connection_open(evt->data.evt_scanner_legacy_advertisement_report.address,
+                              evt->data.evt_scanner_legacy_advertisement_report.address_type,
                               sl_bt_gap_phy_1m, &connection);
         app_assert_status(sc);
       }
@@ -142,7 +142,7 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
     // This event indicates that a new connection was opened.
     case sl_bt_evt_connection_opened_id:
       app_log("Connection opened\r\n");
-      sc = sl_bt_l2cap_open_le_channel(connection, spsm, max_sdu, max_pdu, credit, &cid);
+      sc = sl_bt_l2cap_open_le_channel(connection, spsm, max_sdu, max_pdu, INITIAL_CREDIT_REQUEST, &cid);
       app_assert_status(sc);
       break;
 

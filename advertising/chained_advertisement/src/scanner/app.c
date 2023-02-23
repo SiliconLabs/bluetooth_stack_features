@@ -118,8 +118,7 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
       app_log_info("Scanner boot event\n");
 
       // periodic scanner setting
-      sl_bt_scanner_set_timing(gap_1m_phy, 200, 200);
-      sl_bt_scanner_set_mode(gap_1m_phy, 0);
+      sl_bt_scanner_set_parameters(sl_bt_scanner_scan_mode_passive, 200, 200);
       sl_bt_scanner_start(gap_1m_phy,
                           scanner_discover_observation);
 
@@ -138,7 +137,7 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
                             evt->data.evt_scanner_extended_advertisement_report.address_type,
                             evt->data.evt_scanner_extended_advertisement_report.adv_sid,
                             &sync);
-       app_log_info("cmd_sync_open() sync = 0x%2X\r\n", sc);
+       app_log_info("cmd_sync_open() sync = 0x%4lX\r\n", sc);
       }
       break;
 

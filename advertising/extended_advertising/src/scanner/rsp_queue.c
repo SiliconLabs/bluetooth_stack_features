@@ -36,7 +36,7 @@ void __copy(const sl_bt_evt_scanner_extended_advertisement_report_t *rsp,
                           rsp_t *r)
 {
   memcpy(&r->data, rsp,
-         sizeof(sl_bt_evt_scanner_scan_report_t) + rsp->data.len);
+         sizeof(sl_bt_evt_scanner_extended_advertisement_report_t) + rsp->data.len);
 }
 
 void update_counter(rsp_t *r)

@@ -53,7 +53,7 @@ To generate GitHub example projects with Simplicity Studio (only applicable to r
     Note: The repository only shows up if it contains at least one example that is compatible with your device.
 12. All the examples contained in the repository that are compatible with your device are displayed. Click Create on any of them to create a new example project. The example project installs all the software components necessary to demonstrate the given feature, and all the needed code is automatically copied into your project. Additional  configuration might be needed, so read the readme file of the example carefully.  
 
-![](image\Studio.png)
+![](doc\image\Studio.png)
 ## Documentation ##
 
 Official documentation can be found at our [Developer Documentation](https://docs.silabs.com/bluetooth/latest/) page.

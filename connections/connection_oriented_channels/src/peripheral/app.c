@@ -38,7 +38,7 @@
 
 #define SIGNAL_BTN_PRESS  1
 
-#define INITIAL_CREDITS         5
+#define INITIAL_CREDITS         50
 #define CREDITS_PER_BUTTONPRESS 3
 
 // The advertising set handle allocated from Bluetooth stack.

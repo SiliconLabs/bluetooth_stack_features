@@ -121,7 +121,7 @@ static void setup_advertising_or_scanning(void);
 #if (IO_CAPABILITY != KEYBOARDONLY)
 static uint32_t make_passkey_from_address(bd_addr address);
 #endif
-static bool process_scan_response_for_uuid(sl_bt_evt_scanner_scan_report_t *pResp);
+static bool process_scan_response_for_uuid(sl_bt_evt_scanner_legacy_advertisement_report_t *pResp);
 void graphics_init(void);
 static void print_empty_lines(uint8_t N);
 static void refresh_display(void);
@@ -241,8 +241,8 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
     app_assert_status(sc);
     break;
 
-  case sl_bt_evt_scanner_scan_report_id:
-    if (process_scan_response_for_uuid(&evt->data.evt_scanner_scan_report))
+  case sl_bt_evt_scanner_legacy_advertisement_report_id:
+    if (process_scan_response_for_uuid(&evt->data.evt_scanner_legacy_advertisement_report))
     {
       sc = sl_bt_scanner_stop();
       app_assert_status(sc);
@@ -250,11 +250,11 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
 
       for (int i = 0; i < 5; i++)
       {
-        app_log_info("%2.2x:", evt->data.evt_scanner_scan_report.address.addr[5 - i]);
+        app_log_info("%2.2x:", evt->data.evt_scanner_legacy_advertisement_report.address.addr[5 - i]);
       }
-      app_log_info("%2.2x\r\n", evt->data.evt_scanner_scan_report.address.addr[0]);
-      sc = sl_bt_connection_open(evt->data.evt_scanner_scan_report.address,
-                                 evt->data.evt_scanner_scan_report.address_type,
+      app_log_info("%2.2x\r\n", evt->data.evt_scanner_legacy_advertisement_report.address.addr[0]);
+      sc = sl_bt_connection_open(evt->data.evt_scanner_legacy_advertisement_report.address,
+                                 evt->data.evt_scanner_legacy_advertisement_report.address_type,
                                  sl_bt_gap_1m_phy,
                                  &connection);
       app_assert_status(sc);
@@ -495,7 +495,7 @@ static uint32_t make_passkey_from_address(bd_addr address)
  * @param pResp - scan_response structure passed in from scan_response event
  * @return adMatchFound - bool flag, 1 if correct service found
  */
-static bool process_scan_response_for_uuid(sl_bt_evt_scanner_scan_report_t *pResp)
+static bool process_scan_response_for_uuid(sl_bt_evt_scanner_legacy_advertisement_report_t *pResp)
 {
   int i = 0;
   bool ad_match_found = 0;

@@ -48,7 +48,7 @@ In both projects, a symbol definition, PAIRING_MODE, can either be LEGACY_PAIRIN
 
 ## Gecko SDK version ##
 
-GSDK v3.1.1
+GSDK v4.2
 
 ## Hardware Required ##
 

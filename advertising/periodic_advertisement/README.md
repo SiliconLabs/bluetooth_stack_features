@@ -28,9 +28,9 @@ sl_bt_periodic_advertiser_set_data(advertising_set_handle,
 The scanner will find the periodic advertiser by the UUID of the Synchronous service, then start syncing with the advertiser by using the function:
 
 ```C
-sl_bt_sync_open(evt->data.evt_scanner_scan_report.address,
-                evt->data.evt_scanner_scan_report.address_type,
-                evt->data.evt_scanner_scan_report.adv_sid,
+sl_bt_sync_open(evt->data.evt_scanner_extended_advertisement_report.address,
+                evt->data.evt_scanner_extended_advertisement_report.address_type,
+                evt->data.evt_scanner_extended_advertisement_report.adv_sid,
                 &sync);
 ```
 
@@ -44,7 +44,7 @@ See section [Setting up](#setting-up) to see how to initialize the periodic adve
 
 ## Gecko SDK version ##
 
-- GSDK v3.1.1
+- GSDK v4.2.0
 
 ## Hardware Required ##
 

@@ -6,7 +6,7 @@ This project shows the implementation of a Bluetooth Low-Power beacon. This exam
 
 ## Gecko SDK version ##
 
-v2.7
+v4.2
 
 ## Hardware Required ##
 

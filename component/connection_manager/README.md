@@ -10,7 +10,7 @@ Please, see the connection_manager.h header file for the detail API explanation.
 
 ## Gecko SDK version ##
 
-GSDK v4.1.2
+GSDK v4.2.0
 
 ---
 

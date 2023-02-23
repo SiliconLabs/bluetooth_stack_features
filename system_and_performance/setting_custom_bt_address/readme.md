@@ -31,7 +31,7 @@ The API **sl_bt_system_set_identity_address** can be used to specify a new BT ad
 
 ## Gecko SDK Version ##
 
-GSDK 3.2.1
+GSDK v4.2
 
 
 

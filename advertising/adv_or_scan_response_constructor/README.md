@@ -35,7 +35,7 @@ The example advertisement structure set up in demo_adv_setup() looks like this:
 
 ## Gecko SDK version ##
 
-GSDK v3.1.1
+GSDK v4.2.0
 
 ## Hardware Required ##
 

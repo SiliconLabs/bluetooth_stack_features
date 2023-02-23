@@ -31,7 +31,7 @@ This code example demonstrates both an advertiser, sending extended advertisemen
 
 ## Gecko SDK version
 
-GSDK v3.1.1
+GSDK v4.2
 
 ## Hardware Required
 

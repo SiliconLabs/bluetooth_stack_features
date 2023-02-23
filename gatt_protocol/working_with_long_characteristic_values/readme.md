@@ -20,7 +20,7 @@ Notifications and indications are limited to MTU – 3 bytes. Since all notifica
 
 ## Gecko SDK version ##
 
-GSDK v3.1.1
+GSDK v4.2.0
 
 ## Hardware Required ##
 

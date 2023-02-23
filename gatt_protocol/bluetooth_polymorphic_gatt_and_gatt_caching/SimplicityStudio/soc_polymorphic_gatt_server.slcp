@@ -13,7 +13,7 @@ component:
   - id: bluetooth_feature_connection
   - id: bluetooth_feature_gatt
   - id: bluetooth_feature_gatt_server
-  - id: bluetooth_feature_scanner
+  - id: bluetooth_feature_legacy_scanner
   - id: bluetooth_feature_sm
   - id: bluetooth_feature_system
   - id: in_place_ota_dfu
@@ -66,6 +66,5 @@ tag:
 
 ui_hints:
   highlight:
-    - path: config/btconf/gatt_configuration.btconf
     - path: readme.md
       focus: true

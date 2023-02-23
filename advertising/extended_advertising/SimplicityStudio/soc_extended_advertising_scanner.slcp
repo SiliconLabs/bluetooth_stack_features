@@ -37,12 +37,12 @@ source:
   - path: ../src/scanner/rsp_queue.c
 
 include:
-  - path: .
+  - path: ../inc/scanner/
     file_list:
-    - path: ../inc/scanner/app.h
-    - path: ../inc/scanner/filters.h
-    - path: ../inc/scanner/log.h
-    - path: ../inc/scanner/rsp_queue.h
+    - path: app.h
+    - path: filters.h
+    - path: log.h
+    - path: rsp_queue.h
 
 readme:
   - path: ./readme.md
@@ -61,6 +61,5 @@ tag:
 
 ui_hints:
   highlight:
-    - path: config/btconf/gatt_configuration.btconf
     - path: readme.md
       focus: true

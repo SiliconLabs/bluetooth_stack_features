@@ -121,8 +121,7 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
                     (int)sc);
 
       // periodic scanner setting
-      sl_bt_scanner_set_timing(gap_1m_phy, 200,200);
-      sl_bt_scanner_set_mode(gap_1m_phy,0);
+      sl_bt_scanner_set_parameters(sl_bt_scanner_scan_mode_passive, 200, 200);
       sl_bt_scanner_start(gap_1m_phy,
                           scanner_discover_observation);
 

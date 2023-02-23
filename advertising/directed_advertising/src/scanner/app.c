@@ -81,7 +81,7 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
     // Do not call any stack command before receiving this boot event!
     case sl_bt_evt_system_boot_id:
 
-      app_log("Booting...\r\n");
+      app_log("Booting..\r\nOperation mode: Scanner\r\n");
 
       // Extract unique ID from BT Address.
       sc = sl_bt_system_get_identity_address(&address, &address_type);
@@ -132,10 +132,10 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
     // Add additional event handlers here as your application requires!      //
     ///////////////////////////////////////////////////////////////////////////
 
-    case  sl_bt_evt_scanner_scan_report_id: {
-      struct sl_bt_evt_scanner_scan_report_s *scan_resp;
-      scan_resp = (struct sl_bt_evt_scanner_scan_report_s *)&(evt->data);
-      app_log("RSSI %d, Type %d, Addr 0x%02X%02X%02X%02X%02X%02X, Addr Type %X, Bond %d, msg len: %x, msg: 0x\r\n", scan_resp->rssi, scan_resp->packet_type, scan_resp->address.addr[5], scan_resp->address.addr[4], scan_resp->address.addr[3], scan_resp->address.addr[2], scan_resp->address.addr[1], scan_resp->address.addr[0], scan_resp->address_type, scan_resp->bonding, scan_resp->data.len);
+    case  sl_bt_evt_scanner_legacy_advertisement_report_id: {
+      struct sl_bt_evt_scanner_legacy_advertisement_report_s *scan_resp;
+      scan_resp = (struct sl_bt_evt_scanner_legacy_advertisement_report_s *)&(evt->data);
+      app_log("RSSI %d, Addr 0x%02X%02X%02X%02X%02X%02X, Addr Type %X, Bond %d, msg len: %x, msg: 0x\r\n", scan_resp->rssi, scan_resp->address.addr[5], scan_resp->address.addr[4], scan_resp->address.addr[3], scan_resp->address.addr[2], scan_resp->address.addr[1], scan_resp->address.addr[0], scan_resp->address_type, scan_resp->bonding, scan_resp->data.len);
 
       if(scan_resp->address.addr[0] == advertiser.addr[0] &&
          scan_resp->address.addr[1] == advertiser.addr[1] &&
@@ -152,7 +152,7 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
                   advertiser.addr[2],
                   advertiser.addr[1],
                   advertiser.addr[0]);
-          sl_bt_connection_open(scan_resp->address, scan_resp->address_type, scan_resp->primary_phy, &connection);
+          sl_bt_connection_open(scan_resp->address, scan_resp->address_type, sl_bt_gap_phy_1m, &connection);
           app_log("Connection initiated - %02X:%02X:%02X:%02X:%02X:%02X\r\n",
                   advertiser.addr[5],
                   advertiser.addr[4],

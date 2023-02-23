@@ -7,4 +7,4 @@ sdk:
  id: "gecko_sdk"
  version: 4.1.2
 component_path:
- - path: ./connections/connection_manager
+ - path: "component/connection_manager"

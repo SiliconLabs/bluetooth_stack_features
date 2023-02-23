@@ -96,15 +96,7 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
 
       app_log_info("System Boot\r\n");
 
-      // set scan mode
-      sc = sl_bt_scanner_set_mode(gap_coded_phy,
-                             0); // 0 mean passive scanning mode
-      app_assert_status(sc);
-
-      // set scan timming
-      sc = sl_bt_scanner_set_timing(gap_coded_phy,
-                                    200,
-                                    200);
+      sc = sl_bt_scanner_set_parameters(sl_bt_scanner_scan_mode_passive, 200, 200);
       app_assert_status(sc);
 
       // start scanning
@@ -137,45 +129,41 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
         }
       break;
 
-    // scan response
-    case sl_bt_evt_scanner_scan_report_id:
-
+    case sl_bt_evt_scanner_extended_advertisement_report_id:
       // there is no filter here because the LE Coded PHY device is rare
       // add the filter if it is needed
-      remote_address = &(evt->data.evt_scanner_scan_report.address);
+       remote_address = &(evt->data.evt_scanner_extended_advertisement_report.address);
+       app_log_info("advertisement/scan response from %2.2X:%2.2X:%2.2X:%2.2X:%2.2X:%2.2X\r\n",
+              remote_address->addr[5],
+              remote_address->addr[4],
+              remote_address->addr[3],
+              remote_address->addr[2],
+              remote_address->addr[1],
+              remote_address->addr[0]);
 
-      app_log_info("advertisement/scan response from %2.2X:%2.2X:%2.2X:%2.2X:%2.2X:%2.2X\r\n",
-             remote_address->addr[5],
-             remote_address->addr[4],
-             remote_address->addr[3],
-             remote_address->addr[2],
-             remote_address->addr[1],
-             remote_address->addr[0]);
+       app_log_info("RSSI %d\r\n", evt->data.evt_scanner_extended_advertisement_report.rssi);
 
-      app_log_info("RSSI %d\r\n", evt->data.evt_scanner_scan_report.rssi);
+       app_log_info("data len: %d\r\n", evt->data.evt_scanner_extended_advertisement_report.data.len);
 
+       app_log_info("\r\n data raw: \r\n");
+       for(int i = 0; i< evt->data.evt_scanner_extended_advertisement_report.data.len; i++){
+           app_log_info("%c ", evt->data.evt_scanner_extended_advertisement_report.data.data[i]);
+       }
 
-      app_log_info("data len: %d\r\n", evt->data.evt_scanner_scan_report.data.len);
+       app_log_info("\r\n data hex: \r\n");
+       for(int i = 0; i< evt->data.evt_scanner_extended_advertisement_report.data.len; i++){
+           app_log_info("%x ", evt->data.evt_scanner_extended_advertisement_report.data.data[i]);
+       }
 
-      app_log_info("\r\n data raw: \r\n");
-      for(int i = 0; i< evt->data.evt_scanner_scan_report.data.len; i++){
-          app_log_info("%c ", evt->data.evt_scanner_scan_report.data.data[i]);
-      }
+       //stop the tracking timer
+       sl_sleeptimer_stop_timer(&sleep_timer_handle);
 
-      app_log_info("\r\n data hex: \r\n");
-      for(int i = 0; i< evt->data.evt_scanner_scan_report.data.len; i++){
-          app_log_info("%x ", evt->data.evt_scanner_scan_report.data.data[i]);
-      }
-
-      //stop the tracking timer
-      sl_sleeptimer_stop_timer(&sleep_timer_handle);
-
-      sl_bt_scanner_stop();
-      sc = sl_bt_connection_open(*remote_address,
-                            sl_bt_gap_public_address,
-                            gap_coded_phy,
-                            &app_connection);
-      app_assert_status(sc);
+       sl_bt_scanner_stop();
+       sc = sl_bt_connection_open(*remote_address,
+                             sl_bt_gap_public_address,
+                             gap_coded_phy,
+                             &app_connection);
+       app_assert_status(sc);
       break;
 
     case sl_bt_evt_connection_phy_status_id:

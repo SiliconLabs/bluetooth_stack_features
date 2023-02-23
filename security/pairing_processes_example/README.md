@@ -218,3 +218,7 @@ Initiator displays passkey
 ![Terminal output SoC-Phone](images/terminal_output_initiator_soc.png)
 
 To change the pairing process and try out other combinations, modify the macros as described earlier.
+
+## Special Notes ##
+
+The Gecko Bootloader's GPIO activation pin is enabled by default up to Gecko SDK version 4.0.0. This GPIO Activation feature allows the device to enter bootloader firmware upgrade mode if the particular GPIO pin has a given state at reset. The default GPIO pin used for the GPIO Activation is Button 0, which conflicts with the roles selection when the application runs. Use a different GPIO pin if the GPIO Activation feature is enabled to prevent the bootloader from running when selecting the responder role.

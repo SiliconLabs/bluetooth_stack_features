@@ -64,6 +64,9 @@ As shown above, the example requires two devices (e.g., BRD4104a Rev A00) and se
    Then enable *Virtual COM UART* under its configuration
    ![vcom configure](images/enable_vir_com.png)
 
+   - Install the **Legacy Advertising** component, if it is not yet installed (Bluetooth > Feature)
+   ![legacy advertising](images/legacy.png)
+
    - Install the **Log** component (found under Application > Utility group).  
    ![log configure](images/log.png)
 

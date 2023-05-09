@@ -74,16 +74,16 @@ As shown above, the example requires two devices (e.g., BRD4104a Rev A00) and se
    - Install **NVM Support** component to manage the user data in the flash.
    ![nvm configure](images/nvm.png)
 
-   - Replace the *app.c* file in the project with the provided app_central.c.
+   - Replace the *app.c* file in the project with the provided central/app.c.
   
 4. The device has the peripheral role (#D2):  
    - Import the GATT configuration:        
     - Open the **Bluetooth GATT Configurator** under the **CONFIGURATION TOOLS** tab.
-    - Find the Import button and import the attached **gatt_configuration.btconf** file.
+    - Find the Import button and import the attached **config/gatt_configuration.btconf** file.
     ![btc configure](images/btconf.png)
     - Save the GATT configuration (Ctrl+S).  
 
-   -	Replace the *app.c* file in the project with the provided app_peripheral.c.  
+   -	Replace the *app.c* file in the project with the provided peripheral/app.c.  
 
 5. Build and flash them to each device.
 
@@ -123,7 +123,7 @@ As shown above, the example requires two devices (e.g., BRD4104a Rev A00) and se
 
 ## Source
 
-* [app_central.c](src/central/app.c)
-* [app_peripheral.c](src/peripherial/app.c)
+* [central/app.c](src/central/app.c)
+* [peripheral/app.c](src/peripheral/app.c)
 * [gatt_configuration.btconf](config/gatt_configuration.btconf)
 

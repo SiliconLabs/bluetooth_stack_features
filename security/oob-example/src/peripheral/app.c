@@ -179,6 +179,7 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
         advertiser_connectable_scannable);
     app_assert_status(sc);
     sc = sl_sleeptimer_stop_timer(&sleep_timer_handle);
+    app_assert_status(sc);
     break;
   case sl_bt_evt_gatt_server_characteristic_status_id:
     /* Char status changed */
@@ -194,12 +195,13 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
                                                  (void *)NULL,
                                                  0,
                                                  0);
+      app_assert_status(sc);
     }
     else
     {
       sc = sl_sleeptimer_stop_timer(&sleep_timer_handle);
+      app_assert_status(sc);
     }
-    app_assert_status(sc);
     break;
 
   case sl_bt_evt_gatt_server_attribute_value_id:
@@ -235,7 +237,8 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
     break;
 
   case sl_bt_evt_sm_confirm_bonding_id:
-    sl_bt_sm_bonding_confirm(evt->data.evt_sm_confirm_bonding.connection, 1);
+    sc = sl_bt_sm_bonding_confirm(evt->data.evt_sm_confirm_bonding.connection, 1);
+    app_assert_status(sc);
     app_log_info("Bonding confirmed\r\n");
     break;
 
@@ -424,7 +427,7 @@ static void read_oob_data()
     /* Set advertising parameters. 100ms advertisement interval. All channels used.
      * The first two parameters are minimum and maximum advertising interval, both in
      * units of (milliseconds * 1.6). The third parameter '7' sets advertising on all channels. */
-    sl_bt_advertiser_set_timing(advertising_set_handle, 160, 160, 0, 0);
+    sc = sl_bt_advertiser_set_timing(advertising_set_handle, 160, 160, 0, 0);
     app_assert_status(sc);
 
     sc = sl_bt_advertiser_set_channel_map(advertising_set_handle, 7);

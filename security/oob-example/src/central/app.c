@@ -294,6 +294,7 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
     sc = sl_bt_scanner_start(0x01, sl_bt_scanner_discover_generic);
     app_assert_status(sc);
     sc = sl_sleeptimer_stop_timer(&sleep_timer_handle);
+    app_assert_status(sc);
     break;
 
   case sl_bt_evt_gatt_service_id:

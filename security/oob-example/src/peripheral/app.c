@@ -21,11 +21,25 @@
 #include "app.h"
 #include "sl_iostream_init_usart_instances.h"
 #include "app_log.h"
+#include "string.h"
+#include "stdio.h"
 
 
 
-#define TICKS_PER_SECOND        32768
+#define TIMER_TIMEOUT 3000
 #define SIGNAL_NOTIFY_TIMER    1
+#define LOCAL_ECHO
+#define ASCII_CAPITAL_LETTER_MIN 65
+#define ASCII_CAPITAL_LETTER_MAX 70
+#define ASCII_LOWER_LETTER_MIN 97
+#define ASCII_LOWER_LETTER_MAX 102
+#define ASCII_NUMBER_MIN 48
+#define ASCII_NUMBER_MAX 57
+#define ASCII_CAPITAL_LETTER_CONVERT 55
+#define ASCII_LOWER_LETTER_CONVERT 87
+#define ASCII_NUMBER_CONVERT 48
+#define ASCII_BACKSPACE 8
+
 
 
 #ifndef MAX_CONNECTIONS
@@ -42,6 +56,7 @@ void sleeptimer_callback(sl_sleeptimer_timer_handle_t *handle, void *data);
 
 
 uint8_t rx_oob_buf[32];
+uint8_t rx_oob_buf_ascii[64];
 static uint16_t notifyEnabled = 0;
 static uint8_t connHandle = 0xFF;
 static uint8_t notifyBuf[20] = {0};
@@ -49,6 +64,7 @@ static uint8_t notifyBuf[20] = {0};
 static uint8_t advertising_set_handle = 0xff;
 static uint8_t _oob_state = STATE_IDLE_MODE;
 static aes_key_128 key_random, key_confirm;
+
 /**************************************************************************/ /**
  * Application Init.
  *****************************************************************************/
@@ -162,6 +178,8 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
     sc = sl_bt_legacy_advertiser_start(advertising_set_handle,
         advertiser_connectable_scannable);
     app_assert_status(sc);
+    sc = sl_sleeptimer_stop_timer(&sleep_timer_handle);
+    app_assert_status(sc);
     break;
   case sl_bt_evt_gatt_server_characteristic_status_id:
     /* Char status changed */
@@ -171,13 +189,19 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
     }
     if (notifyEnabled == gatt_notification)
     {
-      sc = sl_sleeptimer_start_timer(&sleep_timer_handle, (TICKS_PER_SECOND * 3), sleeptimer_callback, (void*)NULL, 0, 0);
+      sc = sl_sleeptimer_start_periodic_timer_ms(&sleep_timer_handle,
+                                                 TIMER_TIMEOUT,
+                                                 sleeptimer_callback,
+                                                 (void *)NULL,
+                                                 0,
+                                                 0);
+      app_assert_status(sc);
     }
     else
     {
       sc = sl_sleeptimer_stop_timer(&sleep_timer_handle);
+      app_assert_status(sc);
     }
-    app_assert_status(sc);
     break;
 
   case sl_bt_evt_gatt_server_attribute_value_id:
@@ -186,9 +210,9 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
       app_log_info("Gatt Write Received: ");
       for (uint8_t i = 0; i < evt->data.evt_gatt_server_attribute_value.value.len; i++)
       {
-        app_log_info("%c", evt->data.evt_gatt_server_attribute_value.value.data[i]);
+        app_log("%c", evt->data.evt_gatt_server_attribute_value.value.data[i]);
       }
-      app_log_info("\r\n");
+      app_log("\r\n");
     }
     break;
 
@@ -213,7 +237,8 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
     break;
 
   case sl_bt_evt_sm_confirm_bonding_id:
-    sl_bt_sm_bonding_confirm(evt->data.evt_sm_confirm_bonding.connection, 1);
+    sc = sl_bt_sm_bonding_confirm(evt->data.evt_sm_confirm_bonding.connection, 1);
+    app_assert_status(sc);
     app_log_info("Bonding confirmed\r\n");
     break;
 
@@ -324,24 +349,75 @@ static void read_oob_data()
 #ifdef LOCAL_ECHO
     if (input != '\n')
     {
-      app_log_info("%c", input);
+      app_log("%c", input);
     }
-#else
-    rx_oob_buf[num++] = input;
 #endif
+    if (((input >= ASCII_LOWER_LETTER_MIN) && (input <= ASCII_LOWER_LETTER_MAX))
+        || ((input >= ASCII_NUMBER_MIN) && (input <= ASCII_NUMBER_MAX))
+        || ((input >= ASCII_CAPITAL_LETTER_MIN) && (input <= ASCII_CAPITAL_LETTER_MAX)))
+      {
+        app_log("   Position in the array: %d\r\n", num);
+        rx_oob_buf_ascii[num++] = input;
+      }
+    else if (input == ASCII_BACKSPACE)
+      {
+        if (num != 0)
+          {
+            num = num - 1;
+          }
+        app_log("Deleted character: %c\r\n", rx_oob_buf_ascii[num]);
+        if (num == 0)
+          {
+            app_log("The whole 32-byte OOB data got deleted.\r\n");
+          }
+        app_log("Position of the next character in the array after delete: %d\r\n", num);
+      }
+    else
+      {
+        app_log("\r\n");
+        app_log("Invalid character deleted: %c, keep typing the 32-byte OOB data.\r\n", input);
+      }
   }
-  if (num == 32)
+  if (num == 64)
   {
+    for (uint8_t x = 0; x < 64; x+=2)
+      {
+        uint8_t val = rx_oob_buf_ascii[x+1];
+        if ((rx_oob_buf_ascii[x] >= ASCII_LOWER_LETTER_MIN) && (rx_oob_buf_ascii[x] <= ASCII_LOWER_LETTER_MAX))
+          {
+            rx_oob_buf_ascii[x] = rx_oob_buf_ascii[x] - ASCII_LOWER_LETTER_CONVERT;
+          }
+        else if ((rx_oob_buf_ascii[x] >= ASCII_NUMBER_MIN) && (rx_oob_buf_ascii[x] <= ASCII_NUMBER_MAX))
+          {
+            rx_oob_buf_ascii[x] = rx_oob_buf_ascii[x] - ASCII_NUMBER_CONVERT;
+          }
+        else if ((rx_oob_buf_ascii[x] >= ASCII_CAPITAL_LETTER_MIN) && (rx_oob_buf_ascii[x] <= ASCII_CAPITAL_LETTER_MAX))
+          {
+            rx_oob_buf_ascii[x] = rx_oob_buf_ascii[x] - ASCII_CAPITAL_LETTER_CONVERT;
+          }
+        if ((val >= ASCII_LOWER_LETTER_MIN) && (val <= ASCII_LOWER_LETTER_MAX))
+          {
+            val = val - ASCII_LOWER_LETTER_CONVERT;
+          }
+        else if ((val >= ASCII_NUMBER_MIN) && (val <= ASCII_NUMBER_MAX))
+          {
+            val = val - ASCII_NUMBER_CONVERT;
+          }
+        else if ((val >= ASCII_CAPITAL_LETTER_MIN) && (val <= ASCII_CAPITAL_LETTER_MAX))
+          {
+            val = val - ASCII_CAPITAL_LETTER_CONVERT;
+          }
+        rx_oob_buf[x/2] = (rx_oob_buf_ascii[x] << 4) + val;
+      }
     app_log_info("16-byte OOB data: ");
-    for (uint8_t x = 0; x < 16; x++)
+    for (uint8_t x = 0; x < 32; x++)
     {
-      app_log_info("0x%02X ", rx_oob_buf[x]);
-    }
-    app_log_info("\r\n");
-    app_log_info("16-byte confirm value: ");
-    for (uint8_t x = 16; x < 32; x++)
-    {
-      app_log_info("0x%02X ", rx_oob_buf[x]);
+      if(x == 16)
+        {
+          app_log_info("\r\n");
+          app_log_info("16-byte confirm value: ");
+        }
+      app_log("0x%02X ", rx_oob_buf[x]);
     }
     app_log_info("\r\n");
     memcpy(key_random.data, &rx_oob_buf[0], sizeof(key_random));
@@ -351,7 +427,7 @@ static void read_oob_data()
     /* Set advertising parameters. 100ms advertisement interval. All channels used.
      * The first two parameters are minimum and maximum advertising interval, both in
      * units of (milliseconds * 1.6). The third parameter '7' sets advertising on all channels. */
-    sl_bt_advertiser_set_timing(advertising_set_handle, 160, 160, 0, 0);
+    sc = sl_bt_advertiser_set_timing(advertising_set_handle, 160, 160, 0, 0);
     app_assert_status(sc);
 
     sc = sl_bt_advertiser_set_channel_map(advertising_set_handle, 7);

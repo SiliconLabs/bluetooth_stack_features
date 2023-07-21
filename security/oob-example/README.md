@@ -8,7 +8,7 @@ OOB (Out-Of-Band) pairing means, that the two devices to be paired exchange some
 
 ### Purpose of the Example ###
 
-OOB with legacy pairing and OOB with secure connection pairing are the two OOB pairing modes. This example implements both modes for user’s reference.
+OOB with secure connection pairing.
 
 Implementing the central and peripheral roles are the two projects in the example.
 
@@ -30,21 +30,11 @@ Because of the different properties of these two characteristics, if the pairing
 
 ### Key Points of the Example ###
 
-#### Pairing Modes ####
-
-In both projects, a symbol definition, PAIRING_MODE, can either be LEGACY_PAIRING or SECURE_CONNECTION_PAIRING. This symbol determines which pairing mode will be used in the connection.
-
-```c
-#define LEGACY_PAIRING                                       1
-#define SECURE_CONNECTION_PAIRING                            2
-
-#define PAIRING_MODE                                         SECURE_CONNECTION_PAIRING
-```
 
 #### Behaviors of Both Roles ####
 
 * Central: It scans for the advertisement containing the service UUID “4880c12c-fdcb-4077-8920-a150d7f9b907” and establishes a connection if found. After a connection is made, it goes through the pairing and bonding procedure and discovers services and characteristics. It also sends a write request to the peer device every 3 seconds after the specified characteristic is found and enables the CCC of the specified characteristic the peer device to enable notifications.
-* Peripheral: It won’t start advertising after boot until it receives the OOB data from the serial terminal. For OOB with legacy pairing, the OOB data is 16-bytes in length. For OOB with secure connection pairing, the length is 32-bytes, containing 16-byte OOB data and 16-byte confirm value. It will go through the pairing and bonding procedure after the connection is established with the central device and send notifications to central every 3 seconds after CCC is enabled by the central device.
+* Peripheral: It won’t start advertising after boot until it receives the OOB data from the serial terminal. For OOB with secure connection pairing, the length is 32-bytes, containing 16-byte OOB data and 16-byte confirm value. It will go through the pairing and bonding procedure after the connection is established with the central device and send notifications to central every 3 seconds after CCC is enabled by the central device. While typing the 32-bytes long OOB code using the terminal program there are features which help to correct the wrongly typed characters.  
 
 ## Gecko SDK version ##
 
@@ -84,16 +74,16 @@ As shown above, the example requires two devices (e.g., BRD4104a Rev A00) and se
    - Install **NVM Support** component to manage the user data in the flash.
    ![nvm configure](images/nvm.png)
 
-   - Replace the *app.c* file in the project with the provided app_central.c.
+   - Replace the *app.c* file in the project with the provided central/app.c.
   
 4. The device has the peripheral role (#D2):  
    - Import the GATT configuration:        
     - Open the **Bluetooth GATT Configurator** under the **CONFIGURATION TOOLS** tab.
-    - Find the Import button and import the attached **gatt_configuration.btconf** file.
+    - Find the Import button and import the attached **config/gatt_configuration.btconf** file.
     ![btc configure](images/btconf.png)
     - Save the GATT configuration (Ctrl+S).  
 
-   -	Replace the *app.c* file in the project with the provided app_peripheral.c.  
+   -	Replace the *app.c* file in the project with the provided peripheral/app.c.  
 
 5. Build and flash them to each device.
 
@@ -111,27 +101,29 @@ As shown above, the example requires two devices (e.g., BRD4104a Rev A00) and se
 
 4.  #D1 will connect and start pairing and bonding to #D2 automatically.
 
-* Below are 4 different test results:
-  * Figure 1 shows what happened if the correct OOB data was input while using the legacy pairing mode. Both sides can receive the GATT data from the remote peer device.
-  * Figure 2 shows what happened if incorrect OOB data was input while using the legacy pairing mode. Only the notification can be received. The write characteristic can’t be written because of unauthenticated connection.
+* Below are the OOB data input features:
+  * Figure 1 shows what happens if an invalid character was typed via the terminal program. The character is not written to the OOB data array, typing can be continued.
+  * Figure 2 shows what happens if a valid character is deleted from the OOB data array using "backspace". Several characters can be deleted.
+
+![](images/1.jpg)  
+**Figure 1**. OOB data with invalid character
+
+![](images/2.jpg)  
+**Figure 2**. Deleting character from the OOB data.
+
+* Below are 2 different test results:
   * Figure 3 shows what happened if the correct OOB data was input while using the secure connection pairing mode. Both sides can receive the GATT data from the remote peer.
   * Figure 4 shows what happened if incorrect OOB data was input while using the secure connection pairing mode. Only the notification can be received. The write characteristic can’t be written because of unauthenticated connection.
 
-![](images/1.png)  
-**Figure 1**. OOB with Legacy Pairing Succeeded
-
-![](images/2.png)  
-**Figure 2**. OOB with Legacy Pairing Failed
-
-![](images/3.png)  
+![](images/3.jpg)  
 **Figure 3**. OOB with Secure Connection Pairing Succeeded
 
-![](images/4.png)  
+![](images/4.jpg)  
 **Figure 4**. OOB with Secure Connection Pairing Failed
 
 ## Source
 
-* [app_central.c](src/app_central.c)
-* [app_peripheral.c](src/app_peripherial.c)
+* [central/app.c](src/central/app.c)
+* [peripheral/app.c](src/peripheral/app.c)
 * [gatt_configuration.btconf](config/gatt_configuration.btconf)
 

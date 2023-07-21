@@ -21,12 +21,7 @@
 #include "app.h"
 #include "app_log.h"
 
-/** Timer Frequency used. */
-#define TIMER_CLK_FREQ ((uint32_t)32768)
-/** Convert msec to timer ticks. */
-#define TIMER_MS_2_TIMERTICK(ms) ((TIMER_CLK_FREQ * ms) / 1000)
-/** Stop timer. */
-#define TIMER_STOP  0
+#define TIMER_TIMEOUT 3000
 
 #define DISCONNECTED 0
 #define SCANNING     1
@@ -36,7 +31,6 @@
 #define DATA_MODE    5
 
 #define SIGNAL_WRITE_TIMER 1
-#define TICKS_PER_SECOND   32768
 
 const uint8_t Svc_uuid[] = {
     0x07,
@@ -208,7 +202,6 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
   // This event indicates the device has started and the radio is ready.
   // Do not call any stack command before receiving this boot event!
   case sl_bt_evt_system_boot_id:
-  case sl_bt_evt_connection_closed_id:
     app_log_info("stack version: %u.%u.%u\r\r\n", evt->data.evt_system_boot.major, evt->data.evt_system_boot.minor, evt->data.evt_system_boot.patch);
     app_log_info("Central Boot\r\n");
     // Extract unique ID from BT Address.
@@ -241,10 +234,10 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
     sc = sl_bt_sm_delete_bondings();
     app_assert_status(sc);
 
-    sl_bt_sm_configure(0x0B, sm_io_capability_keyboarddisplay);
+    sc = sl_bt_sm_configure(0x0B, sm_io_capability_keyboarddisplay);
     app_assert_status(sc);
 
-    sl_bt_sm_set_bondable_mode(1);
+    sc = sl_bt_sm_set_bondable_mode(1);
     app_assert_status(sc);
 
     sc = sl_bt_sm_set_oob(1, &key_random, &key_confirm);
@@ -266,7 +259,7 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
 
     Reset_variables();
     // start discovery
-    sl_bt_scanner_start(0x01, sl_bt_scanner_discover_generic);
+    sc = sl_bt_scanner_start(0x01, sl_bt_scanner_discover_generic);
     app_assert_status(sc);
     break;
   case sl_bt_evt_scanner_legacy_advertisement_report_id:
@@ -294,6 +287,14 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
     sc = sl_bt_gatt_discover_primary_services_by_uuid(_conn_handle, 16, Svc_uuid);
     app_assert_status(sc);
     _main_state = FIND_SERVICE;
+    break;
+
+  case sl_bt_evt_connection_closed_id:
+    // start discovery
+    sc = sl_bt_scanner_start(0x01, sl_bt_scanner_discover_generic);
+    app_assert_status(sc);
+    sc = sl_sleeptimer_stop_timer(&sleep_timer_handle);
+    app_assert_status(sc);
     break;
 
   case sl_bt_evt_gatt_service_id:
@@ -360,7 +361,12 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
 
     case ENABLE_NOTIF:
       _main_state = DATA_MODE;
-      sc = sl_sleeptimer_start_timer(&sleep_timer_handle, (TICKS_PER_SECOND * 3), sleeptimer_callback, (void*)NULL, 0, 0);
+      sc = sl_sleeptimer_start_periodic_timer_ms(&sleep_timer_handle,
+                                                       TIMER_TIMEOUT,
+                                                       sleeptimer_callback,
+                                                       (void *)NULL,
+                                                       0,
+                                                       0);
       app_assert_status(sc);
       break;
 
@@ -381,7 +387,6 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
       }
       app_log("\r\n");
 #endif
-      ntf_char_handle = ntf_char_handle;
     }
     break;
 
@@ -391,8 +396,6 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
       if ((_conn_handle != 0xFF) && (wrt_char_handle != 0))
       {
         writeToPeripheral();
-        sc = sl_sleeptimer_start_timer(&sleep_timer_handle, (TICKS_PER_SECOND * 3), sleeptimer_callback, (void*)NULL, 0, 0);
-        app_assert_status(sc);
       }
     }
     break;

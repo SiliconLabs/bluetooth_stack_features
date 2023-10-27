@@ -34,6 +34,8 @@ This repo contains example projects which demonstrate the features of the Silico
 
 
 ## Setup
+
+### Using the repository as an external Repo
 To generate GitHub example projects with Simplicity Studio (only applicable to repositories with slcp files):
 
 1. Open Simplicity Studio and navigate to Window > Preferences > Simplicity Studio > External Repos.
@@ -45,15 +47,37 @@ To generate GitHub example projects with Simplicity Studio (only applicable to r
 5. Click Next. If you have entered the repository's clone address, Simplicity Studio will clone the repository for you.
 6. Click Finish, then click Apply and Close.
 7. If you are not on the Launcher perspective, open it from the Perspectives toolbar in the upper-right corner.
-8. Select your board in the Debug Adapters view or in the My Products view.	
+8. Select your board in the Debug Adapters view or in the My Products view.
 9. On the General card, verify the Gecko SDK version and change if necessary.
    Note: Bluetooth stack feature examples are currently compatible with Gecko SDK v4.1 only!
 10. Go to the Example Projects & Demos tab.
 11. Now you should see your repository listed under the Provider filtering class. Select this filter.
     Note: The repository only shows up if it contains at least one example that is compatible with your device.
-12. All the examples contained in the repository that are compatible with your device are displayed. Click Create on any of them to create a new example project. The example project installs all the software components necessary to demonstrate the given feature, and all the needed code is automatically copied into your project. Additional  configuration might be needed, so read the readme file of the example carefully.  
+12. All the examples contained in the repository that are compatible with your device are displayed. Click Create on any of them to create a new example project. The example project installs all the software components necessary to demonstrate the given feature, and all the needed code is automatically copied into your project. Additional  configuration might be needed, so read the readme file of the example carefully.
 
 ![](doc\image\Studio.png)
+
+### Using the repo as an SDK extension
+
+The repo can be added to the Studio as an SDK Extension. If you use it this way, the sample applications will only be available when the corresponding SDK is selected. This will allow you to use see any provided components in the "Software Components" view.
+
+1. Open Simplicity Studio and navigate to Window > Preferences > Simplicity Studio > SDK.
+2. Select "Add Extension"
+
+![](doc\image\SDK_Extension.png)
+
+3. Select the repo location
+
+![](doc\image\Add_Extension.png)
+
+4. When using the Launcher, select the SDK with the extension:
+![](doc\image\SDK_Selection.png)
+
+You will be able to select the sample applications under "Example Projects & Demos" as usual, and now also the components will appear:
+![](doc\image\Component.png)
+
+
+
 ## Documentation ##
 
 Official documentation can be found at our [Developer Documentation](https://docs.silabs.com/bluetooth/latest/) page.

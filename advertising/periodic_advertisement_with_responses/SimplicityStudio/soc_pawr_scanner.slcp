@@ -1,0 +1,68 @@
+project_name: soc_periodic_advertisement_scanner
+package: Bluetooth
+label: Bluetooth - SoC Periodic Advertisement Scanner
+description: >
+  This example demonstrates the periodic advertising feature of Bluetooth 5 in the scanner side.
+category: Bluetooth Examples
+quality: development
+
+component:
+  - id: bluetooth_stack
+  - id: gatt_configuration
+  - id: bluetooth_feature_legacy_advertiser
+  - id: bluetooth_feature_connection
+  - id: bluetooth_feature_gatt
+  - id: bluetooth_feature_gatt_server
+  - id: bluetooth_feature_scanner
+  - id: bluetooth_feature_sm
+  - id: bluetooth_feature_system
+  - id: in_place_ota_dfu
+  - id: bootloader_interface
+  - id: rail_util_pti
+  - id: app_assert
+  - id: component_catalog
+  - id: mpu
+  - id: bluetooth_feature_past_receiver
+  - id: bluetooth_feature_pawr_sync
+  - id: iostream_usart
+    instance:
+    - vcom
+  - id: iostream_retarget_stdio
+  - id: app_log
+
+source:
+  - path: ../src/pawr_scanner/app.c
+  - path: ../src/pawr_scanner/main.c
+
+include:
+  - path: ../inc/scanner/
+    file_list:
+    - path: app.h
+
+readme:
+  - path: ./readme.md
+
+config_file:
+  - override:
+      component: gatt_configuration
+      file_id: gatt_configuration_file_id
+    path: ../config/gatt_configuration.btconf
+    directory: btconf
+
+configuration:
+  - name: SL_STACK_SIZE
+    value: "2752"
+  - name: SL_HEAP_SIZE
+    value: "9200"
+  - name: SL_BT_CONFIG_MAX_PERIODIC_ADVERTISING_SYNC
+    value: "1"
+  - name: SL_BOARD_ENABLE_VCOM
+    value: 1
+
+tag:
+  - hardware:rf:band:2400
+
+ui_hints:
+  highlight:
+    - path: readme.md
+      focus: true

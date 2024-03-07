@@ -69,6 +69,7 @@ static app_timer_t app_characteristic_reading_timer;
 
 static uint8_t find_name_in_advertisement(uint8_t *data, uint8_t len);
 static void app_characteristic_reading_timer_cb(app_timer_t *handle, void *data);
+static uint8_t get_peripheral_by_connection(uint8_t connection);
 
 static const uint8_t service_uuid[2] = { 0xAA, 0xAA };
 static const uint8_t characteristics_uuid[2] = { 0xBB, 0xBB };
@@ -153,11 +154,7 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
       {
         sl_bt_scanner_stop();
 
-        index = 0;
-        while (index < PERIPHERAL_COUNT) {
-          if(nodes[index].connection == 0) break;
-          index++;
-        }
+        index = get_peripheral_by_connection(0);
 
         sc = sl_bt_connection_open(evt->data.evt_scanner_legacy_advertisement_report.address,
                                    evt->data.evt_scanner_legacy_advertisement_report.address_type,
@@ -173,11 +170,7 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
     case sl_bt_evt_connection_opened_id:
       app_log("Connected\r\n");
 
-      index = 0;
-      while (index < PERIPHERAL_COUNT) {
-        if(nodes[index].connection == evt->data.evt_connection_opened.connection) break;
-        index++;
-      }
+      index = get_peripheral_by_connection(evt->data.evt_connection_opened.connection);
 
       sc = sl_bt_gatt_discover_primary_services_by_uuid(nodes[index].connection, sizeof(service_uuid), service_uuid);
       app_assert_status(sc);
@@ -187,11 +180,7 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
     case sl_bt_evt_gatt_service_id:
       app_log("Services\r\n");
 
-      index = 0;
-      while (index < PERIPHERAL_COUNT) {
-        if(nodes[index].connection == evt->data.evt_gatt_service.connection) break;
-        index++;
-      }
+      index = get_peripheral_by_connection(evt->data.evt_gatt_service.connection);
 
       nodes[index].service = evt->data.evt_gatt_service.service;
       //app_log("UUID: %X %X\r\n", evt->data.evt_gatt_service.uuid.data[0], evt->data.evt_gatt_service.uuid.data[1]);
@@ -200,11 +189,7 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
     case sl_bt_evt_gatt_procedure_completed_id:
       //app_log("Procedure: %X\r\n", evt->data.evt_gatt_procedure_completed.result);
 
-      index = 0;
-      while (index < PERIPHERAL_COUNT) {
-        if(nodes[index].connection == evt->data.evt_gatt_procedure_completed.connection) break;
-        index++;
-      }
+      index = get_peripheral_by_connection(evt->data.evt_gatt_procedure_completed.connection);
 
       switch(nodes[index].gatt_state) {
         case DISCOVERING_SERVICES: {
@@ -242,11 +227,7 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
       //app_log("Length %d\r\n", evt->data.evt_gatt_characteristic_value.value.len);
       //app_log("Characteristic Value: %X\r\n", evt->data.evt_gatt_characteristic_value.value.data[0]);
 
-      index = 0;
-      while (index < PERIPHERAL_COUNT) {
-        if(nodes[index].connection == evt->data.evt_gatt_characteristic_value.connection) break;
-        index++;
-      }
+      index = get_peripheral_by_connection(evt->data.evt_gatt_characteristic_value.connection);
 
       memcpy(&nodes[index].payload[evt->data.evt_gatt_characteristic_value.offset],
              evt->data.evt_gatt_characteristic_value.value.data,
@@ -262,11 +243,8 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
     case sl_bt_evt_connection_closed_id:
       app_log("Disconnected: %d\r\n", evt->data.evt_connection_closed.connection);
 
-      index = 0;
-      while (index < PERIPHERAL_COUNT) {
-        if(nodes[index].connection == evt->data.evt_connection_closed.connection) nodes[index].connection = 0;
-        index++;
-      }
+      index = get_peripheral_by_connection(evt->data.evt_connection_closed.connection);
+      nodes[index].connection = 0;
       break;
 
     ///////////////////////////////////////////////////////////////////////////
@@ -339,11 +317,8 @@ void app_button_press_cb(uint8_t button, uint8_t duration)
       // Handling of button press greater than 1s and less than 5s
       if (button == BUTTON_0) {
 
-        uint8_t index = 0;
-        while (index < PERIPHERAL_COUNT) {
-          if(nodes[index].connection == 0) break;
-          index++;
-        }
+        uint8_t index = get_peripheral_by_connection(0);
+
         if(index == 6) {
           app_log("Peripherals pool exhausted!\r\n");
           return;
@@ -358,3 +333,12 @@ void app_button_press_cb(uint8_t button, uint8_t duration)
   }
 }
 
+static uint8_t get_peripheral_by_connection(uint8_t connection)
+{
+  uint8_t index = 0;
+  while (index < PERIPHERAL_COUNT) {
+    if(nodes[index].connection == connection) break;
+    index++;
+  }
+  return index;
+}

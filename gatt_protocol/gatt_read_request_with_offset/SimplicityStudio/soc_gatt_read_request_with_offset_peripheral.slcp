@@ -1,0 +1,90 @@
+project_name: soc_gatt_read_request_with_offset_peripheral
+package: Bluetooth
+label: Bluetooth - SoC GATT Read Request with Offset Peripheral
+description: >
+  The goal of this example is to demonstrate the collection of larger amount of information from multiple GATT Servers (up to 6), by one central device. For this, the example utilizes User defined GATT Characteristics and User Reading with Offset features.
+category: Bluetooth Examples
+quality: development
+
+component:
+  - id: app_log
+  - id: bluetooth_stack
+  - id: gatt_configuration
+  - id: gatt_service_device_information
+  - id: bluetooth_feature_legacy_advertiser
+  - id: bluetooth_feature_connection
+  - id: bluetooth_feature_gatt
+  - id: bluetooth_feature_gatt_server
+  - id: bluetooth_feature_legacy_scanner
+  - id: bluetooth_feature_sm
+  - id: bluetooth_feature_system
+  - id: in_place_ota_dfu
+  - id: bootloader_interface
+  - id: rail_util_pti
+  - id: app_assert
+  - id: component_catalog
+  - id: mpu
+  - id: bt_post_build
+  - id: iostream_usart
+    instance:
+      - vcom
+
+source:
+  - path: ../peripheral/src/main.c
+  - path: ../peripheral/src/app.c
+
+include:
+  - path: ../peripheral/inc/
+    file_list:
+      - path: app.h
+
+config_file:
+  - override:
+      component: gatt_configuration
+      file_id: gatt_configuration_file_id
+    path: ../peripheral/config/gatt_configuration.btconf
+    directory: btconf
+
+readme:
+  - path: ../README.md
+
+other_file:
+  - path: ../images/install_usart.png
+    directory: images
+  - path: ../images/board_control_configure.png
+    directory: images
+  - path: ../images/enable_vir_com.png
+    directory: images
+  - path: ../images/legacy.png
+    directory: images
+  - path: ../images/log.png
+    directory: images
+  - path: ../images/app_timer.png
+    directory: images
+  - path: ../images/button_press.png
+    directory: images
+  - path: ../images/max_connections.png
+    directory: images
+
+configuration:
+  - name: SL_STACK_SIZE
+    value: "2752"
+  - name: SL_HEAP_SIZE
+    value: "9200"
+  - name: SL_PSA_KEY_USER_SLOT_COUNT
+    value: "0"
+    condition:
+      - psa_crypto
+  - name: SL_BOARD_ENABLE_VCOM
+    value: "1"
+    condition:
+      - "iostream_usart"
+
+tag:
+  - hardware:rf:band:2400
+
+ui_hints:
+  highlight:
+    - path: config/btconf/gatt_configuration.btconf
+    - path: readme.md
+      focus: true

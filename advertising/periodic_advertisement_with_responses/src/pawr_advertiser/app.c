@@ -66,7 +66,7 @@ static conn_info_t  conn_info;
 static const uint8_t pawr_sync_service[2] = { 0xAA, 0xAA };
 static const uint8_t pawr_sync_char[2]    = { 0xBB, 0xBB };
 
-static uint8_t slot_number = 1;
+static uint8_t slot_number = 0;
 static const uint32_t pawr_flags = SL_BT_PERIODIC_ADVERTISER_INCLUDE_TX_POWER;
 static uint8_t adv_handle = 0xFF;
 static uint8_t subevent_data = 0;
@@ -229,12 +229,23 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
       break;
 
     case sl_bt_evt_pawr_advertiser_subevent_data_request_id:
-      for(uint8_t i= 0; i < evt->data.evt_pawr_advertiser_subevent_data_request.subevent_data_count; i++ ){
-        sc = sl_bt_pawr_advertiser_set_subevent_data(adv_handle, i,
-                                                1, slot_number,
-                                                sizeof(subevent_data), &subevent_data);
+      uint8_t subevent = evt->data.evt_pawr_advertiser_subevent_data_request.subevent_start;
+      uint8_t subevents_left = evt->data.evt_pawr_advertiser_subevent_data_request.subevent_data_count;
+
+      while (subevents_left > 0) {
+        sc = sl_bt_pawr_advertiser_set_subevent_data(adv_handle, subevent, 0, slot_number, sizeof(subevent_data), &subevent_data);
         app_assert_status(sc);
+
+        // Check if subevent roll-over is required
+        if (subevent == PAWR_NUM_SUBEVENTS - 1){
+          subevent = 0;
+        }
+        else {
+          subevent++;
+        }
+        subevents_left--;
       }
+
       subevent_data++;
       break;
     case sl_bt_evt_pawr_advertiser_response_report_id:

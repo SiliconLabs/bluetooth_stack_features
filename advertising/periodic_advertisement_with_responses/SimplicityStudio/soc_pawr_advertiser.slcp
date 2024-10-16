@@ -7,7 +7,9 @@ category: Bluetooth Examples
 quality: development
 
 component:
+  - id: device_init
   - id: bluetooth_stack
+  - id: clock_manager
   - id: gatt_configuration
   - id: bluetooth_feature_legacy_advertiser
   - id: bluetooth_feature_connection

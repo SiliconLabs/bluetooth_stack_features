@@ -163,10 +163,6 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
       resp_data++;
       break;
 
-    case sl_bt_evt_sync_opened_id:
-      app_log("PAWR sync opened\r\n");
-      break;
-
     case sl_bt_evt_sync_closed_id:
       app_log("Sync lost, reason: %x\r\n", evt->data.evt_sync_closed.reason);
       sc = sl_bt_legacy_advertiser_generate_data(advertising_set_handle,

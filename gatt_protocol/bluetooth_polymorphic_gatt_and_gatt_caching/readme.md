@@ -6,8 +6,8 @@
 
 This code example has related User's Guides, here:
 
-* [Polymorphic GATT](https://docs.silabs.com/bluetooth/3.2/general/gatt-protocol/polymorphic-gatt)
-* [GATT Caching](https://docs.silabs.com/bluetooth/3.2/general/gatt-protocol/gatt-caching)
+* [Polymorphic GATT](https://docs.silabs.com/bluetooth/8.2.0/bluetooth-gatt/polymorphic-gatt)
+* [GATT Caching](https://docs.silabs.com/bluetooth/8.2.0/bluetooth-gatt/gatt-caching)
 
 ## Description
 

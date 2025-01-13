@@ -8,7 +8,7 @@ All parameters including the advertising interval, advertising data, discoverabi
 
 ### Maximum Advertising Sets
 
-To enable multiple advertising, the `Max number of advertisers reserved for user` value in **Bluetooth Core** should be set greater than one. The default value is 1.
+To enable multiple advertising, the `SL_BT_CONFIG_USER_ADVERTISERS` value in **sl_bluetooth_advertiser_config.h** should be set greater than one. The default value is 2.
 
 ### Creating a New Advertising Set
 
@@ -45,15 +45,15 @@ Finally, advertising on a given advertising set can be started using `sl_bt_exte
 - `connect`: the connectable mode of the advertising set
 - `flags`: additional extended advertising options
 
-Note that the number of concurrent advertising is limited by the `Max number of advertisers reserved for user` configuration discussed above. Similarly, the number of **connectable** advertising is also limited by `Max number of connections` configuration. For example, only one connectable advertising can be enabled if the device has (`Max number of connections` - 1) connections when this command is called. The limitation does not apply to **non-connectable** advertising, though.
+Note that the number of concurrent advertising is limited by the `SL_BT_CONFIG_USER_ADVERTISERS` configuration discussed above. Similarly, the number of **connectable** advertising is also limited by `Max number of connections` configuration. For example, only one connectable advertising can be enabled if the device has (`Max number of connections` - 1) connections when this command is called. The limitation does not apply to **non-connectable** advertising, though.
 
 The example code below demonstrates multiple advertising features in Bluetooth 5. Two advertising sets, one connectable, and another non-connectable (iBeacon), are configured separately using their respective handles. The advertising interval and TX power values used for each advertising set is different so that they can easily be distinguished from the Energy Profile perspective in Simplicity Studio.
 
 In addition to debug print out messages, LED0 is used to indicate the connection status. Follow the instructions below and verify the result using the Energy Profile perspective in Simplicity Studio, and the LED0 status on the controller board.
 
-## Gecko SDK version ##
+## Simplicity SDK version ##
 
-GSDK v4.2
+SiSDK v2024.6
 
 ## Hardware Required ##
 
@@ -82,8 +82,7 @@ GSDK v4.2
    - Install the **Log** component (found under Application > Utility group).  
     ![log configure](images/log.png)
 
-3. Set the `Max number of advertisers reserved for user` value in **Bluetooth Core** to 2 for multiple advertising.
-![log configure](images/adv.png)
+3. Set the `SL_BT_CONFIG_USER_ADVERTISERS` value in **sl_bluetooth_advertiser_config.h** to 2 for multiple advertising.
 
 4. Install the **Simple LED** component with the default instance name: **led0**
    ![led0](images/led0.png)

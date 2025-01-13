@@ -14,9 +14,9 @@ This is the example code for the Different Value Types of Characteristics, which
 
 This code example has a related User's Guide, here: [Different Value Types of Characteristics.](https://docs.silabs.com/bluetooth/latest/general/gatt-protocol/using-characteristics-value-types)
  
-## Gecko SDK version ##
+## Simplicity SDK version ##
  
-GSDK v4.2
+SiSDK v2024.6
  
 ## Hardware Required ##
  
@@ -60,7 +60,7 @@ GSDK v4.2
  
 The example code shows where to handle the read and write requests to the characteristic with both user or hex type, as well as sending a notification every 3 seconds and incrementing the first byte. Follow the below steps to test the example:
 
-1. Open the EFR Connect app on your smartphone.
+1. Open the Si Connect app on your smartphone.
 2. Find your device in the Bluetooth Browser, advertising as Empty Example, and tap Connect.
 3. Find the unknown service at the end of the GATT database.
 4. Try to read, write, re-read the two characteristics, and check the value.

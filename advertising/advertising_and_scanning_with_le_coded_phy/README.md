@@ -38,13 +38,13 @@ Another feature of these extended advertisements is that it is possible to speci
 
 ```C
 sl_bt_extended_advertiser_set_phy(advertising_set_handle,
-                                  gap_coded_phy,
-                                  gap_coded_phy);
+                                  sl_bt_gap_phy_coded,
+                                  sl_bt_gap_phy_coded);
 ```
 
 The parameters indicate the advertisement set to be used, the PHY for primary advertisements, and the PHY used for secondary advertisements.
 
-Advertisements on the coded PHY do not support active scanning. This means that is always necessary to use the new connectivity mode `advertiser_connectable_non_scannable`.
+Advertisements on the coded PHY do not support active scanning. This means that is always necessary to use the new connectivity mode `sl_bt_extended_advertiser_non_connectable`.
 
 To start advertising, the following API function is used:
 
@@ -56,9 +56,9 @@ sc = sl_bt_extended_advertiser_start(advertising_set_handle,
 
 Remaining advertising parameters can be set as they would with the traditional 1 Mbps PHY.
 
-## Gecko SDK version ##
+## Simplicity SDK version ##
 
-- GSDK v4.2
+- SiSDK v2024.6
 
 ## Hardware Required ##
 

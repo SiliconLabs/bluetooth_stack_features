@@ -10,7 +10,7 @@ This example demonstrates two scenarios that can occur after a bond has been est
 **Case 2:** Bonding keys are deleted from the EFR32.
 * Potential causes include a full chip erase, running out of space for storing bonding keys (in which case the older keys can be deleted)
 
-As an introduction to Bluetooth Security features, read [Using Bluetooth security features in Silicon Labs Bluetooth SDK](https://docs.silabs.com/bluetooth/2.13/general/security/using-bluetooth-security-features-in-silicon-labs-bluetooth-sdk).
+As an introduction to Bluetooth Security features, read [Using Bluetooth security features in Silicon Labs Bluetooth SDK](https://docs.silabs.com/bluetooth/8.2.0/bluetooth-security-overview/).
 
 The following are the most relevant Bluetooth API commands used in the sample code:
 
@@ -31,14 +31,14 @@ The following are the most relevant Bluetooth API commands used in the sample co
 
 * Used to increase security level after connection is established.
 
-More details of all these commands can be found in [Bluetooth API Reference](https://docs.silabs.com/bluetooth/3.1/group-sl-bt-sm) guide.
+More details of all these commands can be found in [Bluetooth API Reference](https://docs.silabs.com/bluetooth/8.2.0/bluetooth-stack-api/sl-bt-sm) guide.
 
 **Disclaimer:** This document and the sample application attached with it is to be used for information, reference about the topic and testing. It is not in any way production ready code. The use of the code will be at your own risk.
 
 
-## Gecko SDK version ##
+## Simplicity SDK version ##
 
-GSDK v4.2
+SiSDK v2024.6
 
 ## Hardware Required ##
 
@@ -47,7 +47,7 @@ GSDK v4.2
 
 ## Setting up ##
 
-Central: A smartphone with the EFR Connect app
+Central: A smartphone with the Si Connect app
 
 1. An Android smartphone (A Sony Xperia Z1 running Android 5.1.1 OS, **doesn’t support LE secure connections**)
 
@@ -55,7 +55,7 @@ Central: A smartphone with the EFR Connect app
 
 3. An Apple smartphone (iPhone 6, running iOS 11.2.6 **supports LE secure connections**)
 
-Peripheral: An EFR32 Radio board (a BGM module in this case, **it supports LE secure connections**) (Programmed with Bluetooth SDK 3.1.1)
+Peripheral: An EFR32 Radio board (a BGM module in this case, **it supports LE secure connections**) (Programmed with Bluetooth SDK 8.2.0)
 
 1. Create a **Bluetooth - SoC Empty** project in Simplicity Studio.
 
@@ -80,10 +80,9 @@ Peripheral: An EFR32 Radio board (a BGM module in this case, **it supports LE se
    - Install the **Log** component (found under Application > Utility group)
    ![log configure](images/log.png)
 
-   - Create the first button by installing the **Simple Button** component with the default instance name: **btn0**
-   ![button0](images/btn0.png)  
-   Create the second button by click the **Add New Instances** button with the default instance name: **btn1**
-   ![button1](images/btn1.png)
+   - Create 2 buttons by installing the **Simple Button** component and creating two instances **btn0** and **btn1**
+   ![button](images/install_button.png)  
+
 
 4. Import the GATT configuration:        
     - Open the **Bluetooth GATT Configurator** under the **CONFIGURATION TOOLS** tab.
@@ -101,20 +100,9 @@ Peripheral: An EFR32 Radio board (a BGM module in this case, **it supports LE se
 
 According to our observation, Android OS treats pairing and connecting as two separate events. Pairing is optional if your GATT database does not contain any characteristic that requires encryption or bonding. You can connect, not pair and still be able to read and write other characteristics. A connection made between the EFR and Smartphone is security level 1. When paired, security  level increases to 3 or 4 depending on Legacy or Secure connections respectively.
 
-<img src="images/figure_1.png" width="378" height="672">
-
-*Figure 1: The Bluetooth Browser Showing the Empty Example Device*
-
-
-<img src="images/figure_2.png" width="378" height="672">
-
-*Figure 2: Connected but not Bonded to the EFR*
-
-
-
-<img src="images/figure_3.png" width="378" height="672">
-
-*Figure 3: Optional Pairing/Bonding Request Received*
+|Find example|paring request|Enter passkey|Bond created|
+|:-------:|:-------:|:-------:|:-------:|
+|![Find example](images/Find_example.png)|![paring request](images/pairing_request.png)|![Enter passkey](images/Enter_passkey.png)|![Bond created](images/bond_created.png)|
 
 
 

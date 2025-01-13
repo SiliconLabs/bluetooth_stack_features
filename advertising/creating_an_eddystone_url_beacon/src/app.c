@@ -156,7 +156,7 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
       // Start advertising in user mode and disable connections.
       sc = sl_bt_legacy_advertiser_start(
         advertising_set_handle,
-        advertiser_non_connectable);
+        sl_bt_advertiser_non_connectable);
       app_assert(sc == SL_STATUS_OK,
                     "[E: 0x%04x] Failed to start advertising\n",
                     (int)sc);

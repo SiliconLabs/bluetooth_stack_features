@@ -7,7 +7,7 @@ Chained advertising allows advertising packets to be linked or chained together 
 
 ### Advertiser
 
-The maximum size of a BGAPI command is 255B, which does not support using one command to set 1650B of advertisement data. Therefore, version 3.1 of Silicon Labs Bluetooth SDK introduces the API:
+The maximum size of a BGAPI command is 255B, which does not support using one command to set 1650B of advertisement data. Therefore it necessary to use the API function:
 
 ```C
 sl_status_t sl_bt_system_data_buffer_write(size_t data_len,
@@ -45,7 +45,7 @@ sl_status_t sl_bt_sync_open(bd_addr address,
                             uint16_t *sync);
 ```
 
-The sample code for the scanner/synchronizer includes event handlers for sync_opened and sync_closed events. The sync_closed event is triggered when a sync timeout expires and is used to start scanning again. The `sl_bt_evt_sync_opened_id` event is purely informative and prints a message indicating that a sync has been opened. The `sl_bt_evt_sync_data_id` is triggered whenever sync data is received. This event handler handles three situations:
+The sample code for the scanner/synchronizer includes event handlers for sync_opened and sync_closed events. The sync_closed event is triggered when a sync timeout expires and is used to start scanning again. The `sl_bt_evt_periodic_sync_opened_id` event is purely informative and prints a message indicating that a sync has been opened. The `ssl_bt_evt_periodic_sync_report_id` is triggered whenever sync data is received. This event handler handles three situations:
 
 - Data received complete
 - Data received with more to follow and
@@ -63,9 +63,9 @@ Some notes when setting up this example:
 
 - 1650 bytes of advertising data are buffered in `system_data_buffer` so the buffer size needs to be increased to provide sufficient space for data, which can be edited by the value **Buffer memory size for Bluetooth stack** in **Bluetooth core configure**.
 
-## Gecko SDK version ##
+## Simplicity SDK version ##
 
-- GSDK v4.2
+- SiSDK v2024.6
 
 ## Hardware Required ##
 
@@ -137,7 +137,7 @@ Open a terminal program for both boards, such as the Simplicity Studio serial co
 
 ![result](images/result.png)
 
-Shortly after starting up, the scanner discovers an advertiser that has come into range and synchronizes with it. Each `sl_bt_evt_sync_data_id` comes with a maximum of 250 bytes. The entire advertising packet contains 1650 bytes. The final event contains 150 bytes and displays a message indicating that the sync is complete.
+Shortly after starting up, the scanner discovers an advertiser that has come into range and synchronizes with it. Each `sl_bt_evt_periodic_sync_report_id` comes with a maximum of 250 bytes. The entire advertising packet contains 1650 bytes. The final event contains 150 bytes and displays a message indicating that the sync is complete.
 
 The figure below will show the case when one of the advertising packet PDUs is not received, so the data is discarded.
 

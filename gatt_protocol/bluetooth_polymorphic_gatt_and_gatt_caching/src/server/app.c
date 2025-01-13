@@ -102,12 +102,12 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
 
       // Start general advertising and enable connections.
       sc = sl_bt_legacy_advertiser_generate_data(advertising_set_handle,
-                                                 advertiser_general_discoverable);
+                                                 sl_bt_advertiser_general_discoverable);
       app_assert(sc == SL_STATUS_OK,
                     "[E: 0x%04x] Failed to generate data\n",
                     (int)sc);
       sc = sl_bt_legacy_advertiser_start(advertising_set_handle,
-                                         advertiser_connectable_scannable);
+                                         sl_bt_advertiser_connectable_scannable);
       app_assert(sc == SL_STATUS_OK,
                     "[E: 0x%04x] Failed to start advertising\n",
                     (int)sc);
@@ -139,12 +139,12 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
       app_log("connection closed, reason: 0x%2.2x\r\n", evt->data.evt_connection_closed.reason);
       // Restart advertising after client has disconnected.
       sc = sl_bt_legacy_advertiser_generate_data(advertising_set_handle,
-                                                 advertiser_general_discoverable);
+                                                 sl_bt_advertiser_general_discoverable);
       app_assert(sc == SL_STATUS_OK,
                     "[E: 0x%04x] Failed to generate data\n",
                     (int)sc);
       sc = sl_bt_legacy_advertiser_start(advertising_set_handle,
-                                         advertiser_connectable_scannable);
+                                         sl_bt_advertiser_connectable_scannable);
       app_assert(sc == SL_STATUS_OK,
                     "[E: 0x%04x] Failed to start advertising\n",
                     (int)sc);
@@ -192,14 +192,14 @@ void sl_button_on_change(const sl_button_t *handle)
   sl_button_state_t btn_state;
 
   if(handle->context == sl_button_btn0.context){
-      btn_state = sl_simple_button_get_state(sl_button_btn0.context);
-      if(btn_state == SL_SIMPLE_BUTTON_RELEASED){
+      btn_state = sl_button_get_state(handle);
+      if(btn_state == SL_SIMPLE_BUTTON_PRESSED){
           sl_bt_external_signal(BUTTON0_PRESSED);
       }
    }
   else if(handle->context == sl_button_btn1.context){
-      btn_state = sl_simple_button_get_state(sl_button_btn1.context);
-      if(btn_state == SL_SIMPLE_BUTTON_RELEASED){
+      btn_state = sl_button_get_state(handle);
+      if(btn_state == SL_SIMPLE_BUTTON_PRESSED){
           sl_bt_external_signal(BUTTON1_PRESSED);
       }
    }

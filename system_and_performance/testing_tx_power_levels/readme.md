@@ -6,19 +6,17 @@ The command **sl_bt_system_set_tx_power** can be used to set the global minimum 
 
 This example iterates through a power level range between a minimum and a maximum value given to **sl_bt_system_set_tx_power** command and prints out both the input parameter and the response.
 
-> **NOTE:** TX power can be set with 0.1 dBm granularity. For example, the value of 50 equals +5 dBm. For more information, see the description of the [sl_bt_system_set_tx_power](https://docs.silabs.com/bluetooth/3.1/group-sl-bt-system#ga19566861d594376a52e2e1e7481bef68) API command.
+> **NOTE:** TX power can be set with 0.1 dBm granularity. For example, the value of 50 equals +5 dBm. For more information, see the description of the [sl_bt_system_set_tx_power](https://docs.silabs.com/bluetooth/8.2.0/bluetooth-stack-api/sl-bt-system#sl-bt-system-set-tx-power) API command.
 
 This code example has related User's Guides, which may be worth reading before. Find them here:
 
-[Bluetooth TX Power Settings](https://docs.silabs.com/bluetooth/latest/general/system-and-performance/bluetooth-tx-power-settings)
+[Current consumption variation with TX Power](https://docs.silabs.com/bluetooth/8.2.0/bluetooth-fundamentals-system-performance/compliance-power-limitations)
 
-[Current consumption variation with TX Power](https://docs.silabs.com/bluetooth/latest/general/system-and-performance/current-consumption-variation-with-tx-power)
+[TX Power Limitations for Regulatory Compliance (ETSI, FCC)](https://docs.silabs.com/bluetooth/8.2.0/bluetooth-fundamentals-system-performance/compliance-power-limitations)
 
-[TX Power Limitations for Regulatory Compliance (ETSI, FCC)](https://docs.silabs.com/bluetooth/latest/general/system-and-performance/tx-power-limitations-for-regulatory-compliance-etsi-fcc)
-
-## Gecko SDK version ##
+## Simplicity SDK version ##
  
-GSDK v4.2
+SiSDK v2024.6
  
 ## Hardware Required ##
  

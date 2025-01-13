@@ -127,7 +127,7 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
     // Do not call any stack command before receiving this boot event!
     case sl_bt_evt_system_boot_id:
       /* Print stack version */
-      app_log("Bluetooth stack booted: v%d.%d.%d-b%d\n",
+      app_log("Bluetooth stack booted: v%d.%d.%d-b%d\r\n",
                  evt->data.evt_system_boot.major,
                  evt->data.evt_system_boot.minor,
                  evt->data.evt_system_boot.patch,
@@ -139,7 +139,7 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
                     (int)sc);
 
       /* Print Bluetooth address */
-      app_log("Bluetooth %s address: %02X:%02X:%02X:%02X:%02X:%02X\n",
+      app_log("Bluetooth %s address: %02X:%02X:%02X:%02X:%02X:%02X\r\n",
                        address_type ? "static random" : "public device",
                        address.addr[5],
                        address.addr[4],
@@ -183,12 +183,12 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
                     (int)sc);
       // Start general advertising and enable connections.
       sc = sl_bt_legacy_advertiser_generate_data(advertising_set_handle,
-                                                 advertiser_general_discoverable);
+                                                 sl_bt_advertiser_general_discoverable);
       app_assert(sc == SL_STATUS_OK,
                     "[E: 0x%04x] Failed to generate data\n",
                     (int)sc);
       sc = sl_bt_legacy_advertiser_start(advertising_set_handle,
-                                         advertiser_connectable_scannable);
+                                         sl_bt_advertiser_connectable_scannable);
       app_assert(sc == SL_STATUS_OK,
                     "[E: 0x%04x] Failed to start advertising\n",
                     (int)sc);
@@ -212,7 +212,7 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
         // and connect to that device
         sc = sl_bt_connection_open(evt->data.evt_scanner_legacy_advertisement_report.address,
                                    evt->data.evt_scanner_legacy_advertisement_report.address_type,
-                                   gap_1m_phy,
+                                   sl_bt_gap_1m_phy,
                                    &connection_handle);
         app_assert(sc == SL_STATUS_OK,
                       "[E: 0x%04x] Failed to connect\n",
@@ -245,12 +245,12 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
       connection_handle = 0xff;
       // Restart advertising after client has disconnected.
       sc = sl_bt_legacy_advertiser_generate_data(advertising_set_handle,
-                                                 advertiser_general_discoverable);
+                                                 sl_bt_advertiser_general_discoverable);
       app_assert(sc == SL_STATUS_OK,
                     "[E: 0x%04x] Failed to generate data\n",
                     (int)sc);
       sc = sl_bt_legacy_advertiser_start(advertising_set_handle,
-                                         advertiser_connectable_scannable);
+                                         sl_bt_advertiser_connectable_scannable);
       app_assert(sc == SL_STATUS_OK,
                     "[E: 0x%04x] Failed to start advertising\n",
                     (int)sc);
@@ -549,7 +549,7 @@ static uint16_t queue_characteristic_chunk(uint8_t * data,
     /* send all the queued blocks */
     gatt_state = EXECUTING_LONG_WRITE;
     sc = sl_bt_gatt_execute_characteristic_value_write(connection,
-                                                       (uint8_t)gatt_commit);
+                                                       (uint8_t)sl_bt_gatt_commit);
     app_log("exec_result = 0x%X\r\n", sc);
   }
 
@@ -603,7 +603,7 @@ static void set_mode(void)
                       "[E: 0x%04x] Failed to set scan parameters \n",
                       (int)sc);
     // Start scanning - looking for peripheral devices
-    sc = sl_bt_scanner_start(gap_1m_phy, scanner_discover_observation);
+    sc = sl_bt_scanner_start(sl_bt_gap_1m_phy, sl_bt_scanner_discover_observation);
     app_assert(sc == SL_STATUS_OK,
                   "[E: 0x%04x] Failed to start discovery #1\n",
                   (int)sc);
@@ -623,12 +623,12 @@ static void set_mode(void)
                   (int)sc);
     // Start general advertising and enable connections.
       sc = sl_bt_legacy_advertiser_generate_data(advertising_set_handle,
-                                                 advertiser_general_discoverable);
+                                                 sl_bt_advertiser_general_discoverable);
       app_assert(sc == SL_STATUS_OK,
                     "[E: 0x%04x] Failed to generate data\n",
                     (int)sc);
       sc = sl_bt_legacy_advertiser_start(advertising_set_handle,
-                                         advertiser_connectable_scannable);
+                                         sl_bt_advertiser_connectable_scannable);
       app_assert(sc == SL_STATUS_OK,
                     "[E: 0x%04x] Failed to start advertising\n",
                     (int)sc);

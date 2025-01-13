@@ -32,6 +32,10 @@ component:
     - vcom
   - id: iostream_retarget_stdio
   - id: app_log
+  - id: bt_post_build
+  - id: sl_system
+  - id: clock_manager
+  - id: device_init
 
 source:
   - path: ../src/server/app.c

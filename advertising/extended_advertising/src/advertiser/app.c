@@ -25,6 +25,9 @@ void demo_setup_start_ext_adv(uint8_t handle);
 // The advertising set handle allocated from Bluetooth stack.
 static uint8_t advertising_set_handle = 0xff;
 
+const uint8_t dummy_service[16] = {0x81,0xc2,0x00,0x2d,0x31,0xf4,0xb0,0xbf,0x2b,0x42,0x49,0x68,0xc7,0x25,0x71,0x41};
+
+
 /**************************************************************************//**
  * Application Init.
  *****************************************************************************/
@@ -121,7 +124,7 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
     case sl_bt_evt_connection_closed_id:
       // Restart advertising after client has disconnected.
       sc = sl_bt_extended_advertiser_generate_data(advertising_set_handle,
-                                                   advertiser_general_discoverable);
+                                                   sl_bt_advertiser_general_discoverable);
       app_assert(sc == SL_STATUS_OK,
                     "[E: 0x%04x] Failed to generate data\n",
                     (int)sc);
@@ -167,6 +170,10 @@ void demo_setup_ext_adv(uint8_t handle)
   amout_bytes += 9;
   adv_data[amout_bytes++] = 0x11;// length 17 bytes
   adv_data[amout_bytes++] = 0x06;//more_128_uuids
+
+  // copy the 128bits UUID of the service into the advertising data
+  memcpy(adv_data+amout_bytes,dummy_service,16);
+  amout_bytes += 16;
 
   // Prepare manufacturer_specific_data
   memcpy(extended_buf, (uint8_t *)&company_id, 2);

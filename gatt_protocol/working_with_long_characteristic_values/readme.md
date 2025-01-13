@@ -4,7 +4,7 @@
 
 According to the Bluetooth specification, the maximum size of any attribute is 512 bytes. However, the Maximum Transmission Unit (MTU), i.e., the largest amount of data that can be exchanged in a single GATT operation is usually less than this value. As a result, some characteristics may not be read/written with a single GATT operation. If the data to be read or written is larger than the MTU, a long read/write operation must be used. This example demonstrates how to implement this. The attached application handles reading and writing a characteristic of 512 bytes.
 
-This code example has related User's Guide, which may be worth reading before. Find it here: [GATT Server and Client Roles](https://docs.silabs.com/bluetooth/latest/general/gatt-protocol/gatt-server-and-client-roles)
+This code example has related User's Guide, which may be worth reading before. Find it here: [GATT Server and Client Roles](https://docs.silabs.com/bluetooth/8.2.0/bluetooth-gatt/gatt-server-client-roles)
 
 ### Reading ###
 
@@ -18,9 +18,9 @@ Characteristics can be written by calling **sl_bt_gatt_write_characteristic_valu
 
 Notifications and indications are limited to MTU – 3 bytes. Since all notifications and indications must fit within a single GATT operation, the application does not demonstrate them.
 
-## Gecko SDK version ##
+## Simplicity SDK version ##
 
-GSDK v4.2.0
+SiSDK v2024.6
 
 ## Hardware Required ##
 

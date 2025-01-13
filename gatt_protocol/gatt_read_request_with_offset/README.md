@@ -5,9 +5,9 @@
 
 The goal of this example is to demonstrate the collection of larger amount of information from multiple GATT Servers (up to 6), by one central device. For this, the example utilizes User defined GATT Characteristics and User Reading with Offset features.
 
-## Gecko SDK version
+## Simplicity SDK version
 
-GSDK v4.3.0 or newer
+SiSDK v2024.6
 
 ## Hardware Required
 

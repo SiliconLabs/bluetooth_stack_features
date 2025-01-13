@@ -90,9 +90,9 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
     app_log_info("local BT device address: ");
     for (i = 0; i < 5; i++)
     {
-      app_log_info("%2.2x:", address.addr[5 - i]);
+      app_log("%2.2x:", address.addr[5 - i]);
     }
-    app_log_info("%2.2x\r\r\n", address.addr[0]);
+    app_log("%2.2x\r\r\n", address.addr[0]);
     // Pad and reverse unique ID to get System ID.
     system_id[0] = address.addr[5];
     system_id[1] = address.addr[4];
@@ -123,7 +123,7 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
     sc = sl_bt_sm_set_passkey(-1);
     app_assert_status(sc);
 
-    sc = sl_bt_sm_configure(0x0B, sm_io_capability_displayonly);
+    sc = sl_bt_sm_configure(0x0B, sl_bt_sm_io_capability_displayonly);
     app_assert_status(sc);
 
     sc = sl_bt_sm_set_bondable_mode(1);
@@ -148,7 +148,7 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
     // Start general advertising and enable connections.
     sc = sl_bt_legacy_advertiser_start(
         advertising_set_handle,
-        advertiser_connectable_scannable);
+        sl_bt_advertiser_connectable_scannable);
     app_assert_status(sc);
     break;
 
@@ -163,7 +163,9 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
     uint8_t activeConnectionId = 0;
     activeConnectionId = evt->data.evt_connection_opened.connection;
     bleBondingHandle = evt->data.evt_connection_opened.bonding;
-
+    // a delay could be needed before sending the security request to the phone, sending the request too soon
+    // can cause the phone to drop it. 0.5s is a suggested value
+    sl_sleeptimer_delay_millisecond(500);
     if (bleBondingHandle == 0xFF)
     {
       app_log_info("Increasing security\r\n");
@@ -176,32 +178,6 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
     }
     break;
 
-  case sl_bt_evt_connection_parameters_id:
-  {
-    app_log_info("Bluetooth Stack Event : CONNECTION Parameters ID\r\n");
-    uint8_t connectionhandle = evt->data.evt_connection_parameters.connection;
-    uint16_t txSize = evt->data.evt_connection_parameters.txsize;
-    uint8_t securityLevel = evt->data.evt_connection_parameters.security_mode + 1;
-    uint16_t timeout = evt->data.evt_connection_parameters.timeout;
-    if (securityLevel > 2)
-    {
-      app_log_info("[OK]      Bluetooth Stack Event : CONNECTION PARAMETERS : MTU = %d, SecLvl : %d, Timeout : %d\r\n", txSize, securityLevel, timeout);
-    }
-    else
-    {
-      app_log_info("Bluetooth Stack Event : CONNECTION PARAMETERS : MTU = %d, SecLvl : %d, timeout : %d\r\n", txSize, securityLevel, timeout);
-    }
-
-    //If security is less than 2 increase so devices can bond
-    if (securityLevel < 2)
-    {
-      app_log_info("Bonding Handle is: 0x%04X\r\n", bleBondingHandle);
-      app_log_info("Increasing security..\r\n");
-      sc = sl_bt_sm_increase_security(connectionhandle);
-      app_assert_status(sc);
-    }
-    break;
-  }
 
   // -------------------------------
   // This event indicates that a connection was closed.
@@ -212,7 +188,7 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
     // Restart advertising after client has disconnected.
     sc = sl_bt_legacy_advertiser_start(
         advertising_set_handle,
-        advertiser_connectable_scannable);
+        sl_bt_advertiser_connectable_scannable);
     app_assert_status(sc);
     break;
 
@@ -315,7 +291,8 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
   // -------------------------------
   // Default event handler.
   default:
-    app_log_info("Bluetooth Stack Event : UNKNOWN (0x%04lx)\r\n", SL_BT_MSG_ID(evt->header));
+//    for Debug Purposes
+//    app_log_info("Bluetooth Stack Event : UNKNOWN (0x%04lx)\r\n", SL_BT_MSG_ID(evt->header));
     break;
   }
 }

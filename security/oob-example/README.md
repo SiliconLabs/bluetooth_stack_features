@@ -36,9 +36,9 @@ Because of the different properties of these two characteristics, if the pairing
 * Central: It scans for the advertisement containing the service UUID “4880c12c-fdcb-4077-8920-a150d7f9b907” and establishes a connection if found. After a connection is made, it goes through the pairing and bonding procedure and discovers services and characteristics. It also sends a write request to the peer device every 3 seconds after the specified characteristic is found and enables the CCC of the specified characteristic the peer device to enable notifications.
 * Peripheral: It won’t start advertising after boot until it receives the OOB data from the serial terminal. For OOB with secure connection pairing, the length is 32-bytes, containing 16-byte OOB data and 16-byte confirm value. It will go through the pairing and bonding procedure after the connection is established with the central device and send notifications to central every 3 seconds after CCC is enabled by the central device. While typing the 32-bytes long OOB code using the terminal program there are features which help to correct the wrongly typed characters.  
 
-## Gecko SDK version ##
+## Simplicity SDK version ##
 
-GSDK v4.2
+SiSDK v2024.6
 
 ## Hardware Required ##
 

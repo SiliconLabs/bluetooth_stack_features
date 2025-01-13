@@ -122,12 +122,12 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
 
       // Start general advertising
       sc = sl_bt_extended_advertiser_generate_data(advertising_set_handle,
-                                                 advertiser_general_discoverable);
+                                                   sl_bt_advertiser_general_discoverable);
 
       app_assert_status(sc);
 
       sc = sl_bt_extended_advertiser_start(advertising_set_handle,
-                                           advertiser_non_connectable,
+                                           sl_bt_extended_advertiser_non_connectable,
                                            SL_BT_EXTENDED_ADVERTISER_INCLUDE_TX_POWER );
 
       app_assert_status(sc);
@@ -156,12 +156,12 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
     case sl_bt_evt_system_external_signal_id:
       if(evt->data.evt_system_external_signal.extsignals == SIGNAL_REFRESH_DATA)
       {
-        app_log_info("\r\n");
+        app_log("\r\n");
         for (int i = 0; i < 190; i++) {
             periodic_adv_data[i] = rand()%9;
-            app_log_info(" %X", periodic_adv_data[i]);
+            app_log(" %X", periodic_adv_data[i]);
         }
-        app_log_info("\r\n");
+        app_log("\r\n");
 
         sc = sl_bt_periodic_advertiser_set_data(advertising_set_handle, sizeof(periodic_adv_data), periodic_adv_data);
         app_assert_status(sc);

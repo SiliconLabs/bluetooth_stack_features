@@ -34,6 +34,11 @@ component:
   - id: device_init
   - id: emlib_rmu
   - id: emlib_wdog
+  - id: board_control
+  - id: bt_post_build
+  - id: sl_system
+  - id: clock_manager
+  - id: device_init
 
 source:
   - path: ../src/series_2/app.c

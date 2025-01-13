@@ -212,7 +212,7 @@ static void on_system_boot(void)
                       "[E: 0x%04x] Failed to set discovery timing\n",
                       (int)sc);
    /*Start discovering*/
-  sc = sl_bt_scanner_start(sl_bt_gap_1m_phy, scanner_discover_generic);
+  sc = sl_bt_scanner_start(sl_bt_gap_1m_phy, sl_bt_scanner_discover_observation);
   app_assert(sc == SL_STATUS_OK,
                       "[E: 0x%04x] Failed to start discovery\n",
                       (int)sc);

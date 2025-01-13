@@ -213,14 +213,14 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
       /* 10ms scan interval, 100% duty cycle*/
       sl_bt_scanner_set_parameters(sl_bt_scanner_scan_mode_passive, 16, 16);
 
-      sl_bt_scanner_start(gap_1m_phy, sl_bt_scanner_discover_observation);
+      sl_bt_scanner_start(sl_bt_gap_1m_phy, sl_bt_scanner_discover_observation);
       break;
 
     case sl_bt_evt_scanner_legacy_advertisement_report_id:
       /* Find server by name */
       if (findDeviceByName(&(evt->data.evt_scanner_legacy_advertisement_report),"GATT server")) {
         /* Connect to server */
-        sl_bt_connection_open(evt->data.evt_scanner_legacy_advertisement_report.address, evt->data.evt_scanner_legacy_advertisement_report.address_type, gap_1m_phy, &conn_handle);
+        sl_bt_connection_open(evt->data.evt_scanner_legacy_advertisement_report.address, evt->data.evt_scanner_legacy_advertisement_report.address_type, sl_bt_gap_1m_phy, &conn_handle);
       }
       break;
     // -------------------------------
@@ -290,7 +290,7 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
           /* subscribe for indications */
           sl_bt_gatt_set_characteristic_notification(evt->data.evt_gatt_procedure_completed.connection,
                                                      db_cache.service_changed_handle,
-                                                     gatt_indication);
+                                                     sl_bt_gatt_indication);
       }
 
       break;

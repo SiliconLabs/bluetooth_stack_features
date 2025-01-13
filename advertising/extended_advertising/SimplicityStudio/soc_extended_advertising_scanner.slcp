@@ -9,10 +9,8 @@ quality: development
 component:
   - id: bluetooth_stack
   - id: gatt_configuration
-  - id: bluetooth_feature_legacy_advertiser
+  - id: bluetooth_feature_extended_scanner
   - id: bluetooth_feature_connection
-  - id: bluetooth_feature_gatt
-  - id: bluetooth_feature_gatt_server
   - id: bluetooth_feature_scanner
   - id: bluetooth_feature_sm
   - id: bluetooth_feature_system
@@ -22,12 +20,16 @@ component:
   - id: app_assert
   - id: component_catalog
   - id: mpu
-  - id: bluetooth_feature_extended_scanner
   - id: iostream_usart
     instance:
     - vcom
   - id: iostream_retarget_stdio
   - id: app_log
+  - id: board_control
+  - id: bt_post_build
+  - id: sl_system
+  - id: clock_manager
+  - id: device_init
 
 source:
   - path: ../src/scanner/app.c

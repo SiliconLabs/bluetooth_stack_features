@@ -2,9 +2,9 @@
 
 ## Description ##
 
-In Silicon Labs Bluetooth SDK v3.x you can use the API [sl_bt_advertiser_set_data()](https://docs.silabs.com/bluetooth/3.1/group-sl-bt-advertiser#ga706aeaf60049280fe9cc256f20ad4113) to set the advertisement and scan response data. Data has a standard format, whereas the data passed to above API is raw data uint8array. This example focuses on adding a middle layer between user application and the Bluetooth stack API to set the advertisement payload, which makes the payload more straightforward, visible, and easier to understand.
+In Silicon Labs Bluetooth SDK v8.x you can use the API calls [sl_bt_legacy_advertiser_set_data()](https://docs.silabs.com/bluetooth/latest/bluetooth-stack-api/sl-bt-legacy-advertiser#sl-bt-legacy-advertiser-set-data) / [sl_bt_extended_advertiser_set_data()](https://docs.silabs.com/bluetooth/latest/bluetooth-stack-api/sl-bt-extended-advertiser#sl-bt-extended-advertiser-set-data) to set the advertisement and scan response data. Advertisment payload is defined in a structured manner whereas the data passed to above API calls is raw data uint8array. This example focuses on adding a middle layer between user application and the Bluetooth stack API to set the advertisement payload, which makes the payload more straightforward, visible, and easier to understand.
 
-To learn more about the payload of Bluetooth advertisement, see [Bluetooth Advertising Data Basics](https://docs.silabs.com/bluetooth/latest/general/adv-and-scanning/bluetooth-adv-data-basics).
+To learn more about the payload of Bluetooth advertisement, see [Bluetooth Advertising Data Basics](https://docs.silabs.com/bluetooth/latest/bluetooth-fundamentals-advertising-scanning/advertising-data-basics).
 
 In this example two functions are introduced:
 
@@ -33,9 +33,9 @@ The example advertisement structure set up in demo_adv_setup() looks like this:
 
 ![Figure 3. Scan Response Payload Breakdown](images/0205_f3.png)
 
-## Gecko SDK version ##
+## Simplicity SDK version ##
 
-GSDK v4.2.0
+SiSDK  v2024.6
 
 ## Hardware Required ##
 
@@ -56,7 +56,7 @@ GSDK v4.2.0
     Then enable *Virtual COM UART* under its configuration
     ![board control configure](images/enable_vir_com.png)  
 
-   - Install the **Log** component (found under Bluetooth > Utility group)
+   - Install the **Log** component (found under Application > Utility group)
 
 3. Replace the *app.c* and *app.h* file in the project with the provided *app.c*, *app.h*
 
@@ -66,10 +66,12 @@ GSDK v4.2.0
 
 1. Flash binary to the radio board
 
-2. Open EFR Connect application on your smartphone
+2. Open Simplicity Connect application on your smartphone
 
 3. Start the Bluetooth Browser from the application to scan nearby devices. If everything goes well you will get below result. The data shown in the EFR Connect app must be the same as described in the [Description](#description) section.
 
-   ![Test result](images/test_result_n.png)
+   <div style="text-align: center;">
+      <img src="images/test_result_n.png" alt="Test result">
+   </div>
    
    For debugging purposes open a Terminal, and connect to your device via the JLink virtual COM port.

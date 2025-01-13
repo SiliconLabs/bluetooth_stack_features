@@ -9,9 +9,9 @@ This is a special-purpose type of advertising, designed to invite a specific pee
 - Low duty cycle directed connectable legacy advertising
   - sl_bt_legacy_advertiser_low_duty_directed_connectable - The advertising happens with the configured duty cycle - You may configure the advertising parameters with `sl_bt_advertiser_set_timing`
 
-## Gecko SDK version
+## Simplcity SDK version
 
-GSDK v4.2.0 or newer
+SiDK v2024.6 or newer
 
 ## Hardware Required
 

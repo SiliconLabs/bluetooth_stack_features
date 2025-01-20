@@ -37,6 +37,11 @@ component:
     instance:
     - led0
     - led1
+  - id: bluetooth_feature_nvm
+  - id: bt_post_build
+  - id: sl_system
+  - id: clock_manager
+  - id: device_init
 
 source:
   - path: ../src/app.c

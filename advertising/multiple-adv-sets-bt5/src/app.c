@@ -126,13 +126,13 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
 
     // Start general advertising and enable connections.
     sc = sl_bt_extended_advertiser_generate_data(handle_demo,
-                                                 advertiser_general_discoverable);
+                                                 sl_bt_advertiser_general_discoverable);
     app_assert(sc == SL_STATUS_OK,
                   "[E: 0x%04x] Failed to generate data\n",
                   (int)sc);
     sc = sl_bt_extended_advertiser_start(
         handle_demo,
-        sl_bt_extended_advertiser_scannable,
+        sl_bt_extended_advertiser_connectable,
         0);
     app_assert(sc == SL_STATUS_OK,
                   "[E: 0x%04x] Failed to start advertising\n",
@@ -155,16 +155,16 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
   // This event indicates that a connection was closed.
   case sl_bt_evt_connection_closed_id:
     sl_led_led0.turn_off(sl_led_led0.context);
-    app_log("\r\n connection opened. LED0 status: %s \r\n", sl_led_led0.get_state(sl_led_led0.context) == 1 ? "ON" : "OFF");
+    app_log("\r\n connection closed. LED0 status: %s \r\n", sl_led_led0.get_state(sl_led_led0.context) == 1 ? "ON" : "OFF");
     // Restart advertising after client has disconnected.
     sc = sl_bt_extended_advertiser_generate_data(handle_demo,
-                                                 advertiser_general_discoverable);
+                                                 sl_bt_advertiser_general_discoverable);
     app_assert(sc == SL_STATUS_OK,
                   "[E: 0x%04x] Failed to generate data\n",
                   (int)sc);
     sc = sl_bt_extended_advertiser_start(
         handle_demo,
-        sl_bt_extended_advertiser_scannable,
+        sl_bt_extended_advertiser_connectable,
         0);
     app_assert(sc == SL_STATUS_OK,
                   "[E: 0x%04x] Failed to start advertising\n",

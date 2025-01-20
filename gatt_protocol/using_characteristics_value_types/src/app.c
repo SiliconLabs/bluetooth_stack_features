@@ -80,7 +80,7 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
     // Do not call any stack command before receiving this boot event!
     case sl_bt_evt_system_boot_id:
       // Print boot message.
-      app_log_info("Bluetooth stack booted: v%d.%d.%d-b%d\n",
+      app_log_info("Bluetooth stack booted: v%d.%d.%d-b%d\r\r\n",
                  evt->data.evt_system_boot.major,
                  evt->data.evt_system_boot.minor,
                  evt->data.evt_system_boot.patch,
@@ -100,7 +100,7 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
       system_id[6] = address.addr[1];
       system_id[7] = address.addr[0];
 
-      app_log_info("Bluetooth %s address: %02X:%02X:%02X:%02X:%02X:%02X\n",
+      app_log_info("Bluetooth %s address: %02X:%02X:%02X:%02X:%02X:%02X\r\r\n",
                  address_type ? "static random" : "public device",
                  address.addr[5],
                  address.addr[4],
@@ -115,7 +115,7 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
                                                    system_id);
       app_assert_status(sc);
 
-      app_log_info("boot event - starting advertising\r\n");
+      app_log_info("boot event - starting advertising\r\r\n");
 
       // Create an advertising set.
       sc = sl_bt_advertiser_create_set(&advertising_set_handle);
@@ -131,34 +131,34 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
       app_assert_status(sc);
 
       sc = sl_bt_legacy_advertiser_generate_data(advertising_set_handle,
-                                                 advertiser_general_discoverable);
+                                                 sl_bt_advertiser_general_discoverable);
       app_assert_status(sc);
 
       // Start general advertising and enable connections.
       sc = sl_bt_legacy_advertiser_start(
         advertising_set_handle,
-        advertiser_connectable_scannable);
+        sl_bt_advertiser_connectable_scannable);
       app_assert_status(sc);
       break;
 
     // -------------------------------
     // This event indicates that a new connection was opened.
     case sl_bt_evt_connection_opened_id:
-      app_log_info("connection opened\r\n");
+      app_log_info("connection opened\r\r\n");
       conn_handle = evt->data.evt_connection_opened.connection;
       break;
 
     // -------------------------------
     // This event indicates that a connection was closed.
     case sl_bt_evt_connection_closed_id:
-      app_log_info("connection closed, reason: 0x%2.2x\r\n", evt->data.evt_connection_closed.reason);
+      app_log_info("connection closed, reason: 0x%2.2x\r\r\n", evt->data.evt_connection_closed.reason);
       conn_handle = 0xff;
       sl_sleeptimer_stop_timer(&timer_handle_hex);
       sl_sleeptimer_stop_timer(&timer_handle_user);
       // Restart advertising after client has disconnected.
       sc = sl_bt_legacy_advertiser_start(
         advertising_set_handle,
-        advertiser_connectable_scannable);
+        sl_bt_advertiser_connectable_scannable);
       app_assert_status(sc);
       break;
 
@@ -166,7 +166,7 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
        * start a timer to send out notifications periodically */
       case sl_bt_evt_gatt_server_characteristic_status_id:
         if (evt->data.evt_gatt_server_characteristic_status.status_flags
-            != gatt_server_client_config) {
+            != sl_bt_gatt_server_client_config) {
           break;
         }
         if (!(evt->data.evt_gatt_server_characteristic_status.characteristic
@@ -206,8 +206,8 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
        * stores the value and notifies the application about the change with this event */
       case sl_bt_evt_gatt_server_attribute_value_id:
         if (evt->data.evt_gatt_server_attribute_value.attribute == gattdb_vt_hex) {
-          app_log_info("Characteristic <%u> value changed by a remote request.\n"
-                   "Application callback here\n", gattdb_vt_hex);
+          app_log_info("Characteristic <%u> value changed by a remote request.\r\n"
+                   "Application callback here\r\n", gattdb_vt_hex);
         }
         break;
 

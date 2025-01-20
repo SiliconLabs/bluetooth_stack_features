@@ -27,6 +27,9 @@ component:
     instance:
       - led0
       - led1
+  - id: bluetooth_feature_nvm
+  - id: bt_post_build
+  - id: clock_manager
 #------------Memory Protection Unit-------------------
   - id: mpu
 

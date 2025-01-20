@@ -289,16 +289,16 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
 
     switch (evt->data.evt_connection_parameters.security_mode)
     {
-    case connection_mode1_level1:
+    case sl_bt_connection_mode1_level1:
       app_log_info("No Security\r\n");
       break;
-    case connection_mode1_level2:
+    case sl_bt_connection_mode1_level2:
       app_log_info("Unauthenticated pairing with encryption (Just Works)\r\n");
       break;
-    case connection_mode1_level3:
+    case sl_bt_connection_mode1_level3:
       app_log_info("Authenticated pairing with encryption (Legacy Pairing)\r\n");
       break;
-    case connection_mode1_level4:
+    case sl_bt_connection_mode1_level4:
       app_log_info("Authenticated Secure Connections pairing with encryption (BT 4.2 LE Secure Pairing)\r\n");
       break;
     default:
@@ -465,7 +465,7 @@ static void setup_advertising_or_scanning(void)
     // Start general advertising and enable connections.
     sc = sl_bt_legacy_advertiser_start(
         advertising_set_handle,
-        advertiser_connectable_scannable);
+        sl_bt_advertiser_connectable_scannable);
     app_assert_status(sc);
   }
   else

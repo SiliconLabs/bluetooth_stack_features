@@ -2,7 +2,7 @@
 
 ## Description
 
-This example demonstrates the periodic advertising feature of Bluetooth 5, detailed in the [Periodic Advertising](https://docs.silabs.com/bluetooth/2.13/general/adv-and-scanning/periodic-adv-bt5) article. The example consists of two projects, one for the advertiser and one for the scanner.
+This example demonstrates the periodic advertising feature of Bluetooth 5, detailed in the [Periodic Advertising](https://docs.silabs.com/bluetooth/latest/bluetooth-fundamentals-advertising-scanning/periodic-advertising) article. The example consists of two projects, one for the advertiser and one for the scanner.
 
 The advertiser starts both periodic advertising and extended advertisement to advertise the sync info needed for the periodic advertising. The advertiser changes the content of the periodic advertisement every second.
 
@@ -28,23 +28,23 @@ sl_bt_periodic_advertiser_set_data(advertising_set_handle,
 The scanner will find the periodic advertiser by the UUID of the Synchronous service, then start syncing with the advertiser by using the function:
 
 ```C
-sl_bt_sync_open(evt->data.evt_scanner_extended_advertisement_report.address,
-                evt->data.evt_scanner_extended_advertisement_report.address_type,
-                evt->data.evt_scanner_extended_advertisement_report.adv_sid,
-                &sync);
+sl_bt_sync_scanner_open(evt->data.evt_scanner_extended_advertisement_report.address,
+                        evt->data.evt_scanner_extended_advertisement_report.address_type,
+                        evt->data.evt_scanner_extended_advertisement_report.adv_sid,
+                        &sync);
 ```
 
-There are two important things when setting up this example in **Bluetooth SDK version 3.1**:
+There are two important things when setting up this example in **Bluetooth SDK version 8.2**:
 
-- The first is to set the value **Max number of periodic advertising synchronizations** in **Bluetooth Core configure** on the **Scanner** according to the number of advertisers you want to sync on
+- The first is to set the value **Max number of periodic advertising synchronizations** in **Periodic Advertising Synchronization configure** on the **Scanner** according to the number of advertisers you want to sync on
 
-- The second is to install the **Periodic Advertising** component in the **Advertiser** and the **Periodic Advertising Synchronization** component in the **Scanner**.
+- The second is to install the **Periodic Advertising** component in the **Advertiser** and the **Synchronization to periodic advertising trains by scanning** component in the **Scanner**.
 
-See section [Setting up](#setting-up) to see how to initialize the periodic advertisement in Bluetooth SDK version 3.1.
+See section [Setting up](#setting-up) to see how to initialize the periodic advertisement in Bluetooth SDK version 8.2.
 
-## Gecko SDK version ##
+## Simplicity SDK version ##
 
-- GSDK v4.2.0
+- SiSDK v2024.6
 
 ## Hardware Required ##
 
@@ -94,14 +94,13 @@ To try this example, you need two radio boards, one for the advertiser side and 
 
 2. Copy the attached [src/scanner/app.c](src/scanner/app.c) replacing the existing `app.c`.
 
+3. insall the **Synchronization to periodic advertising trains by scanning**. Note: This will install needed dependencies such as **Periodic Advertising Synchronization** that will be configured in next step ![Periodic Advertising](images/add_periodic_sync_component.png)
+
 3. Config **Software components**.  
 
-    * In **Bluetooth Core** configuration, set **Max number of periodic advertising synchronizations**. This example syncs to one advertiser only, but it is possible to sync to multiple advertisers at the same time.
+    * In **Periodic Advertising Synchronization** configuration, set **Max number of periodic advertising synchronizations**. This example syncs to one advertiser only, but it is possible to sync to multiple advertisers at the same time.
       ![install usart](images/periodic_ble_core_config_1.png)
       ![install usart](images/periodic_ble_core_config_2.png)
-
-    * Install the **Periodic Advertising Synchronization** component.  
-      ![Periodic Advertising](images/add_periodic_sync_component.png)
 
 4. **Save and close** then the tool will auto-generate to code.
 

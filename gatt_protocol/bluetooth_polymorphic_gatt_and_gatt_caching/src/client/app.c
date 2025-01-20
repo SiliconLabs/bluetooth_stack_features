@@ -177,7 +177,7 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
       sc = sl_bt_scanner_set_parameters(sl_bt_scanner_scan_mode_passive, 16, 16);
       app_assert_status(sc);
 
-      sc = sl_bt_scanner_start(gap_1m_phy, sl_bt_scanner_discover_observation);
+      sc = sl_bt_scanner_start(sl_bt_gap_1m_phy, sl_bt_scanner_discover_observation);
       app_assert_status(sc);
     break;
 
@@ -185,7 +185,7 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
      /* Find server by name */
      if (findDeviceByName(&evt->data.evt_scanner_legacy_advertisement_report, "GATT server")) {
        /* Connect to server */
-       sc = sl_bt_connection_open(evt->data.evt_scanner_legacy_advertisement_report.address, evt->data.evt_scanner_legacy_advertisement_report.address_type, gap_1m_phy, &conn_handle);
+       sc = sl_bt_connection_open(evt->data.evt_scanner_legacy_advertisement_report.address, evt->data.evt_scanner_legacy_advertisement_report.address_type, sl_bt_gap_1m_phy, &conn_handle);
        app_assert_status(sc);
      }
     break;
@@ -202,7 +202,7 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
     case sl_bt_evt_gatt_characteristic_value_id:
       /* if a read_by_type response is received, then it will be the database hash,
        * as in this application this is the only value that we read by UUID and not by handle */
-      if (evt->data.evt_gatt_characteristic_value.att_opcode == gatt_read_by_type_response) {
+      if (evt->data.evt_gatt_characteristic_value.att_opcode == sl_bt_gatt_read_by_type_response) {
         /* print DB hash */
           app_log("database hash: ");
           for (uint8_t i = 0; i < 16; i++) {

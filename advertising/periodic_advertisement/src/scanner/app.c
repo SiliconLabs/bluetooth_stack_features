@@ -122,8 +122,8 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
 
       // periodic scanner setting
       sl_bt_scanner_set_parameters(sl_bt_scanner_scan_mode_passive, 200, 200);
-      sl_bt_scanner_start(gap_1m_phy,
-                          scanner_discover_observation);
+      sl_bt_scanner_start(sl_bt_scanner_scan_phy_1m,
+                          sl_bt_scanner_discover_observation);
 
       break;
 
@@ -134,15 +134,15 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
 
       if (findServiceInAdvertisement(&(evt->data.evt_scanner_extended_advertisement_report.data.data[0]), evt->data.evt_scanner_extended_advertisement_report.data.len) != 0) {
            app_log("found periodic sync service, attempting to open sync\r\n");
-           sc = sl_bt_sync_open(evt->data.evt_scanner_extended_advertisement_report.address,
+           sc = sl_bt_sync_scanner_open(evt->data.evt_scanner_extended_advertisement_report.address,
                                 evt->data.evt_scanner_extended_advertisement_report.address_type,
                                 evt->data.evt_scanner_extended_advertisement_report.adv_sid,
                                 &sync);
-           app_log("cmd_sync_open() sync = 0x%2X\r\n", sc);
+           app_log_info("cmd_sync_open() sync = 0x%4lX\r\n", sc);
          }
       break;
 
-    case sl_bt_evt_sync_opened_id:
+    case sl_bt_evt_periodic_sync_opened_id:
       /* now that sync is open, we can stop scanning*/
       app_log("evt_sync_opened\r\n");
 //      sl_bt_system_set_soft_timer(0,1,0);
@@ -154,22 +154,22 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
            evt->data.evt_sync_closed.reason,
            evt->data.evt_sync_closed.sync);
        /* restart discovery */
-       sl_bt_scanner_start(gap_1m_phy,
-                           scanner_discover_observation);
+       sl_bt_scanner_start(sl_bt_scanner_scan_phy_1m,
+                                 sl_bt_scanner_discover_observation);
        break;
 
-     case sl_bt_evt_sync_data_id:
+     case sl_bt_evt_periodic_sync_report_id:
 
-       app_log("periodic sync handle %d\r\n", evt->data.evt_sync_data.sync);
+       app_log("periodic sync handle %d\r\n", evt->data.evt_periodic_sync_report.sync);
        app_log("got following sync data: \r\n ");
-       for(int i = 0; i < evt->data.evt_sync_data.data.len ; i++){
-         app_log(" %X", evt->data.evt_sync_data.data.data[i]);
+       for(int i = 0; i < evt->data.evt_periodic_sync_report.data.len ; i++){
+         app_log(" %X", evt->data.evt_periodic_sync_report.data.data[i]);
        }
        app_log("\r\n");
        app_log("periodic sync RSSI %d and Tx power %d\r\n",
-           evt->data.evt_sync_data.rssi,
-           evt->data.evt_sync_data.tx_power);
-       app_log("periodic data status %d\r\n", evt->data.evt_sync_data.data_status);
+           evt->data.evt_periodic_sync_report.rssi,
+           evt->data.evt_periodic_sync_report.tx_power);
+       app_log("periodic data status %d\r\n", evt->data.evt_periodic_sync_report.data_status);
        break;
 
     ///////////////////////////////////////////////////////////////////////////

@@ -146,7 +146,7 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
     app_assert_status(sc);
 
     /* bit 3 of flag is 0 to allow legacy pairing */
-    sc = sl_bt_sm_configure(0x0B, sm_io_capability_keyboarddisplay);
+    sc = sl_bt_sm_configure(0x0B, sl_bt_sm_io_capability_keyboarddisplay);
     app_assert_status(sc);
 
     sc = sl_bt_sm_set_bondable_mode(1);
@@ -165,7 +165,9 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
   case sl_bt_evt_connection_opened_id:
     app_log_info("Connected\r\n");
     connHandle = evt->data.evt_connection_opened.connection;
-
+    // a delay could be needed before sending the security request to the phone, sending the request too soon
+    // can cause the phone to drop it. 0.5s is a suggested value
+    sl_sleeptimer_delay_millisecond(500);
     sc = sl_bt_sm_increase_security(connHandle);
     app_assert_status(sc);
     app_log_info("Increasing security\r\n");
@@ -176,7 +178,7 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
   case sl_bt_evt_connection_closed_id:
     // Restart advertising after client has disconnected.
     sc = sl_bt_legacy_advertiser_start(advertising_set_handle,
-        advertiser_connectable_scannable);
+        sl_bt_advertiser_connectable_scannable);
     app_assert_status(sc);
     sc = sl_sleeptimer_stop_timer(&sleep_timer_handle);
     app_assert_status(sc);
@@ -187,7 +189,7 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
     {
       notifyEnabled = evt->data.evt_gatt_server_characteristic_status.client_config_flags;
     }
-    if (notifyEnabled == gatt_notification)
+    if (notifyEnabled == sl_bt_gatt_server_notification)
     {
       sc = sl_sleeptimer_start_periodic_timer_ms(&sleep_timer_handle,
                                                  TIMER_TIMEOUT,
@@ -205,7 +207,7 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
     break;
 
   case sl_bt_evt_gatt_server_attribute_value_id:
-    if ((evt->data.evt_gatt_server_attribute_value.att_opcode == gatt_write_request) && (evt->data.evt_gatt_server_attribute_value.attribute == gattdb_wrt_char))
+    if ((evt->data.evt_gatt_server_attribute_value.att_opcode == sl_bt_gatt_write_request) && (evt->data.evt_gatt_server_attribute_value.attribute == gattdb_wrt_char))
     {
       app_log_info("Gatt Write Received: ");
       for (uint8_t i = 0; i < evt->data.evt_gatt_server_attribute_value.value.len; i++)
@@ -218,7 +220,7 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
 
   case sl_bt_evt_system_external_signal_id:
     if(evt->data.evt_system_external_signal.extsignals == SIGNAL_NOTIFY_TIMER){
-        if ((connHandle != 0xFF) && (notifyEnabled == gatt_notification))
+        if ((connHandle != 0xFF) && (notifyEnabled == sl_bt_gatt_server_notification))
         {
           uint8_t i = notifyBuf[0];
           if (i == '9')
@@ -438,7 +440,7 @@ static void read_oob_data()
     app_assert_status(sc);
     /* Start general advertising and enable connections. */
     sc = sl_bt_legacy_advertiser_start(advertising_set_handle,
-        advertiser_connectable_scannable);
+        sl_bt_advertiser_connectable_scannable);
     app_assert_status(sc);
     num = 0;
     _oob_state = STATE_IDLE_MODE;

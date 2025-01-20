@@ -162,6 +162,13 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
       write_system_data_buffer(CHAINED_ADV_PACKET_BUFFER_SIZE,
                                advertising_data_buffer);
 
+
+      sc = sl_bt_extended_advertiser_generate_data(advertising_set_handle, sl_bt_advertiser_general_discoverable);
+
+      app_assert(sc == SL_STATUS_OK,
+                    "[E: 0x%04x] Failed to generate advertising data\n",
+                    (int)sc);
+
       sc = sl_bt_extended_advertiser_start(advertising_set_handle,
                                            sl_bt_extended_advertiser_non_connectable,
                                            0);
@@ -230,7 +237,7 @@ static int16_t write_system_data_buffer(size_t size, uint8_t * data){
       data += MAX_UINT8ARRAY_SIZE;
     }
   }
-  app_log("write_system_data_buffer is happy now, wrote %d bytes to system buffer\r\n", count);
+  app_log("write_system_data_buffer is happy now, wrote %lu bytes to system buffer\r\n", count);
   return size;
 }
 /*** end of  writeSystemDataBuffer ***/

@@ -29,7 +29,13 @@ component:
   - id: iostream_usart
     instance:
       - vcom
+  - id: iostream_retarget_stdio
   - id: app_button_press
+  - id: board_control
+  - id: bt_post_build
+  - id: sl_system
+  - id: clock_manager
+  - id: device_init
 
 source:
   - path: ../central/src/main.c

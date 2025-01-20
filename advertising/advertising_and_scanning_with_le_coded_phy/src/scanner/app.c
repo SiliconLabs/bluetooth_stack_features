@@ -100,8 +100,8 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
       app_assert_status(sc);
 
       // start scanning
-      sl_bt_scanner_start(gap_coded_phy,
-                          scanner_discover_observation);
+      sl_bt_scanner_start(sl_bt_scanner_scan_phy_coded,
+                          sl_bt_scanner_discover_observation);
 
       // Start a timer for checking scan timeout
       sc = sl_sleeptimer_start_timer(&sleep_timer_handle, SCAN_TIMEOUT, sleeptimer_callback, (void*)NULL, 0, 0);
@@ -117,8 +117,8 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
     // -------------------------------
     // This event indicates that a connection was closed.
     case sl_bt_evt_connection_closed_id:
-      sl_bt_scanner_start(gap_coded_phy,
-                          scanner_discover_observation);
+      sl_bt_scanner_start(sl_bt_scanner_scan_phy_coded,
+                          sl_bt_scanner_discover_observation);
       break;
 
     case sl_bt_evt_system_external_signal_id:
@@ -145,15 +145,16 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
 
        app_log_info("data len: %d\r\n", evt->data.evt_scanner_extended_advertisement_report.data.len);
 
-       app_log_info("\r\n data raw: \r\n");
+       app_log_info("data raw: \r\n");
        for(int i = 0; i< evt->data.evt_scanner_extended_advertisement_report.data.len; i++){
-           app_log_info("%c ", evt->data.evt_scanner_extended_advertisement_report.data.data[i]);
+           app_log("%c ", evt->data.evt_scanner_extended_advertisement_report.data.data[i]);
        }
-
-       app_log_info("\r\n data hex: \r\n");
+       app_log("\r\n");
+       app_log_info("data hex: \r\n");
        for(int i = 0; i< evt->data.evt_scanner_extended_advertisement_report.data.len; i++){
-           app_log_info("%x ", evt->data.evt_scanner_extended_advertisement_report.data.data[i]);
+           app_log("%x ", evt->data.evt_scanner_extended_advertisement_report.data.data[i]);
        }
+       app_log("\r\n");
 
        //stop the tracking timer
        sl_sleeptimer_stop_timer(&sleep_timer_handle);
@@ -161,7 +162,7 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
        sl_bt_scanner_stop();
        sc = sl_bt_connection_open(*remote_address,
                              sl_bt_gap_public_address,
-                             gap_coded_phy,
+                             sl_bt_gap_phy_coded,
                              &app_connection);
        app_assert_status(sc);
       break;

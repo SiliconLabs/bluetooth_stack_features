@@ -234,7 +234,7 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
     sc = sl_bt_sm_delete_bondings();
     app_assert_status(sc);
 
-    sc = sl_bt_sm_configure(0x0B, sm_io_capability_keyboarddisplay);
+    sc = sl_bt_sm_configure(0x0B, sl_bt_sm_io_capability_keyboarddisplay);
     app_assert_status(sc);
 
     sc = sl_bt_sm_set_bondable_mode(1);
@@ -347,7 +347,7 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
       if (ntf_char_handle && wrt_char_handle)
       {
         // Char found, turn on indications
-        sc = sl_bt_gatt_set_characteristic_notification(_conn_handle, ntf_char_handle, gatt_notification);
+        sc = sl_bt_gatt_set_characteristic_notification(_conn_handle, ntf_char_handle, sl_bt_gatt_notification);
         app_assert_status(sc);
         _main_state = ENABLE_NOTIF;
       }
@@ -376,7 +376,7 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
     break;
 
   case sl_bt_evt_gatt_characteristic_value_id:
-    if ((evt->data.evt_gatt_characteristic_value.att_opcode == gatt_handle_value_notification) && (evt->data.evt_gatt_characteristic_value.characteristic == ntf_char_handle))
+    if ((evt->data.evt_gatt_characteristic_value.att_opcode == sl_bt_gatt_handle_value_notification) && (evt->data.evt_gatt_characteristic_value.characteristic == ntf_char_handle))
     {
       // TODO: data notification is received here
 #ifdef PRINT_GATT_INFO

@@ -29,9 +29,9 @@ The procedure of a scanner to scan an extended advertising looks like the follow
 
 This code example demonstrates both an advertiser, sending extended advertisements, and a scanner which is able to receive extended advertisements.
 
-## Gecko SDK version
+## Simplicity SDK version
 
-GSDK v4.2
+SiSDK v2024.6
 
 ## Hardware Required
 

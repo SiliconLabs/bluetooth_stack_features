@@ -28,6 +28,12 @@ component:
   - id: iostream_usart
     instance:
       - vcom
+  - id: iostream_retarget_stdio
+  - id: board_control
+  - id: bt_post_build
+  - id: sl_system
+  - id: clock_manager
+  - id: device_init
 
 source:
   - path: ../peripheral/src/main.c
@@ -68,7 +74,7 @@ other_file:
 
 configuration:
   - name: SL_STACK_SIZE
-    value: "2752"
+    value: "4096"
   - name: SL_HEAP_SIZE
     value: "9200"
   - name: SL_PSA_KEY_USER_SLOT_COUNT

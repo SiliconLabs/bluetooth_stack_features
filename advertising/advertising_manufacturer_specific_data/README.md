@@ -3,7 +3,7 @@
 
 ## Description
 
-The general structure of advertising packets is described in [Bluetooth Advertising Data Basics](https://docs.silabs.com/bluetooth/latest/general/adv-and-scanning/bluetooth-adv-data-basics). This example focuses on a **Manufacturer-Specific Data** (type 0xFF) as a specific advertising type.
+The general structure of advertising packets is described in [Bluetooth Advertising Data Basics](https://docs.silabs.com/bluetooth/latest/bluetooth-fundamentals-advertising-scanning/advertising-data-basics). This example focuses on a **Manufacturer-Specific Data** (type 0xFF) as a specific advertising type.
 
 Manufacturer-specific data can be used to add any custom data into advertising packets in any format suitable for your application. For example, you could create a beacon that includes the reading of a temperature sensor in the advertising data.
 
@@ -35,7 +35,7 @@ The second element uses type 0xFF indicating manufacturer-specific data, meaning
 
 Note that the custom AD element is formatted using the same convention as any other elements. It begins with a length indicator so that any client receiving this data can still parse the advertising packet element by element and skip over those elements that it does not know how to decode.
 
-The first 2 octets contain the **Company Identifier Code**. Company Identifiers are listed at (https://www.bluetooth.com/specifications/assigned-numbers/company-identifiers). The remaining bytes in the custom element can be used for any purpose. The total size of the packet cannot exceed the maximum size that is 31 bytes.
+The first 2 octets contain the **Company Identifier Code**. Company Identifiers are listed at (https://www.bluetooth.com/specifications/assigned-numbers/company-identifiers). The remaining bytes in the custom element can be used for any purpose. In case of legacy advertisement the total size of the packet cannot exceed the maximum size that is 31 bytes.
 
 In the example used here, the company ID is followed by two additional bytes, one to represent the number of button presses (zero in the above example) and another byte to indicate which button was pressed last (0xFF in the above example, meaning neither button has been pressed so far).
 
@@ -57,9 +57,9 @@ The first call sets the advertising data content before starting advertisements.
 
 The example sets up advertising using the custom format defined earlier in this document.
 
-## Gecko SDK version
+## Simplicity SDK version
 
-GSDK v4.2
+SiSDK v2024.6
 
 ## Hardware Required
 

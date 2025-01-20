@@ -4,7 +4,7 @@
 
 ## Background ##
 
-This code example has a related User's Guide, here: [Pairing Processes](https://docs.silabs.com/bluetooth/latest/general/security/pairing-processes)
+This code example has a related User's Guide, here: [Pairing Processes](https://docs.silabs.com/bluetooth/8.2.0/bluetooth-security-pairing-processes/)
 
 
 
@@ -13,9 +13,9 @@ This code example has a related User's Guide, here: [Pairing Processes](https://
 This code example is created to demonstrate different Bluetooth pairing processes and help implement firmware, which is able to securely connect to other Bluetooth devices. Read the related User's Guide first to get a better understanding of the processes.
 
 
-## Gecko SDK version ##
+## Simplicity SDK version ##
 
-GSDK v4.2.0
+SiSDK v2024.6
 
 ## Hardware Required ##
 
@@ -63,10 +63,9 @@ GSDK v4.2.0
     Create the second led by click the **Add New Instances** button with the default instance name: **led1**
 
   - Install the following components for LCD.
-    - Memory LCD with usart SPI driver
+    - GLIB driver for memory LCD
     -	Monochrome Sharp Memory LCD
-    -	GLIB Graphics Library
-    -	GLIB driver for SHARP Memory LCD
+    -	Memory LCD with usart SPI Driver
 
     ![glib1](images/glib1.png)
     ![glib2](images/glib2.png)
@@ -80,9 +79,9 @@ GSDK v4.2.0
 
 ## How It Works ##
 
-The attached demo code enables testing all pairing combinations shown in the table of [Pairing Processes](https://docs.silabs.com/bluetooth/latest/general/security/pairing-processes). It implements both the initiator and responder roles in the same firmware. The roles are configured by pressing and holding down PB0 on the starter kit during reset and they are shown on the LCD screen. Pressing the button during reset puts the device into responder role. Leaving the button released during reset puts the device into initiator role.
+The attached demo code enables testing all pairing combinations shown in the table of [Pairing Processes](https://docs.silabs.com/bluetooth/8.2.0/bluetooth-security-pairing-processes/). It implements both the initiator and responder roles in the same firmware. The roles are configured by pressing and holding down PB0 on the starter kit during reset and they are shown on the LCD screen. Pressing the button during reset puts the device into responder role. Leaving the button released during reset puts the device into initiator role.
 
-A mobile phone with EFR Connect App can also be used as the responder, which covers the bottom row of the table.
+A mobile phone with Si Connect App can also be used as the responder, which covers the bottom row of the table.
 
 I/O capabilities and Man In The Middle protection are configurable with two preprocessor macros *IO_CAPABILITY* and *MITM_PROTECTION* in **app.c**.
 

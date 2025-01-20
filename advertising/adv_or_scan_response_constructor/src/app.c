@@ -129,10 +129,19 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
     // This event indicates that a connection was closed.
     case sl_bt_evt_connection_closed_id:
       // Restart advertising after client has disconnected.
-      if(ext_adv) sc = sl_bt_extended_advertiser_start(
+      if(ext_adv) {
+        // For IOS devices 2M PHY needs to be used for secondary advertisement
+        // to be able to detect advertisement
+        // sc = sl_bt_extended_advertiser_set_phy (
+        //   advertising_set_handle,
+        //   sl_bt_gap_phy_1m,
+        //   sl_bt_gap_phy_2m
+        // )       
+        sc = sl_bt_extended_advertiser_start(
         advertising_set_handle,
         sl_bt_extended_advertiser_connectable,
         0);
+      }
       else sc = sl_bt_legacy_advertiser_start(
         advertising_set_handle,
         sl_bt_legacy_advertiser_connectable);

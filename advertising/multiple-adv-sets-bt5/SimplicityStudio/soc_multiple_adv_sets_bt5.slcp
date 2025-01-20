@@ -13,6 +13,7 @@ component:
   - id: bluetooth_feature_connection
   - id: bluetooth_feature_gatt
   - id: bluetooth_feature_gatt_server
+  - id: bluetooth_feature_legacy_scanner
   - id: bluetooth_feature_scanner
   - id: bluetooth_feature_sm
   - id: bluetooth_feature_system
@@ -31,6 +32,11 @@ component:
   - id: simple_led
     instance:
       - led0
+  - id: board_control
+  - id: bt_post_build
+  - id: sl_system
+  - id: clock_manager
+  - id: device_init
 
 source:
   - path: ../src/app.c
@@ -53,7 +59,7 @@ configuration:
   - name: SL_BOARD_ENABLE_VCOM
     value: 1
   - name: SL_BT_CONFIG_USER_ADVERTISERS
-    value: "2"
+    value: "4"
 
 tag:
   - hardware:rf:band:2400

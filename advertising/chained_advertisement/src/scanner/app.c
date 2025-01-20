@@ -97,7 +97,18 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
 
       // Extract unique ID from BT Address.
       sc = sl_bt_system_get_identity_address(&address, &address_type);
-      app_assert_status(sc);
+      app_assert(sc == SL_STATUS_OK,
+                    "[E: 0x%04x] Failed to get Bluetooth address\n",
+                    (int)sc);
+
+      app_log("Bluetooth %s address: %02X:%02X:%02X:%02X:%02X:%02X\n",
+            address_type ? "static random" : "public device",
+            address.addr[5],
+            address.addr[4],
+            address.addr[3],
+            address.addr[2],
+            address.addr[1],
+            address.addr[0]);
 
       // Pad and reverse unique ID to get System ID.
       system_id[0] = address.addr[5];
@@ -119,8 +130,8 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
 
       // periodic scanner setting
       sl_bt_scanner_set_parameters(sl_bt_scanner_scan_mode_passive, 200, 200);
-      sl_bt_scanner_start(gap_1m_phy,
-                          scanner_discover_observation);
+      sl_bt_scanner_start(sl_bt_scanner_scan_phy_1m ,
+                          sl_bt_scanner_discover_observation );
 
       break;
 
@@ -133,15 +144,15 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
 
        app_log_info("found periodic sync service, attempting to open sync\r\n");
 
-       sc = sl_bt_sync_open(evt->data.evt_scanner_extended_advertisement_report.address,
+       sc = sl_bt_sync_scanner_open (evt->data.evt_scanner_extended_advertisement_report.address,
                             evt->data.evt_scanner_extended_advertisement_report.address_type,
                             evt->data.evt_scanner_extended_advertisement_report.adv_sid,
                             &sync);
        app_log_info("cmd_sync_open() sync = 0x%4lX\r\n", sc);
       }
       break;
-
-    case sl_bt_evt_sync_opened_id:
+ 
+    case sl_bt_evt_periodic_sync_opened_id:
       /* now that sync is open, we can stop scanning*/
       app_log_info("evt_sync_opened\r\n");
       sl_bt_scanner_stop();
@@ -152,29 +163,29 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
                   evt->data.evt_sync_closed.reason,
                   evt->data.evt_sync_closed.sync);
        /* restart discovery */
-       sl_bt_scanner_start(gap_1m_phy,
-                           scanner_discover_observation);
+       sl_bt_scanner_start(sl_bt_scanner_scan_phy_1m,
+                           sl_bt_scanner_discover_observation);
        break;
 
-     case sl_bt_evt_sync_data_id:
+     case sl_bt_evt_periodic_sync_report_id:
        {
          static uint16_t sync_data_index = 0;
          static uint8_t sync_rx_buffer[1650];
-         uint16_t len = evt->data.evt_sync_data.data.len;
+         uint16_t len = evt->data.evt_periodic_sync_report.data.len;
 
-         switch(evt->data.evt_sync_data.data_status)
+         switch(evt->data.evt_periodic_sync_report.data_status)
            {
            case 0:
              app_log_info("complete sync %d bytes received.\r\n",
-                        evt->data.evt_sync_data.data.len);
-             memcpy(&sync_rx_buffer[sync_data_index], evt->data.evt_sync_data.data.data, len);
+                        evt->data.evt_periodic_sync_report.data.len);
+             memcpy(&sync_rx_buffer[sync_data_index], evt->data.evt_periodic_sync_report.data.data, len);
              sync_data_index = 0;
              break;
            case 1:
              /* */
              app_log_info("sync data received, %d bytes, more to come\r\n",
-                        evt->data.evt_sync_data.data.len);
-             memcpy(&sync_rx_buffer[sync_data_index], evt->data.evt_sync_data.data.data, len);
+                        evt->data.evt_periodic_sync_report.data.len);
+             memcpy(&sync_rx_buffer[sync_data_index], evt->data.evt_periodic_sync_report.data.data, len);
              sync_data_index += len;
              break;
            case 2:

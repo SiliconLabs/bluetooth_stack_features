@@ -22,15 +22,11 @@
 #include "app_log.h"
 #include "mbedtls/md.h"
 
-//#define USE_RANDOM_PUBLIC_ADDRESS
-
-// The advertising set handle allocated from Bluetooth stack.
 static uint8_t advertising_set_handle = 0xff;
 
 #ifdef USE_RANDOM_PUBLIC_ADDRESS
 static void set_random_public_address(void);
 #endif
-static uint32_t make_passkey_from_address(bd_addr address);
 
 /**************************************************************************//**
  * Application Init.
@@ -67,7 +63,7 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
   bd_addr address;
   uint8_t address_type;
   uint8_t system_id[8];
-  uint32_t passkey = 0;
+//  uint32_t passkey = 0;
 
   switch (SL_BT_MSG_ID(evt->header)) {
     // -------------------------------
@@ -75,7 +71,7 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
     // Do not call any stack command before receiving this boot event!
     case sl_bt_evt_system_boot_id:
       /* Print stack version */
-      app_log("Bluetooth stack booted: v%d.%d.%d-b%d\n",
+      app_log("\rBluetooth stack booted: v%d.%d.%d-b%d\r\n",
                  evt->data.evt_system_boot.major,
                  evt->data.evt_system_boot.minor,
                  evt->data.evt_system_boot.patch,
@@ -92,7 +88,7 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
                     (int)sc);
 
       /* Print Bluetooth address */
-      app_log("Bluetooth %s address: %02X:%02X:%02X:%02X:%02X:%02X\n",
+      app_log("Bluetooth %s address: %02X:%02X:%02X:%02X:%02X:%02X\r\n",
                        address_type ? "static random" : "public device",
                        address.addr[5],
                        address.addr[4],
@@ -101,13 +97,11 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
                        address.addr[1],
                        address.addr[0]);
 
-      passkey = make_passkey_from_address(address);
-      sc = sl_bt_sm_configure(0x07, sl_bt_sm_io_capability_displayonly);
+      sc = sl_bt_sm_configure(0x0F, sl_bt_sm_io_capability_displayonly);
       app_assert(sc == SL_STATUS_OK,
                     "[E: 0x%04x] Failed to configure security\n",
                     (int)sc);
 
-      sc = sl_bt_sm_set_passkey(passkey);
       app_assert(sc == SL_STATUS_OK,
                     "[E: 0x%04x] Failed to set passkey\n",
                     (int)sc);
@@ -135,6 +129,7 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
                     "[E: 0x%04x] Failed to write attribute\n",
                     (int)sc);
 
+
       // Create an advertising set.
       sc = sl_bt_advertiser_create_set(&advertising_set_handle);
       app_assert(sc == SL_STATUS_OK,
@@ -151,14 +146,16 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
       app_assert(sc == SL_STATUS_OK,
                     "[E: 0x%04x] Failed to set advertising timing\n",
                     (int)sc);
+
       // Start general advertising and enable connections.
       sc = sl_bt_legacy_advertiser_generate_data(advertising_set_handle,
-                                                 advertiser_general_discoverable);
+                                                 sl_bt_advertiser_general_discoverable);
       app_assert(sc == SL_STATUS_OK,
                     "[E: 0x%04x] Failed to generate data\n",
                     (int)sc);
+
       sc = sl_bt_legacy_advertiser_start(advertising_set_handle,
-                                         advertiser_connectable_scannable);
+                                         sl_bt_advertiser_connectable_scannable);
       app_assert(sc == SL_STATUS_OK,
                     "[E: 0x%04x] Failed to start advertising\n",
                     (int)sc);
@@ -168,6 +165,10 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
     // This event indicates that a new connection was opened.
     case sl_bt_evt_connection_opened_id:
       app_log("Connection opened\r\n");
+      // a delay could be needed before sending the security request to the phone, sending the request too soon
+      // can cause the phone to drop it. 0.5s is a suggested value
+      sl_sleeptimer_delay_millisecond(500);
+      // initiates the pairing process
       sc = sl_bt_sm_increase_security(evt->data.evt_connection_opened.connection);
       app_assert(sc == SL_STATUS_OK,
                     "[E: 0x%04x] Failed to increasing security\n",
@@ -179,12 +180,12 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
     case sl_bt_evt_connection_closed_id:
       // Restart advertising after client has disconnected.
       sc = sl_bt_legacy_advertiser_generate_data(advertising_set_handle,
-                                                 advertiser_general_discoverable);
+                                                 sl_bt_advertiser_general_discoverable);
       app_assert(sc == SL_STATUS_OK,
                     "[E: 0x%04x] Failed to generate data\n",
                     (int)sc);
       sc = sl_bt_legacy_advertiser_start(advertising_set_handle,
-                                         advertiser_connectable_scannable);
+                                         sl_bt_advertiser_connectable_scannable);
       app_assert(sc == SL_STATUS_OK,
                     "[E: 0x%04x] Failed to start advertising\n",
                     (int)sc);
@@ -193,7 +194,14 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
     // -------------------------------
     // This event indicates a request to display the passkey to the user.
     case sl_bt_evt_sm_passkey_display_id:
-      app_log("passkey: %4d\r\n", evt->data.evt_sm_passkey_display.passkey);
+      app_log("passkey: %lu\r\n", evt->data.evt_sm_passkey_display.passkey);
+      break;
+
+    // -------------------------------
+    // This event indicates a new bonding attempt is in process (regardless of the bonding initiator)
+    case sl_bt_evt_sm_confirm_bonding_id:
+      app_log("New bonding request\r\n");
+      sl_bt_sm_bonding_confirm(evt->data.evt_sm_confirm_bonding.connection,1);
       break;
 
     // -------------------------------
@@ -225,56 +233,3 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
   }
 }
 
-static uint32_t make_passkey_from_address(bd_addr address)
-{
-  mbedtls_md_context_t md;
-  const mbedtls_md_info_t *md_info;
-  uint8_t hash_buffer[32];
-  int error;
-  uint32_t passkey = 0;
-
-  /* hash the result*/
-  mbedtls_md_init(&md);
-  md_info = mbedtls_md_info_from_string("SHA256");
-  if (md_info == NULL) {
-    app_log("NULL md info\r\n");
-    return 0;
-  }
-  error = mbedtls_md(md_info, address.addr, sizeof(address), hash_buffer);
-  if (error) {
-    app_log("hash error %d\r\n", error);
-  }
-  memcpy(&passkey, hash_buffer, sizeof(passkey));
-  /* restrict to 6 digits */
-  passkey %= 1000000;
-  return passkey;
-}
-
-/*
- * This function creates a new random static address and sets it to be
- * the device's identity address
- *
- */
-#ifdef USE_RANDOM_PUBLIC_ADDRESS
-static void set_random_public_address(void)
-{
-  sl_status_t sc;
-  bd_addr address;
-  size_t data_len;
-  uint8_t data[16];
-
-  sc = sl_bt_system_get_random_data(6, sizeof(data), &data_len, data);
-  app_assert(sc == SL_STATUS_OK,
-                "[E: 0x%04x] Failed to get random data\n",
-                (int)sc);
-
-  memcpy(address.addr, data, sizeof(bd_addr));
-  /* set uppermost 2 bits to make this a random static address */
-  address.addr[5] |= 0xC0;
-
-  sc = sl_bt_system_set_identity_address(address, sl_bt_gap_static_address);
-  app_assert(sc == SL_STATUS_OK,
-                "[E: 0x%04x] Failed to set identity address\n",
-                (int)sc);
-}
-#endif

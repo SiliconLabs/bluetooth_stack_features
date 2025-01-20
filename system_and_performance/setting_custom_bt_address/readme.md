@@ -20,18 +20,18 @@ Unique ID      : 680ae2fffe2886c5
 DONE
 ```
 
-After flashing the *Bluetooth - SoC Empty* example to the same device and scanning nearby devices using the **EFR connect** application, you can see the derived BT address. Figure 1 below shows the expected output:
+After flashing the *Bluetooth - SoC Empty* example to the same device and scanning nearby devices using the **Si connect** application, you can see the derived BT address. Figure 1 below shows the expected output:
 
-![EFR connect BT Address](images/bt_address_efr_connect.png)
+![Si connect BT Address](images/bt_address_si_connect.png)
 
 Notice that the address is the same as the Unique ID except for the middle 16 bits (0xFFFE), hence why the BT address is a derived value. As mentioned before, this is the usual way for the BLE stack to acquire the BT address. **Nonetheless, if there's a valid BT address entry in the non-volatile region of the device (NVM3 for series 2 devices and PS Store or NVM3 for series 1), this value is used instead**.
 
 The API **sl_bt_system_set_identity_address** can be used to specify a new BT address in the non-volatile memory. This example reads the manufacturing token `MFG_CUSTOM_EUI_64`, which can be programmed to the device with Commander and uses it to set a new BT address. This method allows for scalability and could be useful for a production environment.
 
 
-## Gecko SDK Version ##
+## Simplicity SDK Version ##
 
-GSDK v4.2
+SiSDK v2024.6
 
 
 
@@ -94,6 +94,6 @@ The example uses a custom function called inside the system boot event `sl_bt_ev
 * Reset the system.
   * This step is needed because during the BLE stack initialization, the BT address is determined.
 
-The following image shows the output of **EFR connect** showing the new BT address after flashing the token and letting the custom function modify the BT address:
+The following image shows the output of **Si connect** showing the new BT address after flashing the token and letting the custom function modify the BT address:
 
-![EFR Connect Output With Custom BT Address](images/custom_application_efr_output.png)
+![Si Connect Output With Custom BT Address](images/custom_application_si_output.png)

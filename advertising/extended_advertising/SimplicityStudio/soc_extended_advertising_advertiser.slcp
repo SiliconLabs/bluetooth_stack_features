@@ -9,11 +9,10 @@ quality: development
 component:
   - id: bluetooth_stack
   - id: gatt_configuration
-  - id: bluetooth_feature_legacy_advertiser
+  - id: bluetooth_feature_extended_advertiser
   - id: bluetooth_feature_connection
   - id: bluetooth_feature_gatt
   - id: bluetooth_feature_gatt_server
-  - id: bluetooth_feature_scanner
   - id: bluetooth_feature_sm
   - id: bluetooth_feature_system
   - id: in_place_ota_dfu
@@ -27,7 +26,12 @@ component:
     - vcom
   - id: iostream_retarget_stdio
   - id: app_log
-  - id: bluetooth_feature_extended_advertiser
+  - id: board_control
+  - id: bt_post_build
+  - id: sl_system
+  - id: clock_manager
+  - id: device_init
+  
 
 source:
   - path: ../src/advertiser/app.c
@@ -57,3 +61,4 @@ ui_hints:
   highlight:
     - path: readme.md
       focus: true
+      

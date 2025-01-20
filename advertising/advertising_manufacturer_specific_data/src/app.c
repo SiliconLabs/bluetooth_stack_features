@@ -161,7 +161,7 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
     case sl_bt_evt_connection_closed_id:
       // Restart advertising after client has disconnected.
       sc = sl_bt_legacy_advertiser_generate_data(advertising_set_handle,
-                                                 advertiser_general_discoverable);
+                                                 sl_bt_advertiser_general_discoverable );
       app_assert(sc == SL_STATUS_OK,
                     "[E: 0x%04x] Failed to generate data\n",
                     (int)sc);

@@ -27,6 +27,7 @@ This repo contains example projects which demonstrate the features of the Silico
   - OTA from Windows
 - NCP
 - System and Performance
+- Tools
 
 ## Libraries/Extensions ##
 

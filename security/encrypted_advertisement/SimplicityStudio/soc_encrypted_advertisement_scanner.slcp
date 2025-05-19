@@ -1,0 +1,78 @@
+project_name: soc_encrypted_advertisment_scanner
+package: Bluetooth
+label: Bluetooth - SoC Encrypted Advertisement Scanner
+description: >
+  This example shows how the scanner work in Encrypted advertisement.
+  Encrypted advertisement allows for the encapsulation of normal advertising data within an Encrypted Data data type using a
+  pre-shared session key and a nonce. This approach prevents the tracking of devices based
+  solely on the private address and advertising data.
+category: Bluetooth Examples
+quality: development
+
+component:
+  - id: app_assert
+  - id: app_log
+  - id: bluetooth_feature_connection
+  - id: bluetooth_feature_extended_scanner
+  - id: bluetooth_feature_gatt
+  - id: bluetooth_feature_gatt_server
+  - id: bluetooth_feature_legacy_advertiser
+  - id: bluetooth_feature_legacy_scanner
+  - id: bluetooth_feature_sm
+  - id: bluetooth_feature_system
+  - id: bluetooth_stack
+  - id: bootloader_interface
+  - id: clock_manager
+  - id: device_init
+  - id: ead_core
+  - id: gatt_configuration
+  - id: gatt_service_device_information
+  - id: in_place_ota_dfu
+  - id: iostream_retarget_stdio
+  - id: iostream_usart
+    instance:
+    - vcom
+  - id: mpu
+  - id: rail_util_pti
+  - id: simple_button
+    instance:
+      - btn0
+      - btn1
+  - id: sl_common
+  - id: sl_system
+  
+source:
+  - path: ../src/scanner/app.c
+  - path: ../src/scanner/main.c
+  - path: ../src/scanner/app_bm.c
+
+include:
+  - path: ../inc/scanner/
+    file_list:
+    - path: app.h
+
+readme:
+  - path: ./readme.md
+
+config_file:
+  - override:
+      component: gatt_configuration
+      file_id: gatt_configuration_file_id
+    path: ../config/scanner/gatt_configuration.btconf
+    directory: btconf
+
+configuration:
+  - name: SL_STACK_SIZE
+    value: "2752"
+  - name: SL_BOARD_ENABLE_VCOM
+    value: 1
+  - name: SL_PSA_KEY_USER_SLOT_COUNT
+    value: '0'
+    condition: psa_crypto
+
+ui_hints:
+  highlight:
+    - path: README.md
+      focus: true
+
+

@@ -1,0 +1,2 @@
+pybgapi>=1.2.0
+pylink-square>=1.2.0

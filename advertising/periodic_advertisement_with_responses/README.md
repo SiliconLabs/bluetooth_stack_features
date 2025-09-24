@@ -1,4 +1,13 @@
-# PAwR with PAST sample application
+# PAwR with PAST sample 
+
+## Simplicity SDK version ##
+
+- SiSDK v2025.6
+
+## Hardware Required ##
+
+- 2 x WSTK board: BR4001A
+- 2 x Bluetooth radio board, e.g: BRD4162A
 
 ## Periodic Advertising with responses basics
 

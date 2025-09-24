@@ -14,6 +14,7 @@ component:
   - id: app_log
   - id: bluetooth_feature_connection
   - id: bluetooth_feature_extended_scanner
+  - id: bluetooth_feature_connection_role_central
   - id: bluetooth_feature_gatt
   - id: bluetooth_feature_gatt_server
   - id: bluetooth_feature_legacy_advertiser
@@ -37,7 +38,6 @@ component:
   - id: simple_button
     instance:
       - btn0
-      - btn1
   - id: sl_common
   - id: sl_system
   
@@ -68,7 +68,8 @@ configuration:
     value: 1
   - name: SL_PSA_KEY_USER_SLOT_COUNT
     value: '0'
-    condition: psa_crypto
+    condition:
+      - psa_crypto
 
 ui_hints:
   highlight:

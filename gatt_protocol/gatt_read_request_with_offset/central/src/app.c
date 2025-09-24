@@ -85,11 +85,8 @@ SL_WEAK void app_init(void)
   /////////////////////////////////////////////////////////////////////////////
   app_log("Boot\r\n");
 
-  // Enable buttons
+  // Enable button
   sl_simple_button_enable(&sl_button_btn0);
-#ifndef SINGLE_BUTTON
-  sl_simple_button_enable(&sl_button_btn1);
-#endif // SINGLE_BUTTON
   // Wait
   sl_sleeptimer_delay_millisecond(1);
   // Enable button presses

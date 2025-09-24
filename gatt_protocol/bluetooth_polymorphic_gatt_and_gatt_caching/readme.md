@@ -2,6 +2,16 @@
 
 # Polymorphic GATT and GATT Caching
 
+
+## Simplicity SDK version
+
+SiSDK v2025.6
+
+## Hardware Required
+
+- Two WSTK boards
+- Two Bluetooth capable radio boards, e.g: BRD4162A
+
 ## Background
 
 This code example has related User's Guides, here:

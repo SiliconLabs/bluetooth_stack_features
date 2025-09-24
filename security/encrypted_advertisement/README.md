@@ -52,7 +52,7 @@ After that, it will try to decrypt the message. In case of failure, the `key_nee
 
 ## Simplicity SDK version ##
 
-- SiSDK  v2024.12.1
+- SiSDK  v2025.6
 
 ## Hardware Required ##
 

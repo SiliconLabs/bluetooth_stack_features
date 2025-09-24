@@ -16,9 +16,10 @@ component:
   - id: gatt_configuration
   - id: bluetooth_feature_legacy_advertiser
   - id: bluetooth_feature_connection
+  - id: bluetooth_feature_connection_role_peripheral
   - id: bluetooth_feature_gatt
   - id: bluetooth_feature_gatt_server
-  - id: bluetooth_feature_scanner_legacy
+  - id: bluetooth_feature_legacy_scanner
   - id: bluetooth_feature_sm
   - id: bluetooth_feature_system
   - id: in_place_ota_dfu
@@ -35,7 +36,6 @@ component:
   - id: simple_button
     instance:
     - btn0
-    - btn1
   - id: bt_post_build
   - id: sl_system
   - id: clock_manager

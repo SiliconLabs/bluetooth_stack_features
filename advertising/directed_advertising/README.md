@@ -11,7 +11,7 @@ This is a special-purpose type of advertising, designed to invite a specific pee
 
 ## Simplcity SDK version
 
-SiDK v2024.6 or newer
+SiDK v2025.6 or newer
 
 ## Hardware Required
 

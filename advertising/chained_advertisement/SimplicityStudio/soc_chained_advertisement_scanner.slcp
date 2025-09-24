@@ -15,6 +15,7 @@ component:
   - id: bluetooth_stack
   - id: gatt_configuration
   - id: bluetooth_feature_connection
+  - id: bluetooth_feature_connection_role_central
   - id: bluetooth_feature_gatt
   - id: bluetooth_feature_gatt_server
   - id: bluetooth_feature_extended_scanner

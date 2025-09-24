@@ -28,7 +28,7 @@ For simplicity, the attached example code requests any connection to be secured 
  
 ## Simplicity SDK version ##
  
-SiSDK v2024.6
+SiSDK v2025.6
  
 ## Hardware Required ##
  

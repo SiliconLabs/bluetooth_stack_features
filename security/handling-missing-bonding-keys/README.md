@@ -38,7 +38,7 @@ More details of all these commands can be found in [Bluetooth API Reference](htt
 
 ## Simplicity SDK version ##
 
-SiSDK v2024.6
+SiSDK v2025.6
 
 ## Hardware Required ##
 

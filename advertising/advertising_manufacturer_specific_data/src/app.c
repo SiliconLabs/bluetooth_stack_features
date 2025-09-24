@@ -20,7 +20,6 @@
 #include "gatt_db.h"
 #include "app.h"
 #include "em_gpio.h"
-#include "gpiointerrupt.h"
 #include "custom_adv.h"
 #include "sl_simple_button_btn0_config.h"
 #include "sl_simple_button_btn1_config.h"

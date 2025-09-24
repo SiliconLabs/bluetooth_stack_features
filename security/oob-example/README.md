@@ -38,7 +38,7 @@ Because of the different properties of these two characteristics, if the pairing
 
 ## Simplicity SDK version ##
 
-SiSDK v2024.6
+SiSDK v2025.6
 
 ## Hardware Required ##
 

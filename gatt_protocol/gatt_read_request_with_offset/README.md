@@ -7,7 +7,7 @@ The goal of this example is to demonstrate the collection of larger amount of in
 
 ## Simplicity SDK version
 
-SiSDK v2024.6
+SiSDK v2025.6
 
 ## Hardware Required
 

@@ -38,18 +38,35 @@
 #include "psa/crypto.h"
 
 #define ADVERTISEMENT_READ_PERIOD_MS 5000
-#define BTN_NO 0
-#define BTN_YES 1
+#define BTN_CONFIRM_PERIOD_MS 2000
+
+#define CONFIRM_BTN 0
+#define ONESHOT_BTN_TIMER_CALLBACK 1
 #define PERIODIC_TIMER_CALLBACK 2
 
-sl_sleeptimer_timer_handle_t handle;
+uint8_t btn_count = 0;
+
+
+sl_sleeptimer_timer_handle_t periodic_timer_handle;
+sl_sleeptimer_timer_handle_t oneshot_btn_timer_handle;
+
 char remote_name[] = "Encrypted Advertiser";
 // Gap service UUID
 const uint8_t Gap_service_uuid[] = {0x00, 0x18};
 // key material UUID
 const uint8_t key_material_char_uuid[] = {0x88, 0X2b};
 
-void sleeptimer_callback(sl_sleeptimer_timer_handle_t *handle, void *data)
+
+void oneshot_sleeptimer_callback(sl_sleeptimer_timer_handle_t *handle, void *data)
+
+{
+  (void)handle;
+  (void)data;
+  sl_bt_external_signal(ONESHOT_BTN_TIMER_CALLBACK);
+
+}
+
+void periodic_sleeptimer_callback(sl_sleeptimer_timer_handle_t *handle, void *data)
 {
   (void)handle;
   (void)data;
@@ -58,13 +75,10 @@ void sleeptimer_callback(sl_sleeptimer_timer_handle_t *handle, void *data)
 
 void sl_button_on_change(const sl_button_t *handle)
 {
+
   if (handle == &sl_button_btn0 && sl_button_get_state(handle) == SL_SIMPLE_BUTTON_PRESSED)
   {
-    sl_bt_external_signal(BTN_NO);
-  }
-  else if (handle == &sl_button_btn1 && sl_button_get_state(handle) == SL_SIMPLE_BUTTON_PRESSED)
-  {
-    sl_bt_external_signal(BTN_YES);
+    sl_bt_external_signal(CONFIRM_BTN);
   }
 }
 
@@ -155,7 +169,7 @@ SL_WEAK void app_init(void)
   // This is called once during start-up.                                    //
   /////////////////////////////////////////////////////////////////////////////
   sl_status_t sc;
-  sc = sl_sleeptimer_start_periodic_timer_ms(&handle, ADVERTISEMENT_READ_PERIOD_MS, sleeptimer_callback, (void *)NULL, 0, 0);
+  sc = sl_sleeptimer_start_periodic_timer_ms(&periodic_timer_handle, ADVERTISEMENT_READ_PERIOD_MS, periodic_sleeptimer_callback, (void *)NULL, 0, 0);
   app_assert_status(sc);
 }
 
@@ -347,7 +361,7 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
   case sl_bt_evt_sm_confirm_passkey_id:
     pairing_state = 1;
     app_log("The passkey is: %06li\r\n", evt->data.evt_sm_confirm_passkey.passkey);
-    app_log("Please press btn0 to refuse bonding or btn1 to accept bonding\n\r");
+    app_log("Please press btn0 once to refuse bonding or twice to accept bonding\n\r");
     break;
 
   case sl_bt_evt_sm_bonded_id:
@@ -356,26 +370,45 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
     sc = sl_bt_connection_close(connection_handle);
     app_assert_status(sc);
     break;
+  
+  case sl_bt_evt_sm_bonding_failed_id:
+    app_log("bonding failed, reason 0x%2X\r\n",
+            evt->data.evt_sm_bonding_failed.reason);
+    sc = sl_bt_connection_close(connection_handle);
+    app_assert_status(sc);
+    break;
 
   case sl_bt_evt_system_external_signal_id:
-
     if (evt->data.evt_system_external_signal.extsignals == PERIODIC_TIMER_CALLBACK)
     {
       decrypt_adv = 1;
+      break;
     }
-
     if (pairing_state == 0)
       break;
-    if (evt->data.evt_system_external_signal.extsignals == BTN_NO)
+    if (evt->data.evt_system_external_signal.extsignals == ONESHOT_BTN_TIMER_CALLBACK)
     {
+      btn_count=0;
       sc = sl_bt_sm_passkey_confirm(connection_handle, 0);
       app_assert_status(sc);
+      break;
     }
-    if (evt->data.evt_system_external_signal.extsignals == BTN_YES)
+    if (evt->data.evt_system_external_signal.extsignals == CONFIRM_BTN)
     {
+      btn_count++;
+      if (btn_count == 2){
+      app_log("connection handle %d\r\n", connection_handle);
       sc = sl_bt_sm_passkey_confirm(connection_handle, 1);
       app_assert_status(sc);
+      btn_count = 0;
+      } else if (btn_count == 1)
+      {
+        sc= sl_sleeptimer_start_timer_ms(&oneshot_btn_timer_handle, BTN_CONFIRM_PERIOD_MS,oneshot_sleeptimer_callback, (void *)NULL,0,0);
+        app_assert_status(sc);
+      }
+        break;
     }
-    break;
+
+
   }
 }

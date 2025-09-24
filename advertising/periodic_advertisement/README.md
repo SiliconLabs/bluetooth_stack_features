@@ -44,7 +44,7 @@ See section [Setting up](#setting-up) to see how to initialize the periodic adve
 
 ## Simplicity SDK version ##
 
-- SiSDK v2024.6
+- SiSDK v2025.6
 
 ## Hardware Required ##
 

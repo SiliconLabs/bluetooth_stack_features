@@ -35,7 +35,7 @@ The example advertisement structure set up in demo_adv_setup() looks like this:
 
 ## Simplicity SDK version ##
 
-SiSDK  v2024.6
+SiSDK  v2025.6
 
 ## Hardware Required ##
 

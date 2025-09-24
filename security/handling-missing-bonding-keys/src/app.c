@@ -109,8 +109,10 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
                                                  system_id);
     app_assert_status(sc);
 
-    //If you don't want to delete the bonding keys when resetting, keep PB0 and PB1 pressed duing reset.
-    if (sl_button_btn0.get_state(sl_button_btn0.context) && sl_button_btn1.get_state(sl_button_btn1.context))
+
+
+    //If you want to delete the bonding keys when resetting, keep PB0  pressed duing reset.
+    if (sl_button_btn0.get_state(&sl_button_btn0))
     {
       app_log_info("Clearing already stored bondings !\r\n");
       sc = sl_bt_sm_delete_bondings();
@@ -245,7 +247,7 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
         bleBondingHandle = 0xFF;
       }
       sc = sl_bt_sm_increase_security(connectionHandle);
-      app_log_info("Result... = 0x%04X\r\n", sc);
+      app_log_info("Result... = 0x%08lX\r\n", sc);
       app_assert_status(sc);
     }
   }

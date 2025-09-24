@@ -53,7 +53,7 @@ In addition to debug print out messages, LED0 is used to indicate the connection
 
 ## Simplicity SDK version ##
 
-SiSDK v2024.6
+SiSDK v2025.6
 
 ## Hardware Required ##
 

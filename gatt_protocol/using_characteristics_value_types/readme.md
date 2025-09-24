@@ -16,7 +16,7 @@ This code example has a related User's Guide, here: [Different Value Types of Ch
  
 ## Simplicity SDK version ##
  
-SiSDK v2024.6
+SiSDK v2025.6
  
 ## Hardware Required ##
  

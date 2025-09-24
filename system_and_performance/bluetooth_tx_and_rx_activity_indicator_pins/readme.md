@@ -1,5 +1,14 @@
 # TX and RX Activity Indicator Pins
 
+## Simplicity SDK version
+
+SiSDK v2025.6
+
+## Hardware Required
+
+- Two WSTK boards
+- Two Bluetooth capable radio boards, e.g: BRD4162A
+
 ## Description
 
 This code example shows how to configure the TX and RX activity indicators when using Bluetooth SDK to follow/debug the timing of radio tasks.

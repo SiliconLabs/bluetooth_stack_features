@@ -31,7 +31,7 @@ This code example demonstrates both an advertiser, sending extended advertisemen
 
 ## Simplicity SDK version
 
-SiSDK v2024.6
+SiSDK v2025.6
 
 ## Hardware Required
 

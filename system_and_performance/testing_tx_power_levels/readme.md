@@ -16,7 +16,7 @@ This code example has related User's Guides, which may be worth reading before. 
 
 ## Simplicity SDK version ##
  
-SiSDK v2024.6
+SiSDK v2025.6
  
 ## Hardware Required ##
  

@@ -47,7 +47,7 @@ To simulate a crash scenario you can issue the command [sl_bt_user_message_to_ta
 
 ## Simplicity SDK version ##
 
-- SiSDK v2024.6.2
+- SiSDK v2025.6
 
 ## Hardware Required ##
 

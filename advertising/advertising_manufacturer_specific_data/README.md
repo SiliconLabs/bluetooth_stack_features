@@ -59,7 +59,7 @@ The example sets up advertising using the custom format defined earlier in this 
 
 ## Simplicity SDK version
 
-SiSDK v2024.6
+SiSDK v2025.6
 
 ## Hardware Required
 

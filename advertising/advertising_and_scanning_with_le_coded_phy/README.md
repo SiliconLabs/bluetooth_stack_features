@@ -58,7 +58,7 @@ Remaining advertising parameters can be set as they would with the traditional 1
 
 ## Simplicity SDK version ##
 
-- SiSDK v2024.6
+- SiSDK v2025.6
 
 ## Hardware Required ##
 

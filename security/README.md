@@ -11,6 +11,15 @@
   </tr>
 </table>
 
+## Simplicity SDK version
+
+SiSDK v2025.6
+
+## Hardware Required
+
+- Two WSTK boards
+- Two Bluetooth capable radio boards, e.g: BRD4162A
+
 # Silicon Labs Bluetooth Security Examples #
 
 This directory contains example projects which demonstrate Bluetooth security.

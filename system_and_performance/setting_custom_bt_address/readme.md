@@ -31,7 +31,7 @@ The API **sl_bt_system_set_identity_address** can be used to specify a new BT ad
 
 ## Simplicity SDK Version ##
 
-SiSDK v2024.6
+SiSDK v2025.6
 
 
 

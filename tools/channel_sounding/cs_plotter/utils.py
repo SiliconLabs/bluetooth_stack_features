@@ -14,6 +14,7 @@
 # in the project repository. If not, see <https://www.gnu.org/licenses/>.
 
 from pyqtgraph.Qt import QtWidgets, QtCore
+import re
 
 Y_LIM_M = None # If None, the scale will be dynamic
 X_SCALE_S = 30 
@@ -27,25 +28,57 @@ DATATYPE_CS_DISTANCE = 0
 DATATYPE_RSSI_DISTANCE = 1
 DATATYPE_VELOCITY = 2
 
-SUBSTRING_CS_DISTANCE = "main mode result"
-SUBSTRING_RSSI_DISTANCE = "RSSI"
-SUBSTRING_VELOCITY = "Velocity"
-
 def parse_data(data):
-    if SUBSTRING_CS_DISTANCE in data:
-        data_parsed = int(data.split(' ')[-2])
-        data_type = DATATYPE_CS_DISTANCE
-    elif SUBSTRING_RSSI_DISTANCE in data:
-        data_parsed = int(data.split(' ')[-2])
-        data_type = DATATYPE_RSSI_DISTANCE
-    elif SUBSTRING_VELOCITY in data:
-        data_parsed = float(data.split(' ')[-1].strip("\n"))
-        data_type = DATATYPE_VELOCITY    
+    # Example with raw distance: '[APP] [1] 04:87:27:E7:02:C0 |   347 mm |     356mm | 0.87  |       23mm | -0.00 m/s'
+    # Example without raw distance: '[APP] [1] 04:87:27:E7:02:C0 |   623 mm | 0.82  |      217mm | -0.00 m/s'
+    # Return dictionary with distance, raw distance, RSSI distance, and speed if found
+    # Skip header lines
+    if 'BT Address' in data or 'Dist.' in data:
+        return None, None
+    # Split by | to get individual fields
+    parts = data.split('|')
+    result = {}
+    # Parse distance in mm: first distance field ("347 mm" or "623 mm")
+    if len(parts) > 1:
+        distance_match = re.search(r'(\d+)\s*mm', parts[1])
+        if distance_match:
+            result['distance'] = int(distance_match.group(1))
+    # Determine format by checking if parts[2] contains 'mm' (raw distance) or is a decimal (likelihood)
+    # If parts[2] has mm, format is: | Dist. | RAW Dist. | Like. | RSSI Dist. | Speed
+    # If parts[2] has decimal, format is: | Dist. | Like. | RSSI Dist. | Speed
+    has_raw_distance = False
+    if len(parts) > 2:
+        # Check if parts[2] contains a distance value (mm)
+        if 'mm' in parts[2]:
+            has_raw_distance = True
+            raw_distance_match = re.search(r'(\d+)\s*mm', parts[2])
+            if raw_distance_match:
+                result['raw_distance'] = int(raw_distance_match.group(1))
+    # Parse RSSI distance based on format
+    if has_raw_distance:
+        # Format: | Dist. | RAW Dist. | Like. | RSSI Dist. | Speed
+        # RSSI is in parts[4]
+        if len(parts) > 4:
+            rssi_distance_match = re.search(r'(\d+)\s*mm', parts[4])
+            if rssi_distance_match:
+                result['rssi_distance'] = int(rssi_distance_match.group(1))
     else:
-        data_parsed = None
-        data_type = None
+        # Format: | Dist. | Like. | RSSI Dist. | Speed
+        # RSSI is in parts[3]
+        if len(parts) > 3:
+            rssi_distance_match = re.search(r'(\d+)\s*mm', parts[3])
+            if rssi_distance_match:
+                result['rssi_distance'] = int(rssi_distance_match.group(1))
     
-    return data_parsed, data_type
+    # Parse speed in m/s: look for pattern like "| +0.85 m/s" or "| -0.00 m/s"
+    speed_match = re.search(r'([+-]?\d*\.?\d+)\s*m/s', data)
+    if speed_match:
+        result['speed'] = float(speed_match.group(1))
+    # Return the result dictionary and a special type to indicate multiple values
+    if result:
+        return result, 'MULTI'
+    else:
+        return None, None
 
 def create_label_widget():
     frame  = QtWidgets.QFrame()

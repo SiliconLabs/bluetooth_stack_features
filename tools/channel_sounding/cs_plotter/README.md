@@ -4,15 +4,16 @@
 It's designed to read and visualize serial data from Silabs SoC initiator.
 
 > [!NOTE]  
-> This application has been developed and tested using SiSDK-2025.6.1.
+> This application has been developed and tested using SiSDK-2025.12.0.
 
 ## Features
 
 * Reads channel sounding measurements from a serial port using multiprocessing.
 * Plots incoming data in real-time.
 
-  ![gui](./imgs/gui.png)
-  * Filtered CS distance
+  ![gui](./imgs/cs_plotter.png)
+  * CS distance (filtered)
+  * Raw distance (unfiltered)
   * RSSI distance
   * Radial velocity
     * Only supported when using [`SL_RTL_CS_ALGO_MODE_REAL_TIME_FAST`](https://docs.silabs.com/rtl-lib/latest/rtl-lib-channel-sounding-dev-guide/04-sample-applications#rtl-algorithm-mode). When using
@@ -102,7 +103,7 @@ WINDOW_SIZE = (1440, 1080)
   Tera Term or Minicom, using the same port and baud rate as when launching the plotter.</br></br>
   Valid output from the initiator should look like this:
 
-    ![initiator_output](./imgs/initiator_output.png)
+    ![initiator_serial_output](./imgs/initiator_serial_output.png)
 
 ---
 

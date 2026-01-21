@@ -15,7 +15,7 @@ permissions:
 
 jobs:
   CLAAssistant:
-    if: ${{ github.event.repository_visibility == 'public' }}
+    if: ${{ github.event.repository.visibility == 'public' }}
     runs-on: ubuntu-24.04
     steps:
       - name: Create CLA Assistant Lite bot token

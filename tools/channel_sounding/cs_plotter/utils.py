@@ -24,10 +24,6 @@ BUFFER_SIZE = int(X_SCALE_S / (PLOT_REFRESH_PERIOD_MS / 1000))  # Number of samp
 LABEL_TEXT_SIZE_PX = 150
 WINDOW_SIZE = (1440, 1080)
 
-DATATYPE_CS_DISTANCE = 0
-DATATYPE_RSSI_DISTANCE = 1
-DATATYPE_VELOCITY = 2
-
 def parse_data(data):
     # Example with raw distance: '[APP] [1] 04:87:27:E7:02:C0 |   347 mm |     356mm | 0.87  |       23mm | -0.00 m/s'
     # Example without raw distance: '[APP] [1] 04:87:27:E7:02:C0 |   623 mm | 0.82  |      217mm | -0.00 m/s'

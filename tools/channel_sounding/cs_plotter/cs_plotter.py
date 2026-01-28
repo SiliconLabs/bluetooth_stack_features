@@ -30,8 +30,7 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
 
-    manager = mp.Manager()
-    data_queue = manager.Queue()
+    data_queue = mp.Manager().Queue()
     
     reading_process = SerialReadProcess(args.serial_port, args.baud_rate, data_queue)
     reading_process.start() 

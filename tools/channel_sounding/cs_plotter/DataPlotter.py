@@ -31,9 +31,8 @@ class DataPlotter(QtWidgets.QMainWindow):
         
         self._plot = None
         self._cs_filtered_label = None
-        self._rssi_label = None
         self._velocity_label = None
-        self._update_rate_label = None
+        self._velocity_widget = None
         
         self._cs_data_buffer = collections.deque([0], maxlen=buffer_size)
         self._raw_distance_buffer = collections.deque([0], maxlen=buffer_size)
@@ -80,12 +79,13 @@ class DataPlotter(QtWidgets.QMainWindow):
 
         # Create widgets for the upper portion of the main widget
         cs_filtered_widget, self._cs_filtered_label = create_label_widget()
-        rssi_widget, self._rssi_label = create_label_widget()
-        velocity_widget, self._velocity_label = create_label_widget()
-        update_rate_widget, self._update_rate_label = create_label_widget()
+        self._velocity_widget, self._velocity_label = create_label_widget()
         
         upper_upper_splitter.addWidget(cs_filtered_widget)
-        upper_upper_splitter.addWidget(velocity_widget)
+        upper_upper_splitter.addWidget(self._velocity_widget)
+
+        # Hide velocity widget initially until data is received
+        self._velocity_widget.hide()
         
         plot_window = pg.GraphicsLayoutWidget(title="Real-Time CS Distance Plot")
         self._plot = plot_window.addPlot()
@@ -100,11 +100,12 @@ class DataPlotter(QtWidgets.QMainWindow):
         self._curve_rssi_distance = pg.PlotCurveItem(pen=pg.mkPen("#E74C3C", width=3))
         # Create a second y-axis on the right for velocity
         self._plot_velocity = pg.ViewBox()
-        self._plot.showAxis('right')
         self._plot.scene().addItem(self._plot_velocity)
         self._plot.getAxis('right').linkToView(self._plot_velocity)
         self._plot_velocity.setXLink(self._plot)
         self._plot.setLabel("right", "Velocity (m/s)", color="#555555", size="12pt")
+        # Hide the right axis initially until velocity data is received
+        self._plot.hideAxis('right')
         # Create velocity curve but don't add to legend yet
         self._curve_velocity = pg.PlotCurveItem(pen=pg.mkPen("#E9B36C", width=3))
 
@@ -177,18 +178,9 @@ class DataPlotter(QtWidgets.QMainWindow):
                         if not self._velocity_ever_received:
                             self._plot_velocity.addItem(self._curve_velocity)
                             self._legend.addItem(self._curve_velocity, "VELOCITY")
+                            self._velocity_widget.show()
+                            self._plot.showAxis('right')
                             self._velocity_ever_received = True
-                elif datatype == DATATYPE_CS_DISTANCE and cs_distance_received == False:
-                    distance_m = mm_to_m(parsed_serial_data)
-                    self._cs_data_buffer.append(distance_m)
-                    cs_distance_received = True
-                elif datatype == DATATYPE_RSSI_DISTANCE and rssi_distance_received == False:
-                    distance_m = mm_to_m(parsed_serial_data)
-                    self._rssi_data_buffer.append(distance_m)
-                    rssi_distance_received = True
-                elif datatype == DATATYPE_VELOCITY and velocity_received == False:
-                    self._velocity_buffer.append(parsed_serial_data)
-                    velocity_received = True
             except UnicodeError:
                 print("Failed at decoding serial data! Please ensure the data format complies with the format specified in the README's FAQ.")
                 quit()
@@ -212,15 +204,18 @@ class DataPlotter(QtWidgets.QMainWindow):
             
         if not velocity_received:
             self._velocity_buffer.append(self._velocity_buffer[-1])
-        
-        self._velocity_label.setText(
-            f"<div style='text-align: center;'><span style='font-size: 75px;font-weight:bold; color: #2C3E50;'>Velocity</span><br><span style='font-size: {LABEL_TEXT_SIZE_PX}px;font-weight: bold; color: #2C3E50;'>{self._velocity_buffer[-1]} m/s</span>"
-        )
+
+        if self._velocity_ever_received:
+            self._velocity_label.setText(
+                f"<div style='text-align: center;'><span style='font-size: 75px;font-weight:bold; color: #2C3E50;'>Velocity</span><br><span style='font-size: {LABEL_TEXT_SIZE_PX}px;font-weight: bold; color: #2C3E50;'>{self._velocity_buffer[-1]} m/s</span>"
+            )
 
         self._curve_cs_distance.setData(self._time_buffer, self._cs_data_buffer)
         self._curve_raw_distance.setData(list(self._time_buffer), list(self._raw_distance_buffer))
         self._curve_rssi_distance.setData(list(self._time_buffer), list(self._rssi_distance_buffer))
-        self._curve_velocity.setData(list(self._time_buffer), list(self._velocity_buffer))
+
+        if self._velocity_ever_received:
+            self._curve_velocity.setData(list(self._time_buffer), list(self._velocity_buffer))
         
         # Adjust the Y-range for distance (left axis)
         if Y_LIM_M != None:
@@ -235,7 +230,7 @@ class DataPlotter(QtWidgets.QMainWindow):
         self._plot.setXRange(self._time_buffer[0], self._time_buffer[-1] + X_PADDING_S)
         
         # Adjust the Y-range for velocity (right axis)
-        if self._velocity_buffer:
+        if self._velocity_ever_received and self._velocity_buffer:
             vel_max = max(abs(min(self._velocity_buffer)), abs(max(self._velocity_buffer)))
             vel_range = max(vel_max * 1.2, 0.1)  # Add 20% padding, minimum 0.1
             self._plot_velocity.setYRange(-vel_range, vel_range)

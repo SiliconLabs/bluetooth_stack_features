@@ -21,7 +21,6 @@
 #include "app.h"
 #include "app_log.h"
 
-
 #define SIGNAL_NOTIFY_HEX    1
 #define SIGNAL_NOTIFY_USER   2
 
@@ -81,10 +80,10 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
     case sl_bt_evt_system_boot_id:
       // Print boot message.
       app_log_info("Bluetooth stack booted: v%d.%d.%d-b%d\r\r\n",
-                 evt->data.evt_system_boot.major,
-                 evt->data.evt_system_boot.minor,
-                 evt->data.evt_system_boot.patch,
-                 evt->data.evt_system_boot.build);
+                   evt->data.evt_system_boot.major,
+                   evt->data.evt_system_boot.minor,
+                   evt->data.evt_system_boot.patch,
+                   evt->data.evt_system_boot.build);
 
       // Extract unique ID from BT Address.
       sc = sl_bt_system_get_identity_address(&address, &address_type);
@@ -101,13 +100,13 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
       system_id[7] = address.addr[0];
 
       app_log_info("Bluetooth %s address: %02X:%02X:%02X:%02X:%02X:%02X\r\r\n",
-                 address_type ? "static random" : "public device",
-                 address.addr[5],
-                 address.addr[4],
-                 address.addr[3],
-                 address.addr[2],
-                 address.addr[1],
-                 address.addr[0]);
+                   address_type ? "static random" : "public device",
+                   address.addr[5],
+                   address.addr[4],
+                   address.addr[3],
+                   address.addr[2],
+                   address.addr[1],
+                   address.addr[0]);
 
       sc = sl_bt_gatt_server_write_attribute_value(gattdb_system_id,
                                                    0,
@@ -162,98 +161,98 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
       app_assert_status(sc);
       break;
 
-      /* TAG: when the remote device subscribes for notification,
-       * start a timer to send out notifications periodically */
-      case sl_bt_evt_gatt_server_characteristic_status_id:
-        if (evt->data.evt_gatt_server_characteristic_status.status_flags
-            != sl_bt_gatt_server_client_config) {
-          break;
-        }
-        if (!(evt->data.evt_gatt_server_characteristic_status.characteristic
-              == gattdb_vt_hex
-              || evt->data.evt_gatt_server_characteristic_status.characteristic
-              == gattdb_vt_user)) {
-          break;
-        }
-        /* use the gattdb handle as the timer handle here */
-        if(evt->data.evt_gatt_server_characteristic_status.client_config_flags){
-            if(evt->data.evt_gatt_server_characteristic_status.characteristic == gattdb_vt_user){
-                sl_sleeptimer_start_periodic_timer(&timer_handle_user,
-                   3* TICKS_PER_SECOND, sleeptimer_callback, (void*)NULL, 0, 0);
-            }else if(evt->data.evt_gatt_server_characteristic_status.characteristic == gattdb_vt_hex){
-                sl_sleeptimer_start_periodic_timer(&timer_handle_hex,
-                   3* TICKS_PER_SECOND, sleeptimer_callback, (void*)NULL, 0, 0);
-            }
-        } else {
-            if(evt->data.evt_gatt_server_characteristic_status.characteristic == gattdb_vt_user){
-                sl_sleeptimer_stop_timer(&timer_handle_user);
-            }else if(evt->data.evt_gatt_server_characteristic_status.characteristic == gattdb_vt_hex){
-                sl_sleeptimer_stop_timer(&timer_handle_hex);
-            }
-        }
-      break;
-
-      case sl_bt_evt_system_external_signal_id:
-        if(evt->data.evt_system_external_signal.extsignals & SIGNAL_NOTIFY_HEX){
-            notify(gattdb_vt_hex);
-        }
-        if(evt->data.evt_system_external_signal.extsignals & SIGNAL_NOTIFY_USER){
-            notify(gattdb_vt_user);
-        }
+    /* TAG: when the remote device subscribes for notification,
+     * start a timer to send out notifications periodically */
+    case sl_bt_evt_gatt_server_characteristic_status_id:
+      if (evt->data.evt_gatt_server_characteristic_status.status_flags
+          != sl_bt_gatt_server_client_config) {
         break;
-
-      /* TAG: When a "hex" type characteristic is written, the Bluetooth stack
-       * stores the value and notifies the application about the change with this event */
-      case sl_bt_evt_gatt_server_attribute_value_id:
-        if (evt->data.evt_gatt_server_attribute_value.attribute == gattdb_vt_hex) {
-          app_log_info("Characteristic <%u> value changed by a remote request.\r\n"
-                   "Application callback here\r\n", gattdb_vt_hex);
-        }
+      }
+      if (!(evt->data.evt_gatt_server_characteristic_status.characteristic
+            == gattdb_vt_hex
+            || evt->data.evt_gatt_server_characteristic_status.characteristic
+            == gattdb_vt_user)) {
         break;
-
-      /* TAG: Example of handling read request for reading a characteristic with "user" type */
-      case sl_bt_evt_gatt_server_user_read_request_id:
-      {
-        uint16_t sent_len;
-
-        if (evt->data.evt_gatt_server_user_read_request.characteristic == gattdb_vt_user) {
-          /* For simplicity, not consider the offset > length of the buffer situation */
-          sc = sl_bt_gatt_server_send_user_read_response(
-            evt->data.evt_gatt_server_user_read_request.connection,
-            gattdb_vt_user,
-            (uint8_t)SL_STATUS_OK,
-            sizeof(user_char_buf) - evt->data.evt_gatt_server_user_read_request.offset,
-            user_char_buf + evt->data.evt_gatt_server_user_read_request.offset,
-            &sent_len);
-          app_assert_status(sc);
+      }
+      /* use the gattdb handle as the timer handle here */
+      if (evt->data.evt_gatt_server_characteristic_status.client_config_flags) {
+        if (evt->data.evt_gatt_server_characteristic_status.characteristic == gattdb_vt_user) {
+          sl_sleeptimer_start_periodic_timer(&timer_handle_user,
+                                             3 * TICKS_PER_SECOND, sleeptimer_callback, (void*)NULL, 0, 0);
+        } else if (evt->data.evt_gatt_server_characteristic_status.characteristic == gattdb_vt_hex) {
+          sl_sleeptimer_start_periodic_timer(&timer_handle_hex,
+                                             3 * TICKS_PER_SECOND, sleeptimer_callback, (void*)NULL, 0, 0);
+        }
+      } else {
+        if (evt->data.evt_gatt_server_characteristic_status.characteristic == gattdb_vt_user) {
+          sl_sleeptimer_stop_timer(&timer_handle_user);
+        } else if (evt->data.evt_gatt_server_characteristic_status.characteristic == gattdb_vt_hex) {
+          sl_sleeptimer_stop_timer(&timer_handle_hex);
         }
       }
       break;
 
-      /* TAG: Example of handling write request for writing a characteristic with "user" type */
-      case sl_bt_evt_gatt_server_user_write_request_id:
-        if (evt->data.evt_gatt_server_user_write_request.characteristic == gattdb_vt_user) {
-          /* For simplicity, assuming the opcode is gatt_write_request */
-          uint16_t len = evt->data.evt_gatt_server_user_write_request.offset
-                         + evt->data.evt_gatt_server_user_write_request.value.len;
-          if (len <= sizeof(user_char_buf)) {
-            memcpy(user_char_buf + evt->data.evt_gatt_server_user_write_request.offset,
-                   evt->data.evt_gatt_server_user_write_request.value.data,
-                   evt->data.evt_gatt_server_user_write_request.value.len);
-            sc = sl_bt_gatt_server_send_user_write_response(
-              evt->data.evt_gatt_server_user_write_request.connection,
-              evt->data.evt_gatt_server_user_write_request.characteristic,
-              (uint8_t)SL_STATUS_OK);
-            app_assert_status(sc);
-          } else {
-            sc = sl_bt_gatt_server_send_user_write_response(
-              evt->data.evt_gatt_server_user_write_request.connection,
-              evt->data.evt_gatt_server_user_write_request.characteristic,
-              (uint8_t)SL_STATUS_BT_ATT_INVALID_ATT_LENGTH);
-            app_assert_status(sc);
-          }
+    case sl_bt_evt_system_external_signal_id:
+      if (evt->data.evt_system_external_signal.extsignals & SIGNAL_NOTIFY_HEX) {
+        notify(gattdb_vt_hex);
+      }
+      if (evt->data.evt_system_external_signal.extsignals & SIGNAL_NOTIFY_USER) {
+        notify(gattdb_vt_user);
+      }
+      break;
+
+    /* TAG: When a "hex" type characteristic is written, the Bluetooth stack
+     * stores the value and notifies the application about the change with this event */
+    case sl_bt_evt_gatt_server_attribute_value_id:
+      if (evt->data.evt_gatt_server_attribute_value.attribute == gattdb_vt_hex) {
+        app_log_info("Characteristic <%u> value changed by a remote request.\r\n"
+                     "Application callback here\r\n", gattdb_vt_hex);
+      }
+      break;
+
+    /* TAG: Example of handling read request for reading a characteristic with "user" type */
+    case sl_bt_evt_gatt_server_user_read_request_id:
+    {
+      uint16_t sent_len;
+
+      if (evt->data.evt_gatt_server_user_read_request.characteristic == gattdb_vt_user) {
+        /* For simplicity, not consider the offset > length of the buffer situation */
+        sc = sl_bt_gatt_server_send_user_read_response(
+          evt->data.evt_gatt_server_user_read_request.connection,
+          gattdb_vt_user,
+          (uint8_t)SL_STATUS_OK,
+          sizeof(user_char_buf) - evt->data.evt_gatt_server_user_read_request.offset,
+          user_char_buf + evt->data.evt_gatt_server_user_read_request.offset,
+          &sent_len);
+        app_assert_status(sc);
+      }
+    }
+    break;
+
+    /* TAG: Example of handling write request for writing a characteristic with "user" type */
+    case sl_bt_evt_gatt_server_user_write_request_id:
+      if (evt->data.evt_gatt_server_user_write_request.characteristic == gattdb_vt_user) {
+        /* For simplicity, assuming the opcode is gatt_write_request */
+        uint16_t len = evt->data.evt_gatt_server_user_write_request.offset
+                       + evt->data.evt_gatt_server_user_write_request.value.len;
+        if (len <= sizeof(user_char_buf)) {
+          memcpy(user_char_buf + evt->data.evt_gatt_server_user_write_request.offset,
+                 evt->data.evt_gatt_server_user_write_request.value.data,
+                 evt->data.evt_gatt_server_user_write_request.value.len);
+          sc = sl_bt_gatt_server_send_user_write_response(
+            evt->data.evt_gatt_server_user_write_request.connection,
+            evt->data.evt_gatt_server_user_write_request.characteristic,
+            (uint8_t)SL_STATUS_OK);
+          app_assert_status(sc);
+        } else {
+          sc = sl_bt_gatt_server_send_user_write_response(
+            evt->data.evt_gatt_server_user_write_request.connection,
+            evt->data.evt_gatt_server_user_write_request.characteristic,
+            (uint8_t)SL_STATUS_BT_ATT_INVALID_ATT_LENGTH);
+          app_assert_status(sc);
         }
-        break;
+      }
+      break;
 
     ///////////////////////////////////////////////////////////////////////////
     // Add additional event handlers here as your application requires!      //
@@ -280,9 +279,9 @@ static void notify(uint16_t which)
     /* TAG: Example of sending notification for a "user" characteristic value
      * and modify the value */
     sc = sl_bt_gatt_server_send_notification(conn_handle,
-                                              which,
-                                              sizeof(user_char_buf),
-                                              user_char_buf);
+                                             which,
+                                             sizeof(user_char_buf),
+                                             user_char_buf);
     app_assert_status(sc);
     user_char_buf[0]++;
   } else if (which  == gattdb_vt_hex) {
@@ -290,23 +289,23 @@ static void notify(uint16_t which)
      * modify the value */
     uint8_t tmp[4] = { 0 };
     sc = sl_bt_gatt_server_read_attribute_value(which,
-                                                 0,
-                                                 4,
-                                                 &len,
-                                                 data);
+                                                0,
+                                                4,
+                                                &len,
+                                                data);
     app_assert_status(sc);
     memcpy(tmp, data, 4);
 
     sc = sl_bt_gatt_server_send_notification(conn_handle,
-                                              which,
-                                              4,
-                                              tmp);
+                                             which,
+                                             4,
+                                             tmp);
     app_assert_status(sc);
     tmp[0]++;
     sc = sl_bt_gatt_server_write_attribute_value(which,
-                                                  0,
-                                                  1,
-                                                  tmp);
+                                                 0,
+                                                 1,
+                                                 tmp);
     app_assert_status(sc);
   }
 }
@@ -319,15 +318,13 @@ static void notify(uint16_t which)
  * @param[in] handle Handle of the sleeptimer instance
  * @param[in] data  Callback data
  ******************************************************************************/
-void sleeptimer_callback(sl_sleeptimer_timer_handle_t *handle, void *data){
-
+void sleeptimer_callback(sl_sleeptimer_timer_handle_t *handle, void *data)
+{
   (void)data;
 
-  if(handle == &timer_handle_hex){
+  if (handle == &timer_handle_hex) {
     sl_bt_external_signal(SIGNAL_NOTIFY_HEX);
-  }
-  else{
+  } else {
     sl_bt_external_signal(SIGNAL_NOTIFY_USER);
   }
-
 }

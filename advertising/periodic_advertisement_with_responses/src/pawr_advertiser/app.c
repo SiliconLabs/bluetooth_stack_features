@@ -54,7 +54,7 @@ typedef enum {
   running
 } conn_state_t;
 
-typedef struct{
+typedef struct {
   uint8_t conn_handle;
   uint32_t service_handle;
   uint16_t char_handle;
@@ -135,21 +135,20 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
 
     case sl_bt_evt_scanner_legacy_advertisement_report_id:
       //Ignore scan responses when a connection is being opened
-      if (conn_state == scanning){
+      if (conn_state == scanning) {
         if (evt->data.evt_scanner_legacy_advertisement_report.event_flags
-                == (SL_BT_SCANNER_EVENT_FLAG_CONNECTABLE | SL_BT_SCANNER_EVENT_FLAG_SCANNABLE)) {
-
-            if (find_service_in_advertisement(&(evt->data.evt_scanner_legacy_advertisement_report.data.data[0]),
-                                              evt->data.evt_scanner_legacy_advertisement_report.data.len) != 0) {
-              sc = sl_bt_scanner_stop();
-              app_assert_status(sc);
-              sc = sl_bt_connection_open(evt->data.evt_scanner_legacy_advertisement_report.address,
-                                         evt->data.evt_scanner_legacy_advertisement_report.address_type,
-                                         sl_bt_gap_phy_1m,
-                                         &conn_info.conn_handle);
-              app_assert_status(sc);
-              conn_state = opening;
-            }
+            == (SL_BT_SCANNER_EVENT_FLAG_CONNECTABLE | SL_BT_SCANNER_EVENT_FLAG_SCANNABLE)) {
+          if (find_service_in_advertisement(&(evt->data.evt_scanner_legacy_advertisement_report.data.data[0]),
+                                            evt->data.evt_scanner_legacy_advertisement_report.data.len) != 0) {
+            sc = sl_bt_scanner_stop();
+            app_assert_status(sc);
+            sc = sl_bt_connection_open(evt->data.evt_scanner_legacy_advertisement_report.address,
+                                       evt->data.evt_scanner_legacy_advertisement_report.address_type,
+                                       sl_bt_gap_phy_1m,
+                                       &conn_info.conn_handle);
+            app_assert_status(sc);
+            conn_state = opening;
+          }
         }
       }
       break;
@@ -167,7 +166,7 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
       break;
 
     case sl_bt_evt_connection_parameters_id:
-      if(evt->data.evt_connection_parameters.security_mode > 0){
+      if (evt->data.evt_connection_parameters.security_mode > 0) {
         sc = sl_bt_gatt_discover_primary_services_by_uuid(conn_info.conn_handle, sizeof(pawr_sync_service), pawr_sync_service);
         app_assert_status(sc);
         conn_state = discover_services;
@@ -175,31 +174,31 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
       break;
 
     case sl_bt_evt_gatt_service_id:
-      if(!memcmp(evt->data.evt_gatt_service.uuid.data, pawr_sync_service, sizeof(pawr_sync_service) )){
-          conn_info.service_handle = evt->data.evt_gatt_service.service;
+      if (!memcmp(evt->data.evt_gatt_service.uuid.data, pawr_sync_service, sizeof(pawr_sync_service) )) {
+        conn_info.service_handle = evt->data.evt_gatt_service.service;
       }
       break;
 
     case sl_bt_evt_gatt_procedure_completed_id:
-      if(discover_services == conn_state){
-          sc = sl_bt_gatt_discover_characteristics_by_uuid(conn_info.conn_handle, conn_info.service_handle, sizeof(pawr_sync_char), pawr_sync_char);
-          app_assert_status(sc);
-          conn_state = discover_characteristics;
-      } else if(discover_characteristics == conn_state){
-         conn_state = provision;
-         // assign a response slot number to the scanner
-         sc = sl_bt_gatt_write_characteristic_value(evt->data.evt_gatt_characteristic.connection,
-                                                    conn_info.char_handle, sizeof(slot_number), &slot_number);
-         app_assert_status(sc);
-         slot_number++;
-      } else if(provision == conn_state){
-          app_log("Slot number written to the peripheral, result: %x\r\n", evt->data.evt_gatt_procedure_completed.result);
-          conn_state = sync_transfer;
-          // transfer the PAwR information to the scanner by using the PAST feature. Upon syncing to the train, the scanner will close the connection
-          sc = sl_bt_advertiser_past_transfer(conn_info.conn_handle, 0, adv_handle);
-          app_assert_status(sc);
-          app_log("PAST transfer initiated \r\n");
-       }
+      if (discover_services == conn_state) {
+        sc = sl_bt_gatt_discover_characteristics_by_uuid(conn_info.conn_handle, conn_info.service_handle, sizeof(pawr_sync_char), pawr_sync_char);
+        app_assert_status(sc);
+        conn_state = discover_characteristics;
+      } else if (discover_characteristics == conn_state) {
+        conn_state = provision;
+        // assign a response slot number to the scanner
+        sc = sl_bt_gatt_write_characteristic_value(evt->data.evt_gatt_characteristic.connection,
+                                                   conn_info.char_handle, sizeof(slot_number), &slot_number);
+        app_assert_status(sc);
+        slot_number++;
+      } else if (provision == conn_state) {
+        app_log("Slot number written to the peripheral, result: %x\r\n", evt->data.evt_gatt_procedure_completed.result);
+        conn_state = sync_transfer;
+        // transfer the PAwR information to the scanner by using the PAST feature. Upon syncing to the train, the scanner will close the connection
+        sc = sl_bt_advertiser_past_transfer(conn_info.conn_handle, 0, adv_handle);
+        app_assert_status(sc);
+        app_log("PAST transfer initiated \r\n");
+      }
       break;
 
     case sl_bt_evt_sm_bonded_id:
@@ -211,8 +210,8 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
       break;
 
     case sl_bt_evt_gatt_characteristic_id:
-      if(!memcmp(evt->data.evt_gatt_characteristic.uuid.data, pawr_sync_char, sizeof(pawr_sync_char))){
-          conn_info.char_handle = evt->data.evt_gatt_characteristic.characteristic;
+      if (!memcmp(evt->data.evt_gatt_characteristic.uuid.data, pawr_sync_char, sizeof(pawr_sync_char))) {
+        conn_info.char_handle = evt->data.evt_gatt_characteristic.characteristic;
       }
       break;
 
@@ -220,9 +219,9 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
 #if LOG_BUFFER_ERRORS
       allocation_failures += evt->data.evt_system_resource_exhausted.num_buffer_allocation_failures;
       app_log("Resource exhausted event:\r\n   Buffers discarded: %d,\r\n  buffer allocation failures: %d,\r\n   heap allocation failures: %d\r\n",
-                                    evt->data.evt_system_resource_exhausted.num_buffers_discarded,
-                                    evt->data.evt_system_resource_exhausted.num_buffer_allocation_failures,
-                                    evt->data.evt_system_resource_exhausted.num_heap_allocation_failures);
+              evt->data.evt_system_resource_exhausted.num_buffers_discarded,
+              evt->data.evt_system_resource_exhausted.num_buffer_allocation_failures,
+              evt->data.evt_system_resource_exhausted.num_heap_allocation_failures);
       timestamp = sl_sleeptimer_get_time();
       app_log("[%ld sec]: Total number of allocation failures: %ld\r\n", timestamp, allocation_failures);
 #endif
@@ -237,10 +236,9 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
         app_assert_status(sc);
 
         // Check if subevent roll-over is required
-        if (subevent == PAWR_NUM_SUBEVENTS - 1){
+        if (subevent == PAWR_NUM_SUBEVENTS - 1) {
           subevent = 0;
-        }
-        else {
+        } else {
           subevent++;
         }
         subevents_left--;
@@ -249,11 +247,11 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
       subevent_data++;
       break;
     case sl_bt_evt_pawr_advertiser_response_report_id:
-      if (evt->data.evt_pawr_advertiser_response_report.data_status != 255){
+      if (evt->data.evt_pawr_advertiser_response_report.data_status != 255) {
         app_log("Response received in slot: %d, data: %d, data status: %d\r\n",
-            evt->data.evt_pawr_advertiser_response_report.response_slot,
-            evt->data.evt_pawr_advertiser_response_report.data.data[0],
-            evt->data.evt_pawr_advertiser_response_report.data_status);
+                evt->data.evt_pawr_advertiser_response_report.response_slot,
+                evt->data.evt_pawr_advertiser_response_report.data.data[0],
+                evt->data.evt_pawr_advertiser_response_report.data_status);
       }
       break;
     // -------------------------------
@@ -264,7 +262,7 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
       conn_info.service_handle  = 0;
       conn_info.conn_handle     = 0;
       sc = sl_bt_scanner_start(sl_bt_scanner_scan_phy_1m, sl_bt_scanner_discover_generic);
-            app_assert_status(sc);
+      app_assert_status(sc);
       conn_state = scanning;
       break;
 
@@ -273,7 +271,6 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
       break;
   }
 }
-
 
 // Parse advertisements looking for advertised pawr sync service
 static uint8_t find_service_in_advertisement(uint8_t *data, uint8_t len)

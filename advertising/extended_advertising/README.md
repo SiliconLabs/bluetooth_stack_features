@@ -55,7 +55,7 @@ To create an **Advertiser**:
     ![board control configure](images/board_control_configure.png)  
     Then enable *Virtual COM UART* under its configuration
     ![board control configure](images/enable_vir_com.png)
- 
+
    - Install the **Extended Advertising** component, if it is not yet installed
 
    - Install the **Log** component (found under Application > Utility group)
@@ -98,7 +98,7 @@ To create a **Scanner**:
 
 3. Press reset button on both kits.
 
-4. On the Advertiser's terminal you will see the device address and on the Scanner's termial you will see the list of advertising and payload data as below result
+4. On the Advertiser's terminal you will see the device address and on the Scanner's terminal you will see the list of advertising and payload data as below result
 
 |Advertiser|Scanner|
 |:----------:|:-------:|

@@ -3,8 +3,8 @@ id=uc.extension.bluetooth_stack_features
 
 version=1.1.0
 
-label=Bluetooth Stack Features 
-description=Bluetooth Stack Features 
+label=Bluetooth Stack Features
+description=Bluetooth Stack Features
 
 prop.file.templatesFile=templates.xml
 prop.subLabel=Bluetooth\\ Stack\\ Features\\ 1.1.0

@@ -1,4 +1,4 @@
-# PAwR with PAST sample 
+# PAwR with PAST sample
 
 ## Simplicity SDK version ##
 

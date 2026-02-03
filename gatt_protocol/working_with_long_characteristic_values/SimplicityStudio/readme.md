@@ -1,6 +1,6 @@
 # Working with Long Characteristic Values
 
-The readme file of this project can be found [here](https://github.com/SiliconLabs/bluetooth_stack_features/blob/master/gatt_protocol/working_with_long_characteristic_values/readme.md). 
+The readme file of this project can be found [here](https://github.com/SiliconLabs/bluetooth_stack_features/blob/master/gatt_protocol/working_with_long_characteristic_values/readme.md).
 .
 > Note: In this project all the necessary software components are installed, source files are copied, and configurations are set, hence you can disregard the Setting Up section of the online readme file. Nevertheless, if you want to add the demonstrated feature to your own project, it might be good to know what software components you must install, and what configurations you must set beforehand, hence reading through the Setting Up section might be useful.
 

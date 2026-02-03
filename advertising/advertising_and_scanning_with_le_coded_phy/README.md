@@ -78,7 +78,7 @@ To test the example, you need to setup two radio boards as advertiser and scanne
 
 ### Advertiser
 
-1. Create an **Bluethooth - SoC Empty** example for the radio boards in Simplicity Studio.
+1. Create an **Bluetooth - SoC Empty** example for the radio boards in Simplicity Studio.
 
 2. Copy the attached [src/advertiser/app.c](src/advertiser/app.c) replacing the existing `app.c`.
 

@@ -1,7 +1,7 @@
 # Different Characteristic Value Type Example ##
- 
+
 ## Description ##
- 
+
 This is the example code for the Different Value Types of Characteristics, which demonstrates below features:
 
 1) Write and read a characteristic with value type "Hex".
@@ -13,18 +13,18 @@ This is the example code for the Different Value Types of Characteristics, which
 4) By searching the keyword "TAG", you will easily find the place for handling the operations above.
 
 This code example has a related User's Guide, here: [Different Value Types of Characteristics.](https://docs.silabs.com/bluetooth/latest/general/gatt-protocol/using-characteristics-value-types)
- 
+
 ## Simplicity SDK version ##
- 
+
 SiSDK v2025.6
- 
+
 ## Hardware Required ##
- 
+
 - A WSTK board.
 - A Bluetooth capable radio board, e.g: BRD4161A.
- 
+
 ## Setup
- 
+
 1. Create a **Bluetooth - SoC Empty** project.
 2. Import the GATT configuration:
    1. Open the .slcp file in the project.
@@ -51,13 +51,13 @@ SiSDK v2025.6
 - Install the **Legacy Advertising** component, if it is not yet installed (Bluetooth > Feature)
 
 ![](images/legacy.png)
-  
+
 4. Replace the *app.c* file in the project with the provided *app.c*.
 5. Build and flash to the target.
 6. Do not forget to flash a bootloader to your board, if you have not done so already.
- 
+
 ## How It Works ##
- 
+
 The example code shows where to handle the read and write requests to the characteristic with both user or hex type, as well as sending a notification every 3 seconds and incrementing the first byte. Follow the below steps to test the example:
 
 1. Open the Si Connect app on your smartphone.

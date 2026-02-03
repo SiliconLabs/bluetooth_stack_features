@@ -38,7 +38,6 @@
 // The advertising set handle allocated from Bluetooth stack.
 static uint8_t advertising_set_handle = 0xff;
 
-
 /* External signals used in external signal stack event */
 #define BUTTON0_PRESSED 0x00000001
 #define BUTTON1_PRESSED 0x00000002
@@ -84,7 +83,7 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
       app_log("GATT database version: 1\r\n");
 
       /* Enable bondings in security manager (this is needed for Service Change Indications) */
-      sc = sl_bt_sm_configure( 2, sl_bt_sm_io_capability_noinputnooutput);
+      sc = sl_bt_sm_configure(2, sl_bt_sm_io_capability_noinputnooutput);
       app_assert_status(sc);
 
       // Create an advertising set.
@@ -104,21 +103,21 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
       sc = sl_bt_legacy_advertiser_generate_data(advertising_set_handle,
                                                  sl_bt_advertiser_general_discoverable);
       app_assert(sc == SL_STATUS_OK,
-                    "[E: 0x%04x] Failed to generate data\n",
-                    (int)sc);
+                 "[E: 0x%04x] Failed to generate data\n",
+                 (int)sc);
       sc = sl_bt_legacy_advertiser_start(advertising_set_handle,
                                          sl_bt_advertiser_connectable_scannable);
       app_assert(sc == SL_STATUS_OK,
-                    "[E: 0x%04x] Failed to start advertising\n",
-                    (int)sc);
+                 "[E: 0x%04x] Failed to start advertising\n",
+                 (int)sc);
       break;
 
     // -------------------------------
     // This event indicates that a new connection was opened.
     case sl_bt_evt_connection_opened_id:
       app_log("Connection opened\r\n");
-      if(evt->data.evt_connection_opened.bonding != 0xFF){
-          app_log("Device is already bonded\r\n");
+      if (evt->data.evt_connection_opened.bonding != 0xFF) {
+        app_log("Device is already bonded\r\n");
       }
       break;
     case sl_bt_evt_sm_bonded_id:
@@ -128,7 +127,7 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
     case sl_bt_evt_sm_confirm_bonding_id:
       app_log("Confirming bonding\r\n");
       sl_bt_sm_bonding_confirm(evt->data.evt_sm_confirm_bonding.connection, 1);
-    break;
+      break;
 
     case sl_bt_evt_sm_bonding_failed_id:
       app_log("bonding failed: %x\r\n", evt->data.evt_sm_bonding_failed.reason);
@@ -141,13 +140,13 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
       sc = sl_bt_legacy_advertiser_generate_data(advertising_set_handle,
                                                  sl_bt_advertiser_general_discoverable);
       app_assert(sc == SL_STATUS_OK,
-                    "[E: 0x%04x] Failed to generate data\n",
-                    (int)sc);
+                 "[E: 0x%04x] Failed to generate data\n",
+                 (int)sc);
       sc = sl_bt_legacy_advertiser_start(advertising_set_handle,
                                          sl_bt_advertiser_connectable_scannable);
       app_assert(sc == SL_STATUS_OK,
-                    "[E: 0x%04x] Failed to start advertising\n",
-                    (int)sc);
+                 "[E: 0x%04x] Failed to start advertising\n",
+                 (int)sc);
       break;
     case sl_bt_evt_system_external_signal_id:
       if (evt->data.evt_system_external_signal.extsignals & BUTTON0_PRESSED) {
@@ -156,14 +155,14 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
         app_assert_status(sc);
 
         app_log("GATT database version: 1\r\n");
-        }
-        if (evt->data.evt_system_external_signal.extsignals & BUTTON1_PRESSED) {
+      }
+      if (evt->data.evt_system_external_signal.extsignals & BUTTON1_PRESSED) {
         /* if button 1 was pressed, enable the second feature set in the GATT database */
         sc = sl_bt_gatt_server_set_capabilities(Feature2, 0);
         app_assert_status(sc);
 
         app_log("GATT database version: 2\r\n");
-        }
+      }
       break;
 
     ///////////////////////////////////////////////////////////////////////////
@@ -191,16 +190,15 @@ void sl_button_on_change(const sl_button_t *handle)
 {
   sl_button_state_t btn_state;
 
-  if(handle->context == sl_button_btn0.context){
-      btn_state = sl_button_get_state(handle);
-      if(btn_state == SL_SIMPLE_BUTTON_PRESSED){
-          sl_bt_external_signal(BUTTON0_PRESSED);
-      }
-   }
-  else if(handle->context == sl_button_btn1.context){
-      btn_state = sl_button_get_state(handle);
-      if(btn_state == SL_SIMPLE_BUTTON_PRESSED){
-          sl_bt_external_signal(BUTTON1_PRESSED);
-      }
-   }
+  if (handle->context == sl_button_btn0.context) {
+    btn_state = sl_button_get_state(handle);
+    if (btn_state == SL_SIMPLE_BUTTON_PRESSED) {
+      sl_bt_external_signal(BUTTON0_PRESSED);
+    }
+  } else if (handle->context == sl_button_btn1.context) {
+    btn_state = sl_button_get_state(handle);
+    if (btn_state == SL_SIMPLE_BUTTON_PRESSED) {
+      sl_bt_external_signal(BUTTON1_PRESSED);
+    }
+  }
 }

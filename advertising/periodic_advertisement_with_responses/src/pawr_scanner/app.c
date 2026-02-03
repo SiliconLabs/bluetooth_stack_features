@@ -140,11 +140,11 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
       break;
 
     case sl_bt_evt_gatt_server_attribute_value_id:
-      if(gattdb_pawr_sync_char == evt->data.evt_gatt_server_attribute_value.attribute){
-          pawr_slot_number = evt->data.evt_gatt_server_attribute_value.value.data[0];
-          app_log("Response slot number received: %d\r\n", pawr_slot_number);
+      if (gattdb_pawr_sync_char == evt->data.evt_gatt_server_attribute_value.attribute) {
+        pawr_slot_number = evt->data.evt_gatt_server_attribute_value.value.data[0];
+        app_log("Response slot number received: %d\r\n", pawr_slot_number);
       }
-    break;
+      break;
 
     case sl_bt_evt_pawr_sync_transfer_received_id:
       app_log("PAwR sync transfer received, closing connection \r\n");
@@ -153,12 +153,12 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
       break;
 
     case sl_bt_evt_pawr_sync_subevent_report_id:
-      app_log("PAwR subevent report. Data: %d\r\n",evt->data.evt_pawr_sync_subevent_report.data.data[0]);
+      app_log("PAwR subevent report. Data: %d\r\n", evt->data.evt_pawr_sync_subevent_report.data.data[0]);
       sc = sl_bt_pawr_sync_set_response_data(evt->data.evt_pawr_sync_subevent_report.sync,
                                              evt->data.evt_pawr_sync_subevent_report.event_counter,
-                                        evt->data.evt_pawr_sync_subevent_report.subevent,
-                                        evt->data.evt_pawr_sync_subevent_report.subevent,
-                                        pawr_slot_number, sizeof(resp_data), &resp_data);
+                                             evt->data.evt_pawr_sync_subevent_report.subevent,
+                                             evt->data.evt_pawr_sync_subevent_report.subevent,
+                                             pawr_slot_number, sizeof(resp_data), &resp_data);
       app_assert_status(sc);
       resp_data++;
       break;

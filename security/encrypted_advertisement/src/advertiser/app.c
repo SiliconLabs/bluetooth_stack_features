@@ -1,32 +1,32 @@
 /***************************************************************************/ /**
-* @file
-* @brief Core application logic.
-*******************************************************************************
-* # License
-* <b>Copyright 2024 Silicon Laboratories Inc. www.silabs.com</b>
-*******************************************************************************
-*
-* SPDX-License-Identifier: Zlib
-*
-* The licensor of this software is Silicon Laboratories Inc.
-*
-* This software is provided 'as-is', without any express or implied
-* warranty. In no event will the authors be held liable for any damages
-* arising from the use of this software.
-*
-* Permission is granted to anyone to use this software for any purpose,
-* including commercial applications, and to alter it and redistribute it
-* freely, subject to the following restrictions:
-*
-* 1. The origin of this software must not be misrepresented; you must not
-*    claim that you wrote the original software. If you use this software
-*    in a product, an acknowledgment in the product documentation would be
-*    appreciated but is not required.
-* 2. Altered source versions must be plainly marked as such, and must not be
-*    misrepresented as being the original software.
-* 3. This notice may not be removed or altered from any source distribution.
-*
-******************************************************************************/
+ * @file
+ * @brief Core application logic.
+ *******************************************************************************
+ * # License
+ * <b>Copyright 2024 Silicon Laboratories Inc. www.silabs.com</b>
+ *******************************************************************************
+ *
+ * SPDX-License-Identifier: Zlib
+ *
+ * The licensor of this software is Silicon Laboratories Inc.
+ *
+ * This software is provided 'as-is', without any express or implied
+ * warranty. In no event will the authors be held liable for any damages
+ * arising from the use of this software.
+ *
+ * Permission is granted to anyone to use this software for any purpose,
+ * including commercial applications, and to alter it and redistribute it
+ * freely, subject to the following restrictions:
+ *
+ * 1. The origin of this software must not be misrepresented; you must not
+ *    claim that you wrote the original software. If you use this software
+ *    in a product, an acknowledgment in the product documentation would be
+ *    appreciated but is not required.
+ * 2. Altered source versions must be plainly marked as such, and must not be
+ *    misrepresented as being the original software.
+ * 3. This notice may not be removed or altered from any source distribution.
+ *
+ ******************************************************************************/
 #include "sl_common.h"
 #include "sl_bt_api.h"
 #include "app_assert.h"
@@ -66,7 +66,6 @@ void oneshot_sleeptimer_callback(sl_sleeptimer_timer_handle_t *handle, void *dat
   (void)handle;
   (void)data;
   sl_bt_external_signal(ONESHOT_BTN_TIMER_CALLBACK);
-
 }
 
 void periodic_sleeptimer_callback(sl_sleeptimer_timer_handle_t *handle, void *data)
@@ -78,9 +77,7 @@ void periodic_sleeptimer_callback(sl_sleeptimer_timer_handle_t *handle, void *da
 
 void sl_button_on_change(const sl_button_t *handle)
 {
-
-  if (handle == &sl_button_btn0 && sl_button_get_state(handle) == SL_SIMPLE_BUTTON_PRESSED)
-  {
+  if (handle == &sl_button_btn0 && sl_button_get_state(handle) == SL_SIMPLE_BUTTON_PRESSED) {
     sl_bt_external_signal(CONFIRM_BTN);
   }
 }
@@ -91,20 +88,17 @@ sl_status_t initialize_and_store_key_material(sl_bt_ead_key_material_p key_mater
   // generate the session key and the IV needed to create the key material
   sl_bt_ead_session_key_t session_key;
   sl_bt_ead_iv_t initialization_vector;
-  if (psa_generate_random(session_key, SL_BT_EAD_SESSION_KEY_SIZE) != PSA_SUCCESS || psa_generate_random(initialization_vector, SL_BT_EAD_IV_SIZE) != PSA_SUCCESS)
-  {
+  if (psa_generate_random(session_key, SL_BT_EAD_SESSION_KEY_SIZE) != PSA_SUCCESS || psa_generate_random(initialization_vector, SL_BT_EAD_IV_SIZE) != PSA_SUCCESS) {
     return sc;
   }
   memcpy(key_material->key, session_key, SL_BT_EAD_SESSION_KEY_SIZE);
   memcpy(key_material->iv, initialization_vector, SL_BT_EAD_IV_SIZE);
   app_log("session key: ");
-  for (uint8_t i = 0; i < 16; i++)
-  {
+  for (uint8_t i = 0; i < 16; i++) {
     app_log("%02X:", key_material->key[i]);
   }
   app_log("\r\ninitiazation vector: ");
-  for (uint8_t i = 0; i < 8; i++)
-  {
+  for (uint8_t i = 0; i < 8; i++) {
     app_log("%02X:", key_material->iv[i]);
   }
   app_log("\r\n");
@@ -145,7 +139,7 @@ sl_status_t construct_advertisement_payload(sl_bt_ead_key_material_p key_materia
   sc = sl_bt_ead_encrypt(key_material, nonce, manufactuer_data_len, manufactuer_data_buf, message_integraty_check);
   app_assert_status(sc);
   sl_bt_ead_ad_structure_p encrypted_ad_structure = (sl_bt_ead_ad_structure_p)sl_malloc(sizeof(struct sl_bt_ead_ad_structure_s));
-  uint8_t *encrypted_data_length = &(uint8_t){BLE_EA_ADV_DATA_LEN};
+  uint8_t *encrypted_data_length = &(uint8_t){BLE_EA_ADV_DATA_LEN };
   encrypted_ad_structure->length = manufactuer_data_len;
   encrypted_ad_structure->ad_type = SL_BT_ENCRYPTED_DATA_AD_TYPE;
   encrypted_ad_structure->ad_data = manufactuer_data_buf;
@@ -153,10 +147,10 @@ sl_status_t construct_advertisement_payload(sl_bt_ead_key_material_p key_materia
   encrypted_ad_structure->mic = &message_integraty_check;
   sc = sl_bt_ead_pack_ad_data(encrypted_ad_structure, encrypted_data_length, advertisement_buffer + *index);
   app_log("--------------------------------------------------------------------------\n\r");
-  app_log("Information before encryption: %s \n\r",secret_data);
+  app_log("Information before encryption: %s \n\r", secret_data);
   app_log("Information after encryption:\n\r");
-  for(uint8_t i = *index ; i< *index+*encrypted_data_length; i++){
-      app_log("%02X",advertisement_buffer[i]);
+  for (uint8_t i = *index; i < *index + *encrypted_data_length; i++) {
+    app_log("%02X", advertisement_buffer[i]);
   }
   printf("\n\r");
   app_assert_status(sc);
@@ -169,7 +163,6 @@ sl_status_t construct_advertisement_payload(sl_bt_ead_key_material_p key_materia
 // Application Init.
 SL_WEAK void app_init(void)
 {
-
   /////////////////////////////////////////////////////////////////////////////
   // Put your additional application init code here!                         //
   // This is called once during start-up.                                    //
@@ -182,8 +175,7 @@ SL_WEAK void app_init(void)
 // Application Process Action.
 SL_WEAK void app_process_action(void)
 {
-  if (app_is_process_required())
-  {
+  if (app_is_process_required()) {
     /////////////////////////////////////////////////////////////////////////////
     // Put your additional application code here!                              //
     // This is will run each time app_proceed() is called.                     //
@@ -193,11 +185,11 @@ SL_WEAK void app_process_action(void)
 }
 
 /**************************************************************************/ /**
-* Bluetooth stack event handler.
-* This overrides the dummy weak implementation.
-*
-* @param[in] evt Event coming from the Bluetooth stack.
-*****************************************************************************/
+ * Bluetooth stack event handler.
+ * This overrides the dummy weak implementation.
+ *
+ * @param[in] evt Event coming from the Bluetooth stack.
+ *****************************************************************************/
 void sl_bt_on_event(sl_bt_msg_t *evt)
 {
   sl_status_t sc;
@@ -208,155 +200,147 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
   static uint8_t connection_handle = SL_BT_INVALID_CONNECTION_HANDLE;
   static uint8_t pairing_state;
 
-  switch (SL_BT_MSG_ID(evt->header))
-  {
-  // -------------------------------
-  // This event indicates the device has started and the radio is ready.
-  // Do not call any stack command before receiving this boot event!
-  case sl_bt_evt_system_boot_id:
-    pairing_state = 0;
-    app_log("boot\r\n");
-    sc = sl_bt_sm_set_bondable_mode(1);
-    app_assert_status(sc);
-    sc = sl_bt_sm_configure(SL_BT_SM_CONFIGURATION_MITM_REQUIRED | SL_BT_SM_CONFIGURATION_BONDING_REQUIRED | SL_BT_SM_CONFIGURATION_SC_ONLY | SL_BT_SM_CONFIGURATION_BONDING_REQUEST_REQUIRED, sl_bt_sm_io_capability_displayyesno);
-    app_assert_status(sc);
-    // initializes the key material
-    initialize_and_store_key_material(&key_material, key_id);
-    // initializes the nonce
-    sl_bt_ead_session_init(&key_material, NULL, &nonce);
-    // Create an advertising set.
-    sc = sl_bt_advertiser_create_set(&advertising_set_handle);
-    app_assert_status(sc);
-    bd_addr random_address;
-    sc = sl_bt_advertiser_set_random_address(advertising_set_handle, sl_bt_gap_random_resolvable_address, (bd_addr){0}, &random_address);
-    app_assert_status(sc);
-    // fill the advertisement with encrypted and unencrypted data
-    sc = construct_advertisement_payload(&key_material, &nonce, &index);
-    app_assert_status(sc);
-    sc = sl_bt_extended_advertiser_set_data(advertising_set_handle, index, advertisement_buffer);
-    app_assert_status(sc);
-    // Set advertising interval to 100ms.
-    sc = sl_bt_advertiser_set_timing(
+  switch (SL_BT_MSG_ID(evt->header)) {
+    // -------------------------------
+    // This event indicates the device has started and the radio is ready.
+    // Do not call any stack command before receiving this boot event!
+    case sl_bt_evt_system_boot_id:
+      pairing_state = 0;
+      app_log("boot\r\n");
+      sc = sl_bt_sm_set_bondable_mode(1);
+      app_assert_status(sc);
+      sc = sl_bt_sm_configure(SL_BT_SM_CONFIGURATION_MITM_REQUIRED | SL_BT_SM_CONFIGURATION_BONDING_REQUIRED | SL_BT_SM_CONFIGURATION_SC_ONLY | SL_BT_SM_CONFIGURATION_BONDING_REQUEST_REQUIRED, sl_bt_sm_io_capability_displayyesno);
+      app_assert_status(sc);
+      // initializes the key material
+      initialize_and_store_key_material(&key_material, key_id);
+      // initializes the nonce
+      sl_bt_ead_session_init(&key_material, NULL, &nonce);
+      // Create an advertising set.
+      sc = sl_bt_advertiser_create_set(&advertising_set_handle);
+      app_assert_status(sc);
+      bd_addr random_address;
+      sc = sl_bt_advertiser_set_random_address(advertising_set_handle, sl_bt_gap_random_resolvable_address, (bd_addr){0 }, &random_address);
+      app_assert_status(sc);
+      // fill the advertisement with encrypted and unencrypted data
+      sc = construct_advertisement_payload(&key_material, &nonce, &index);
+      app_assert_status(sc);
+      sc = sl_bt_extended_advertiser_set_data(advertising_set_handle, index, advertisement_buffer);
+      app_assert_status(sc);
+      // Set advertising interval to 100ms.
+      sc = sl_bt_advertiser_set_timing(
         advertising_set_handle,
         160, // min. adv. interval (milliseconds * 1.6)
         160, // max. adv. interval (milliseconds * 1.6)
         0,   // adv. duration
         0);  // max. num. adv. events
-    app_assert_status(sc);
-    // Start advertising and enable connections.
-    sc = sl_bt_extended_advertiser_start(advertising_set_handle,
-                                         sl_bt_extended_advertiser_connectable, 0);
-    app_assert_status(sc);
-    app_log("started advertisement\r\n");
-    break;
-
-  case sl_bt_evt_connection_opened_id:
-    app_log("connection opened\r\n");
-    sc = sl_sleeptimer_stop_timer(&periodic_timer_handle);
-    app_assert_status(sc);
-    connection_handle = evt->data.evt_connection_opened.connection;
-    break;
-
-  case sl_bt_evt_connection_parameters_id:
-    // This switch case indicates security mode changes
-    switch (evt->data.evt_connection_parameters.security_mode)
-    {
-    case sl_bt_connection_mode1_level1:
-      app_log("No Security\r\n");
-      break;
-    case sl_bt_connection_mode1_level2:
-      app_log("Unauthenticated pairing with encryption\r\n");
-      break;
-    case sl_bt_connection_mode1_level3:
-      app_log("Authenticated pairing with encryption\r\n");
-      break;
-    case sl_bt_connection_mode1_level4:
-      app_log("Authenticated Secure Connections pairing with encryption\r\n");
-      break;
-    }
-    break;
-
-  case sl_bt_evt_connection_closed_id:
-    app_log("closed connection reason: 0x%4X\r\n", evt->data.evt_connection_closed.reason);
-    connection_handle = SL_BT_INVALID_CONNECTION_HANDLE;
-    sc = sl_sleeptimer_start_periodic_timer_ms(&periodic_timer_handle, ADDRESS_CHANGE_PERIOD_MS, periodic_sleeptimer_callback, (void *)NULL, 0, 0);
-    app_assert_status(sc);
-    sc = sl_bt_extended_advertiser_start(advertising_set_handle,
-                                         sl_bt_extended_advertiser_connectable, 0);
-    app_assert_status(sc);
-    break;
-
-  case sl_bt_evt_sm_confirm_passkey_id:
-    pairing_state = 1;
-    app_log("The passkey is: %06li\r\n", evt->data.evt_sm_confirm_passkey.passkey);
-    app_log("Please press btn0 once to refuse bonding or twice to accept bonding\n\r");
-    break;
-
-  case sl_bt_evt_sm_confirm_bonding_id:
-    app_log("New bonding request\r\n");
-    sc = sl_bt_sm_bonding_confirm(evt->data.evt_sm_confirm_bonding.connection, 1);
-    app_assert_status(sc);
-    break;
-
-  case sl_bt_evt_sm_bonded_id:
-    app_log("device bonded successfully\r\n");
-    pairing_state = 0;
-    break;
-
-  case sl_bt_evt_sm_bonding_failed_id:
-    app_log("bonding failed, reason 0x%2X\r\n",
-            evt->data.evt_sm_bonding_failed.reason);
-    app_assert_status(sc);
-    break;
-
-  case sl_bt_evt_system_external_signal_id:
-    if (evt->data.evt_system_external_signal.extsignals == PERIODIC_TIMER_CALLBACK)
-    {
-      // stop advertising, change resolvable private address and update the randomizer according to
-      //  the Supplement to the Bluetooth Core Specification v11 Part A, Section 1.23.4
-      sc = sl_bt_advertiser_stop(advertising_set_handle);
       app_assert_status(sc);
-      sc = sl_bt_advertiser_set_random_address(advertising_set_handle, sl_bt_gap_random_resolvable_address, (bd_addr){0}, &random_address);
+      // Start advertising and enable connections.
+      sc = sl_bt_extended_advertiser_start(advertising_set_handle,
+                                           sl_bt_extended_advertiser_connectable, 0);
       app_assert_status(sc);
-      sc = sl_bt_ead_randomizer_update(&nonce);
+      app_log("started advertisement\r\n");
+      break;
+
+    case sl_bt_evt_connection_opened_id:
+      app_log("connection opened\r\n");
+      sc = sl_sleeptimer_stop_timer(&periodic_timer_handle);
       app_assert_status(sc);
-      sc = construct_advertisement_payload(&key_material, &nonce, &index);
-      app_assert_status(sc);
-      sc = sl_bt_extended_advertiser_set_data(advertising_set_handle, index, advertisement_buffer);
+      connection_handle = evt->data.evt_connection_opened.connection;
+      break;
+
+    case sl_bt_evt_connection_parameters_id:
+      // This switch case indicates security mode changes
+      switch (evt->data.evt_connection_parameters.security_mode) {
+        case sl_bt_connection_mode1_level1:
+          app_log("No Security\r\n");
+          break;
+        case sl_bt_connection_mode1_level2:
+          app_log("Unauthenticated pairing with encryption\r\n");
+          break;
+        case sl_bt_connection_mode1_level3:
+          app_log("Authenticated pairing with encryption\r\n");
+          break;
+        case sl_bt_connection_mode1_level4:
+          app_log("Authenticated Secure Connections pairing with encryption\r\n");
+          break;
+      }
+      break;
+
+    case sl_bt_evt_connection_closed_id:
+      app_log("closed connection reason: 0x%4X\r\n", evt->data.evt_connection_closed.reason);
+      connection_handle = SL_BT_INVALID_CONNECTION_HANDLE;
+      sc = sl_sleeptimer_start_periodic_timer_ms(&periodic_timer_handle, ADDRESS_CHANGE_PERIOD_MS, periodic_sleeptimer_callback, (void *)NULL, 0, 0);
       app_assert_status(sc);
       sc = sl_bt_extended_advertiser_start(advertising_set_handle,
                                            sl_bt_extended_advertiser_connectable, 0);
       app_assert_status(sc);
       break;
-    }
-    if (pairing_state == 0)
+
+    case sl_bt_evt_sm_confirm_passkey_id:
+      pairing_state = 1;
+      app_log("The passkey is: %06li\r\n", evt->data.evt_sm_confirm_passkey.passkey);
+      app_log("Please press btn0 once to refuse bonding or twice to accept bonding\n\r");
       break;
 
-    if (evt->data.evt_system_external_signal.extsignals == ONESHOT_BTN_TIMER_CALLBACK)
-    {
-      btn_count=0;
-      sc = sl_bt_sm_passkey_confirm(connection_handle, 0);
+    case sl_bt_evt_sm_confirm_bonding_id:
+      app_log("New bonding request\r\n");
+      sc = sl_bt_sm_bonding_confirm(evt->data.evt_sm_confirm_bonding.connection, 1);
       app_assert_status(sc);
       break;
-    }
 
-    if (evt->data.evt_system_external_signal.extsignals == CONFIRM_BTN)
-    {
-      btn_count++;
-      if (btn_count == 2){
-      app_log("connection handle %d\r\n", connection_handle);
-      sc = sl_bt_sm_passkey_confirm(connection_handle, 1);
+    case sl_bt_evt_sm_bonded_id:
+      app_log("device bonded successfully\r\n");
+      pairing_state = 0;
+      break;
+
+    case sl_bt_evt_sm_bonding_failed_id:
+      app_log("bonding failed, reason 0x%2X\r\n",
+              evt->data.evt_sm_bonding_failed.reason);
       app_assert_status(sc);
-      btn_count = 0;
-      } else if (btn_count == 1)
-      {
-        sc= sl_sleeptimer_start_timer_ms(&oneshot_btn_timer_handle, BTN_CONFIRM_PERIOD_MS,oneshot_sleeptimer_callback, (void *)NULL,0,0);
+      break;
+
+    case sl_bt_evt_system_external_signal_id:
+      if (evt->data.evt_system_external_signal.extsignals == PERIODIC_TIMER_CALLBACK) {
+        // stop advertising, change resolvable private address and update the randomizer according to
+        //  the Supplement to the Bluetooth Core Specification v11 Part A, Section 1.23.4
+        sc = sl_bt_advertiser_stop(advertising_set_handle);
         app_assert_status(sc);
+        sc = sl_bt_advertiser_set_random_address(advertising_set_handle, sl_bt_gap_random_resolvable_address, (bd_addr){0 }, &random_address);
+        app_assert_status(sc);
+        sc = sl_bt_ead_randomizer_update(&nonce);
+        app_assert_status(sc);
+        sc = construct_advertisement_payload(&key_material, &nonce, &index);
+        app_assert_status(sc);
+        sc = sl_bt_extended_advertiser_set_data(advertising_set_handle, index, advertisement_buffer);
+        app_assert_status(sc);
+        sc = sl_bt_extended_advertiser_start(advertising_set_handle,
+                                             sl_bt_extended_advertiser_connectable, 0);
+        app_assert_status(sc);
+        break;
       }
-      break;
-    }
+      if (pairing_state == 0) {
+        break;
+      }
 
+      if (evt->data.evt_system_external_signal.extsignals == ONESHOT_BTN_TIMER_CALLBACK) {
+        btn_count = 0;
+        sc = sl_bt_sm_passkey_confirm(connection_handle, 0);
+        app_assert_status(sc);
+        break;
+      }
 
-
+      if (evt->data.evt_system_external_signal.extsignals == CONFIRM_BTN) {
+        btn_count++;
+        if (btn_count == 2) {
+          app_log("connection handle %d\r\n", connection_handle);
+          sc = sl_bt_sm_passkey_confirm(connection_handle, 1);
+          app_assert_status(sc);
+          btn_count = 0;
+        } else if (btn_count == 1) {
+          sc = sl_sleeptimer_start_timer_ms(&oneshot_btn_timer_handle, BTN_CONFIRM_PERIOD_MS, oneshot_sleeptimer_callback, (void *)NULL, 0, 0);
+          app_assert_status(sc);
+        }
+        break;
+      }
   }
 }

@@ -71,17 +71,16 @@ int32_t calcrc(int8_t *ptr, int32_t count)
   int32_t  crc;
   int8_t i;
   crc = 0;
-  while (--count >= 0)
-  {
+  while (--count >= 0) {
     crc = crc ^ (int32_t) *ptr++ << 8;
     i = 8;
-    do
-    {
-      if (crc & 0x8000)
-          crc = crc << 1 ^ 0x1021;
-      else
-          crc = crc << 1;
-    } while(--i);
+    do {
+      if (crc & 0x8000) {
+        crc = crc << 1 ^ 0x1021;
+      } else {
+        crc = crc << 1;
+      }
+    } while (--i);
   }
   return (crc);
 }
@@ -92,7 +91,7 @@ uint32_t send_until_ack(uint8_t *data, uint32_t length)
   uint8_t success = 0;
   uint8_t response = 0;
 
-  do{
+  do {
     /* Clean rx and tx queue. */
     UARTDRV_Abort(handle, uartdrvAbortAll);
 
@@ -106,7 +105,7 @@ uint32_t send_until_ack(uint8_t *data, uint32_t length)
     /* Check if ACK received. */
     UARTDRV_ReceiveB(handle, &response, 1);
 
-    switch(response){
+    switch (response) {
       case ACK:
         success = 1;
         break;
@@ -118,8 +117,7 @@ uint32_t send_until_ack(uint8_t *data, uint32_t length)
 
         break;
     }
-
-  }while(success == 0);
+  } while (success == 0);
 
   return 1;
 }
@@ -146,24 +144,26 @@ uint32_t bootloader_xmodemSend(uint8_t *data, uint32_t length)
 
   /* 128 bytes of data are sent at a time. */
   uint16_t packetNumber = 1;
-  for(int i = 0; i < totalPackets; i++) {
+  for (int i = 0; i < totalPackets; i++) {
     success = transmit_SOH_packet(data + (i * XMODEM_DATA_SIZE),
                                   XMODEM_DATA_SIZE,
                                   (uint8_t)packetNumber);
-    if(success == 0)
+    if (success == 0) {
       return 0;
+    }
 
     packetNumber = (packetNumber + 1) & 0x00FF;
   }
 
   /* Last packet may not be 128 bytes long. */
-  if(length % 128) {
+  if (length % 128) {
     success = transmit_SOH_packet(data + (totalPackets * XMODEM_DATA_SIZE),
                                   length % XMODEM_DATA_SIZE,
                                   (uint8_t)((packetNumber) & 0x00FF));
 
-    if(success == 0)
+    if (success == 0) {
       return 0;
+    }
   }
 
   uint8_t header = EOT;

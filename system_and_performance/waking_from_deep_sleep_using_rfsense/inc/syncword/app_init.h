@@ -52,7 +52,7 @@
  * @param None
  * @returns RAIL_Handle_t RAIL handle
  *
- * It ensures the followings:
+ * It ensures the following:
  * - Turn OFF LEDs
  * - Start RAIL reception
  * - Printf start message

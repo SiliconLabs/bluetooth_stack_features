@@ -31,7 +31,6 @@ void app_init(void);
  *****************************************************************************/
 void app_process_action(void);
 
-
 #define MAX_ADV_DATA_LENGTH 31
 #define MAX_EXTENDED_ADV_LENGTH 253 /* Current SDK only support 253 bytes */
 

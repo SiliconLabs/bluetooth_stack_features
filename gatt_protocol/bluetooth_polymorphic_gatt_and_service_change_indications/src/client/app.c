@@ -41,10 +41,10 @@
 #define MAX_NUM_OF_CACHES           5
 
 /* UUID of the Generic Attribute Service */
-static uint8_t generic_access_uuid[2] = {0x01,0x18};
+static uint8_t generic_access_uuid[2] = { 0x01, 0x18 };
 
 /* UUID of the Service Changed characteristic */
-static uint8_t service_changed_uuid[2] = {0x05,0x2a};
+static uint8_t service_changed_uuid[2] = { 0x05, 0x2a };
 
 /* connection handle */
 static uint8_t conn_handle = 0xFF;
@@ -59,7 +59,7 @@ typedef struct {
 } db_cache_t;
 
 /* database cache in which handles are stored */
-static db_cache_t db_cache = {{{0,0,0,0,0,0}}, 0xFFFFFFFF, 0xFFFF};
+static db_cache_t db_cache = { { { 0, 0, 0, 0, 0, 0 } }, 0xFFFFFFFF, 0xFFFF };
 
 /* state variables */
 static uint8_t waiting_for_service_discovery_to_finish = 0;
@@ -75,18 +75,16 @@ static uint8_t waiting_for_characteristic_discovery_to_finish = 0;
 static uint8_t findDeviceByName(sl_bt_evt_scanner_legacy_advertisement_report_t *pResp, char* name)
 {
   uint8_t i = 0;
-  uint8_t ad_len,ad_type;
+  uint8_t ad_len, ad_type;
 
-  while (i < (pResp->data.len - 1))
-  {
+  while (i < (pResp->data.len - 1)) {
     ad_len  = pResp->data.data[i];
-    ad_type = pResp->data.data[i+1];
+    ad_type = pResp->data.data[i + 1];
 
-    if (ad_type == 0x08 || ad_type == 0x09 )
-    {
+    if (ad_type == 0x08 || ad_type == 0x09 ) {
       // type 0x08 = Shortened Local Name
       // type 0x09 = Complete Local Name
-      if (memcmp(name, &(pResp->data.data[i+2]), ad_len-1) == 0) {
+      if (memcmp(name, &(pResp->data.data[i + 2]), ad_len - 1) == 0) {
         return 1;
       }
     }
@@ -115,15 +113,15 @@ static uint8_t loadDatabaseCache(bd_addr address, db_cache_t* p_db_cache)
   for (key = NVM_KEY_DATABASE_CACHE_BASE; key < (NVM_KEY_DATABASE_CACHE_BASE + MAX_NUM_OF_CACHES); key++) {
     ret_code = nvm3_readData(nvm3_defaultHandle, key, &temp, sizeof(db_cache_t));
     /* if loading error, return false */
-    if (ret_code != ECODE_NVM3_OK){
-        result = 0;
-        break;
-    } else{
+    if (ret_code != ECODE_NVM3_OK) {
+      result = 0;
+      break;
+    } else {
       /* check device address, if it matches the required address, load the DB cache */
-      if (memcmp(&temp.address.addr[0] , &address.addr[0], 6) == 0) {
-          memcpy(p_db_cache, &temp, sizeof(db_cache_t));
-          app_log("database cache loaded from key 0x%04X\r\n", key);
-          result = 1;
+      if (memcmp(&temp.address.addr[0], &address.addr[0], 6) == 0) {
+        memcpy(p_db_cache, &temp, sizeof(db_cache_t));
+        app_log("database cache loaded from key 0x%04X\r\n", key);
+        result = 1;
       }
     }
   }
@@ -148,21 +146,21 @@ static uint8_t storeDatabaseCache(bd_addr address, db_cache_t* p_db_cache)
 
   /* iterate through user keys in the NVM */
   for (key = NVM_KEY_DATABASE_CACHE_BASE; key < (NVM_KEY_DATABASE_CACHE_BASE + MAX_NUM_OF_CACHES); key++) {
-     ret_code = nvm3_readData(nvm3_defaultHandle, key, &temp, sizeof(db_cache_t));
-    if(ret_code == ECODE_NVM3_ERR_KEY_NOT_FOUND){
+    ret_code = nvm3_readData(nvm3_defaultHandle, key, &temp, sizeof(db_cache_t));
+    if (ret_code == ECODE_NVM3_ERR_KEY_NOT_FOUND) {
       /* if key not found then it's the end of existing keys, store new data here */
       break;
     }
-      /* check device address, if it matches the required address, store new data here */
-    if (memcmp(&temp.address , &address.addr[0], 6) == 0) {
+    /* check device address, if it matches the required address, store new data here */
+    if (memcmp(&temp.address, &address.addr[0], 6) == 0) {
       break;
-     }
-   }
-   ret_code = nvm3_writeData(nvm3_defaultHandle, key, p_db_cache, sizeof(db_cache_t));
+    }
+  }
+  ret_code = nvm3_writeData(nvm3_defaultHandle, key, p_db_cache, sizeof(db_cache_t));
 
-  if (ret_code != ECODE_NVM3_OK){
+  if (ret_code != ECODE_NVM3_OK) {
     result = 0;
-  }else{
+  } else {
     result = 1;
     app_log("database cache stored to key 0x%04X\r\n", key);
   }
@@ -208,7 +206,7 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
     // Do not call any stack command before receiving this boot event!
     case sl_bt_evt_system_boot_id:
       /* Enable bondings in security manager (this is needed for Service Change Indications) */
-      sl_bt_sm_configure( 2, sl_bt_sm_io_capability_noinputnooutput);
+      sl_bt_sm_configure(2, sl_bt_sm_io_capability_noinputnooutput);
 
       /* 10ms scan interval, 100% duty cycle*/
       sl_bt_scanner_set_parameters(sl_bt_scanner_scan_mode_passive, 16, 16);
@@ -218,7 +216,7 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
 
     case sl_bt_evt_scanner_legacy_advertisement_report_id:
       /* Find server by name */
-      if (findDeviceByName(&(evt->data.evt_scanner_legacy_advertisement_report),"GATT server")) {
+      if (findDeviceByName(&(evt->data.evt_scanner_legacy_advertisement_report), "GATT server")) {
         /* Connect to server */
         sl_bt_connection_open(evt->data.evt_scanner_legacy_advertisement_report.address, evt->data.evt_scanner_legacy_advertisement_report.address_type, sl_bt_gap_1m_phy, &conn_handle);
       }
@@ -231,13 +229,13 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
       server_address = evt->data.evt_connection_opened.address;
 
       /* if we are not bonded with the server yet, then we should create bonding. */
-      if(bonding_handle == 0xFF){
+      if (bonding_handle == 0xFF) {
         sc = sl_bt_sm_increase_security(evt->data.evt_connection_opened.connection);
         app_log("initialize bonding, %x\r\n", sc);
       }/* otherwise, if bonding already exists, we can load the stored database cache */
       else {
         app_log("device is already bonded\r\n");
-        if (!loadDatabaseCache(server_address, &db_cache)){
+        if (!loadDatabaseCache(server_address, &db_cache)) {
           /* if loading failed, discover the database again. */
           sl_bt_gatt_discover_primary_services(conn_handle);
         }
@@ -248,11 +246,11 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
       app_log("bonding created\r\n");
       /* if bonding is successful, start discovering services */
       sl_bt_gatt_discover_primary_services(conn_handle);
-    break;
+      break;
 
     case sl_bt_evt_gatt_service_id:
       /* if we found the Generic Attribute Service */
-      if (memcmp(evt->data.evt_gatt_service.uuid.data , generic_access_uuid, sizeof(generic_access_uuid)) == 0) {
+      if (memcmp(evt->data.evt_gatt_service.uuid.data, generic_access_uuid, sizeof(generic_access_uuid)) == 0) {
         /* save handle and wait for process to be finished */
         db_cache.generic_attribute_handle = evt->data.evt_gatt_service.service;
         waiting_for_service_discovery_to_finish = 1;
@@ -261,7 +259,7 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
 
     case sl_bt_evt_gatt_characteristic_id:
       /* if we found the Service Changed characteristic */
-      if (memcmp(evt->data.evt_gatt_characteristic.uuid.data , service_changed_uuid, sizeof(service_changed_uuid)) == 0) {
+      if (memcmp(evt->data.evt_gatt_characteristic.uuid.data, service_changed_uuid, sizeof(service_changed_uuid)) == 0) {
         /* save handle and wait for process to be finished */
         db_cache.service_changed_handle = evt->data.evt_gatt_characteristic.characteristic;
         waiting_for_characteristic_discovery_to_finish = 1;
@@ -287,10 +285,10 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
         /* store database cache */
         db_cache.address = server_address;
         storeDatabaseCache(server_address, &db_cache);
-          /* subscribe for indications */
-          sl_bt_gatt_set_characteristic_notification(evt->data.evt_gatt_procedure_completed.connection,
-                                                     db_cache.service_changed_handle,
-                                                     sl_bt_gatt_indication);
+        /* subscribe for indications */
+        sl_bt_gatt_set_characteristic_notification(evt->data.evt_gatt_procedure_completed.connection,
+                                                   db_cache.service_changed_handle,
+                                                   sl_bt_gatt_indication);
       }
 
       break;
@@ -298,9 +296,9 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
     case sl_bt_evt_gatt_characteristic_value_id:
       /* if we got a service changed indication */
       if (evt->data.evt_gatt_characteristic_value.characteristic == db_cache.service_changed_handle) {
-            app_log("Service Change Indication received. Changes are in the range: 0x%04X - 0x%04X\r\n",
-                              *((uint16_t*)&evt->data.evt_gatt_characteristic_value.value.data[0]),
-                              *((uint16_t*)&evt->data.evt_gatt_characteristic_value.value.data[2]));
+        app_log("Service Change Indication received. Changes are in the range: 0x%04X - 0x%04X\r\n",
+                *((uint16_t*)&evt->data.evt_gatt_characteristic_value.value.data[0]),
+                *((uint16_t*)&evt->data.evt_gatt_characteristic_value.value.data[2]));
         /* send back confirmation */
         sl_bt_gatt_send_characteristic_confirmation(evt->data.evt_gatt_characteristic_value.connection);
         /* and initiate new database discovery */

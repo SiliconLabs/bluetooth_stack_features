@@ -1,5 +1,5 @@
 # Python class for plotting data in real time.
-# 
+#
 # This file is part of the CS Plotter project.
 # CS Plotter is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -22,13 +22,13 @@ import time
 from utils import *
 
 class DataPlotter(QtWidgets.QMainWindow):
-    def __init__(self, window_size: tuple, 
+    def __init__(self, window_size: tuple,
                  refresh_period: int,
                  buffer_size: int,
                  data_queue):
         self._window_size = window_size
         self._refresh_period = refresh_period
-        
+
         self._plot = None
         self._cs_filtered_label = None
         self._velocity_label = None
@@ -41,7 +41,7 @@ class DataPlotter(QtWidgets.QMainWindow):
         self._velocity_buffer = collections.deque([0], maxlen=buffer_size)
         self._time_buffer = collections.deque([0], maxlen=buffer_size)
         self._data_queue = data_queue
-        
+
         self._timer = QtCore.QTimer()
         self._start_time = 0
         self._previous_sample_time = 0
@@ -54,25 +54,25 @@ class DataPlotter(QtWidgets.QMainWindow):
         self._app = QtWidgets.QApplication.instance()
         if not self._app:  # Create a new instance if it doesn't exist
             self._app = QtWidgets.QApplication([])
-        
+
         super().__init__()
         self._setup_window()
-        
+
         # Add handler for ctrl+c. This way we can stop the timers before closing the app
-        signal.signal(signal.SIGINT, self._handle_sigint)  
-        
+        signal.signal(signal.SIGINT, self._handle_sigint)
+
     def _setup_window(self):
         pg.setConfigOption("background", "#F4F4F4")
         pg.setConfigOption("foreground", "#333333")
-        
+
         self.setWindowTitle("CS Plotter")
         self.resize(self._window_size[0], self._window_size[1])
-        
+
         # Create a central widget and set it as the main window's central widget
         central_widget = QtWidgets.QWidget()
         self.setCentralWidget(central_widget)
-        
-        # Creat splitters so that we can ditribute the widgets in the main widget 
+
+        # Create splitters so that we can distribute the widgets in the main widget
         upper_upper_splitter = QtWidgets.QSplitter(QtCore.Qt.Horizontal)
         upper_lower_splitter = QtWidgets.QSplitter(QtCore.Qt.Horizontal)
         main_splitter = QtWidgets.QSplitter(QtCore.Qt.Vertical)
@@ -86,7 +86,7 @@ class DataPlotter(QtWidgets.QMainWindow):
 
         # Hide velocity widget initially until data is received
         self._velocity_widget.hide()
-        
+       
         plot_window = pg.GraphicsLayoutWidget(title="Real-Time CS Distance Plot")
         self._plot = plot_window.addPlot()
         self._plot.setLabel("left", "Distance (m)", color="#555555", size="12pt")
@@ -133,16 +133,16 @@ class DataPlotter(QtWidgets.QMainWindow):
         self._previous_sample_time = self._start_time
         self._timer.timeout.connect(self._update_plot)
         self._timer.start(self._refresh_period)
-        
+
         self.show()
         self._app.exec()
-        
+
     def _update_plot(self):
         cs_distance_received = False
         raw_distance_received = False
         rssi_distance_received = False
         velocity_received = False
-        
+
         while not self._data_queue.empty():
             try:
                 serial_data = self._data_queue.get().decode("utf-8")
@@ -189,7 +189,7 @@ class DataPlotter(QtWidgets.QMainWindow):
 
         current_time = time.perf_counter() - self._start_time
         self._time_buffer.append(current_time)
-        
+
         # Display the values, and if no data was received append the last read value to the buffers
         if not cs_distance_received:
             self._cs_data_buffer.append(self._cs_data_buffer[-1])
@@ -200,8 +200,8 @@ class DataPlotter(QtWidgets.QMainWindow):
             
         self._cs_filtered_label.setText(
             f"<div style='text-align: center;'><span style='font-size: 75px;font-weight:bold; color: #2C3E50;'>Distance</span><br><span style='font-size: {LABEL_TEXT_SIZE_PX}px;font-weight: bold; color: #2C3E50;'>{self._cs_data_buffer[-1]} m</span>"
-        )   
-            
+        )
+
         if not velocity_received:
             self._velocity_buffer.append(self._velocity_buffer[-1])
 
@@ -238,5 +238,5 @@ class DataPlotter(QtWidgets.QMainWindow):
     def _handle_sigint(self, signum, frame):
         print("\nCtrl+C detected. Closing application...")
         self._timer.stop()
-        self._app.quit() 
-        
+        self._app.quit()
+

@@ -9,7 +9,7 @@ This is a special-purpose type of advertising, designed to invite a specific pee
 - Low duty cycle directed connectable legacy advertising
   - sl_bt_legacy_advertiser_low_duty_directed_connectable - The advertising happens with the configured duty cycle - You may configure the advertising parameters with `sl_bt_advertiser_set_timing`
 
-## Simplcity SDK version
+## Simplicity SDK version
 
 SiDK v2025.6 or newer
 
@@ -35,7 +35,7 @@ To create an **Advertiser**:
     ![board control configure](images/board_control_configure.png)  
     Then enable *Virtual COM UART* under its configuration.
     ![board control configure](images/enable_vir_com.png)
- 
+
    - Install the **Legacy Advertising** component, if it is not yet installed.
    ![demo](images/legacy.png)
 
@@ -80,7 +80,7 @@ To create a **Scanner**:
 
 3. Press the reset buttons, first on the scanner, then on the advertiser board.
 
-4. On the Advertiser's terminal you will see the device address and on the Scanner's termial you will see the list of advertising data:
+4. On the Advertiser's terminal you will see the device address and on the Scanner's terminal you will see the list of advertising data:
 
 |Advertiser|Scanner|
 |:----------:|:-------:|

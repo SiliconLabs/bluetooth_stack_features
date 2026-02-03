@@ -93,7 +93,7 @@
 #define END_OF_LOG_HEADER               ":> "
 
 /*
- * LOG prefix, formatted to be TAG + Sub modul name + end flag
+ * LOG prefix, formatted to be TAG + Sub module name + end flag
  * e.g. [E] main.c :> ...
  */
 #define LOG_ASSERT_PREFIX               RTT_CTRL_TEXT_BRIGHT_RED ASSERT_FLAG "[Assert-assert] " SUB_MODULE_NAME END_OF_LOG_HEADER
@@ -323,7 +323,7 @@ void log_events(const void *v_evt);
 
 #define SE_CALL(x) \
   do {             \
-    if ((x)!= 0) { ERROR_ADDRESSING(); } } while (0)
+    if ((x) != 0) { ERROR_ADDRESSING(); } } while (0)
 
 #define SURROUNDING(x)          "<" x "> - "
 

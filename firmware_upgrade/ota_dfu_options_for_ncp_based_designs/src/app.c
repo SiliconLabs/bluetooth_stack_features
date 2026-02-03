@@ -134,140 +134,139 @@ bool sl_ncp_local_evt_process(sl_bt_msg_t *evt)
   /* OTA variables */
   static uint32_t ota_image_position = 0;
   static uint8_t ota_in_progress = 0;
-  static uint8_t ota_image_finished=0;
+  static uint8_t ota_image_finished = 0;
   static int32_t verify_result = -1;
   uint8_t debug_message;
 
   switch (SL_BT_MSG_ID(evt->header)) {
     // -------------------------------
     case sl_bt_evt_system_boot_id:
-      {
-        size_t name_len;
-        char name[10];
-        char slot_erased = ' '; // this character is appended to device name to indicate if slot is erased or not
+    {
+      size_t name_len;
+      char name[10];
+      char slot_erased = ' ';   // this character is appended to device name to indicate if slot is erased or not
 
-        // erase download slot if button PB0 is pressed at reboot
-        if (sl_button_get_state(&sl_button_btn1) == SL_SIMPLE_BUTTON_PRESSED) {
-            debug_message = DEBUG_MESSAGE_BTN_PRESS;
-            sl_bt_send_evt_user_message_to_host((uint8_t) sizeof(debug_message),
-                                                &debug_message);
-            sl_led_turn_on(&sl_led_led0);
-            bootloader_eraseStorageSlot(0);
-            sl_sleeptimer_start_periodic_timer(&sleep_timer_handle, TICKS_PER_SECOND, sleeptimer_callback, (void*)NULL, 0, 0);
-            slot_erased = '*';
-        }
-
-        sprintf(name, "NCP APP %d%c", (int)APP_VERSION, slot_erased);
-
-        // set device name:
-        name_len = strlen(name);
-        sl_bt_gatt_server_write_attribute_value(gattdb_device_name,
-                                                0,
-                                                name_len,
-                                                (uint8_t*)name);
-
-        // Start advertising automatically at boot (just to make testing easier)
-        // Create an advertising set.
-        sl_bt_advertiser_create_set(&advertising_set_handle);
-
-        // Start advertising
-        sl_bt_legacy_advertiser_generate_data(advertising_set_handle,
-                                              advertiser_general_discoverable);
-        sl_bt_legacy_advertiser_start(advertising_set_handle,
-                                      advertiser_connectable_scannable);
+      // erase download slot if button PB0 is pressed at reboot
+      if (sl_button_get_state(&sl_button_btn1) == SL_SIMPLE_BUTTON_PRESSED) {
+        debug_message = DEBUG_MESSAGE_BTN_PRESS;
+        sl_bt_send_evt_user_message_to_host((uint8_t) sizeof(debug_message),
+                                            &debug_message);
+        sl_led_turn_on(&sl_led_led0);
+        bootloader_eraseStorageSlot(0);
+        sl_sleeptimer_start_periodic_timer(&sleep_timer_handle, TICKS_PER_SECOND, sleeptimer_callback, (void*)NULL, 0, 0);
+        slot_erased = '*';
       }
-      break;
 
+      sprintf(name, "NCP APP %d%c", (int)APP_VERSION, slot_erased);
+
+      // set device name:
+      name_len = strlen(name);
+      sl_bt_gatt_server_write_attribute_value(gattdb_device_name,
+                                              0,
+                                              name_len,
+                                              (uint8_t*)name);
+
+      // Start advertising automatically at boot (just to make testing easier)
+      // Create an advertising set.
+      sl_bt_advertiser_create_set(&advertising_set_handle);
+
+      // Start advertising
+      sl_bt_legacy_advertiser_generate_data(advertising_set_handle,
+                                            advertiser_general_discoverable);
+      sl_bt_legacy_advertiser_start(advertising_set_handle,
+                                    advertiser_connectable_scannable);
+    }
+    break;
 
     case sl_bt_evt_system_external_signal_id:
 
-      if(evt->data.evt_system_external_signal.extsignals == SIGNAL_TOGGLE_LED){
-          sl_led_toggle(&sl_led_led0);
+      if (evt->data.evt_system_external_signal.extsignals == SIGNAL_TOGGLE_LED) {
+        sl_led_toggle(&sl_led_led0);
       }
       // do not pass to host
       evt_handled = true;
       break;
 
     case sl_bt_evt_gatt_server_user_write_request_id:
-      {
-        int32_t err = BOOTLOADER_OK;
-        // OTA support
-        uint32_t connection = evt->data.evt_gatt_server_user_write_request.connection;
-        uint32_t characteristic = evt->data.evt_gatt_server_user_write_request.characteristic;
+    {
+      int32_t err = BOOTLOADER_OK;
+      // OTA support
+      uint32_t connection = evt->data.evt_gatt_server_user_write_request.connection;
+      uint32_t characteristic = evt->data.evt_gatt_server_user_write_request.characteristic;
 
-        if (characteristic == gattdb_ota_control) {
-          switch (evt->data.evt_gatt_server_user_write_request.value.data[0]) {
-            case 0:
-              // Initialize OTA update (note: erase of slot is already performed!)
-              bootloader_init();
-              ota_image_position=0;
-              ota_in_progress=1;
-              break;
-            case 3://END OTA process
-              // Wait for connection close and then reboot
-              ota_in_progress=0;
-              ota_image_finished=1;
+      if (characteristic == gattdb_ota_control) {
+        switch (evt->data.evt_gatt_server_user_write_request.value.data[0]) {
+          case 0:
+            // Initialize OTA update (note: erase of slot is already performed!)
+            bootloader_init();
+            ota_image_position = 0;
+            ota_in_progress = 1;
+            break;
+          case 3:  //END OTA process
+            // Wait for connection close and then reboot
+            ota_in_progress = 0;
+            ota_image_finished = 1;
 
-              err = bootloader_verifyImage(0, NULL);
-              verify_result = err; // make copy of the result for later use
-              break;
-            default:
-              break;
-          }
-          evt_handled = true;
-        } else if (characteristic == gattdb_ota_data) {
-            if (ota_in_progress) {
-              bootloader_writeStorage(0,//use slot 0
-                                      ota_image_position,
-                                      evt->data.evt_gatt_server_user_write_request.value.data,
-                                      evt->data.evt_gatt_server_user_write_request.value.len);
-
-              ota_image_position+=evt->data.evt_gatt_server_user_write_request.value.len;
-            }
-            evt_handled = true;
+            err = bootloader_verifyImage(0, NULL);
+            verify_result = err;   // make copy of the result for later use
+            break;
+          default:
+            break;
         }
+        evt_handled = true;
+      } else if (characteristic == gattdb_ota_data) {
+        if (ota_in_progress) {
+          bootloader_writeStorage(0,    //use slot 0
+                                  ota_image_position,
+                                  evt->data.evt_gatt_server_user_write_request.value.data,
+                                  evt->data.evt_gatt_server_user_write_request.value.len);
 
-        if (evt_handled == true) {
-          if (err != BOOTLOADER_OK) {
-              sl_bt_gatt_server_send_user_write_response(connection,
-                                                         characteristic,
-                                                         err);
-          } else {
-              sl_bt_gatt_server_send_user_write_response(connection,
-                                                         characteristic,
-                                                         err);
-          }
+          ota_image_position += evt->data.evt_gatt_server_user_write_request.value.len;
+        }
+        evt_handled = true;
+      }
+
+      if (evt_handled == true) {
+        if (err != BOOTLOADER_OK) {
+          sl_bt_gatt_server_send_user_write_response(connection,
+                                                     characteristic,
+                                                     err);
+        } else {
+          sl_bt_gatt_server_send_user_write_response(connection,
+                                                     characteristic,
+                                                     err);
         }
       }
-      break;
+    }
+    break;
 
     case sl_bt_evt_connection_closed_id:
-        if (ota_image_finished) {
-          if (verify_result == BOOTLOADER_OK) {
-            bootloader_setImageToBootload(0);
-            bootloader_rebootAndInstall();
-          } else {
-            uint8_t name_len;
-            char name[10];
-            // Something went wrong: restart advertising and indicate the error code in device name
-            sprintf(name, "err %lx", verify_result);
-            name_len = strlen(name);
-            sl_bt_gatt_server_write_attribute_value(gattdb_device_name,
-                                                    0,
-                                                    name_len,
-                                                    (uint8_t*)name);
-            sl_bt_legacy_advertiser_generate_data(advertising_set_handle,
-                                                  advertiser_general_discoverable);
-            sl_bt_legacy_advertiser_start(advertising_set_handle,
-                                          advertiser_connectable_scannable);
-          }
+      if (ota_image_finished) {
+        if (verify_result == BOOTLOADER_OK) {
+          bootloader_setImageToBootload(0);
+          bootloader_rebootAndInstall();
         } else {
-            /* Restart advertising after client has disconnected */
-            sl_bt_legacy_advertiser_generate_data(advertising_set_handle,
-                                                  advertiser_general_discoverable);
-            sl_bt_legacy_advertiser_start(advertising_set_handle,
-                                          advertiser_connectable_scannable);
+          uint8_t name_len;
+          char name[10];
+          // Something went wrong: restart advertising and indicate the error code in device name
+          sprintf(name, "err %lx", verify_result);
+          name_len = strlen(name);
+          sl_bt_gatt_server_write_attribute_value(gattdb_device_name,
+                                                  0,
+                                                  name_len,
+                                                  (uint8_t*)name);
+          sl_bt_legacy_advertiser_generate_data(advertising_set_handle,
+                                                advertiser_general_discoverable);
+          sl_bt_legacy_advertiser_start(advertising_set_handle,
+                                        advertiser_connectable_scannable);
         }
+      } else {
+        /* Restart advertising after client has disconnected */
+        sl_bt_legacy_advertiser_generate_data(advertising_set_handle,
+                                              advertiser_general_discoverable);
+        sl_bt_legacy_advertiser_start(advertising_set_handle,
+                                      advertiser_connectable_scannable);
+      }
       break;
 
     default:
@@ -285,10 +284,10 @@ bool sl_ncp_local_evt_process(sl_bt_msg_t *evt)
  * @param[in] handle Handle of the sleeptimer instance
  * @param[in] data  Callback data
  ******************************************************************************/
-void sleeptimer_callback(sl_sleeptimer_timer_handle_t *handle, void *data){
+void sleeptimer_callback(sl_sleeptimer_timer_handle_t *handle, void *data)
+{
   (void)handle;
   (void)data;
 
   sl_bt_external_signal(SIGNAL_TOGGLE_LED);
-
 }

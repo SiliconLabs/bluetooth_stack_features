@@ -31,11 +31,11 @@ The *BGAPI traces* are collected with *Segger's* *JLinkRTTLogger*, which is part
 
 ### The `bgapi_trace` decoder
 
-The `bgapi_tool` can be installed with [pipx](https://pipx.pypa.io/stable/): 
+The `bgapi_tool` can be installed with [pipx](https://pipx.pypa.io/stable/):
 
 ```pipx install /path/to/the/bgapi_trace-0.6.2.tar.gz```
 
-Optionally, the `bgapi_trace` tool can be installed with ```pip``` (Note: might require a Python virtualenv): 
+Optionally, the `bgapi_trace` tool can be installed with ```pip``` (Note: might require a Python virtualenv):
 
 ```pip install /path/to/the/bgapi_trace-0.6.2.tar.gz```.
 
@@ -143,7 +143,7 @@ The filtering applies to the full message string, so you can inspect parameter v
 ---
 
 ## HELP
-* *JLinkRTTLogger* command line options: 
+* *JLinkRTTLogger* command line options:
 `JLinkRTTLogger -?`
 * *BGAPI Trace* command line options:
 `bgapi_trace --help`

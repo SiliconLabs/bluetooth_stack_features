@@ -72,10 +72,10 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
     case sl_bt_evt_system_boot_id:
       /* Print stack version */
       app_log("\rBluetooth stack booted: v%d.%d.%d-b%d\r\n",
-                 evt->data.evt_system_boot.major,
-                 evt->data.evt_system_boot.minor,
-                 evt->data.evt_system_boot.patch,
-                 evt->data.evt_system_boot.build);
+              evt->data.evt_system_boot.major,
+              evt->data.evt_system_boot.minor,
+              evt->data.evt_system_boot.patch,
+              evt->data.evt_system_boot.build);
 
 #ifdef USE_RANDOM_PUBLIC_ADDRESS
       set_random_public_address();
@@ -84,32 +84,32 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
       // Extract unique ID from BT Address.
       sc = sl_bt_system_get_identity_address(&address, &address_type);
       app_assert(sc == SL_STATUS_OK,
-                    "[E: 0x%04x] Failed to get Bluetooth address\n",
-                    (int)sc);
+                 "[E: 0x%04x] Failed to get Bluetooth address\n",
+                 (int)sc);
 
       /* Print Bluetooth address */
       app_log("Bluetooth %s address: %02X:%02X:%02X:%02X:%02X:%02X\r\n",
-                       address_type ? "static random" : "public device",
-                       address.addr[5],
-                       address.addr[4],
-                       address.addr[3],
-                       address.addr[2],
-                       address.addr[1],
-                       address.addr[0]);
+              address_type ? "static random" : "public device",
+              address.addr[5],
+              address.addr[4],
+              address.addr[3],
+              address.addr[2],
+              address.addr[1],
+              address.addr[0]);
 
       sc = sl_bt_sm_configure(0x0F, sl_bt_sm_io_capability_displayonly);
       app_assert(sc == SL_STATUS_OK,
-                    "[E: 0x%04x] Failed to configure security\n",
-                    (int)sc);
+                 "[E: 0x%04x] Failed to configure security\n",
+                 (int)sc);
 
       app_assert(sc == SL_STATUS_OK,
-                    "[E: 0x%04x] Failed to set passkey\n",
-                    (int)sc);
+                 "[E: 0x%04x] Failed to set passkey\n",
+                 (int)sc);
 
       sc = sl_bt_sm_set_bondable_mode(1);
       app_assert(sc == SL_STATUS_OK,
-                    "[E: 0x%04x] Failed to set bondalbe mode \n",
-                    (int)sc);
+                 "[E: 0x%04x] Failed to set bondalbe mode \n",
+                 (int)sc);
 
       // Pad and reverse unique ID to get System ID.
       system_id[0] = address.addr[5];
@@ -126,15 +126,14 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
                                                    sizeof(system_id),
                                                    system_id);
       app_assert(sc == SL_STATUS_OK,
-                    "[E: 0x%04x] Failed to write attribute\n",
-                    (int)sc);
-
+                 "[E: 0x%04x] Failed to write attribute\n",
+                 (int)sc);
 
       // Create an advertising set.
       sc = sl_bt_advertiser_create_set(&advertising_set_handle);
       app_assert(sc == SL_STATUS_OK,
-                    "[E: 0x%04x] Failed to create advertising set\n",
-                    (int)sc);
+                 "[E: 0x%04x] Failed to create advertising set\n",
+                 (int)sc);
 
       // Set advertising interval to 100ms.
       sc = sl_bt_advertiser_set_timing(
@@ -144,21 +143,21 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
         0,   // adv. duration
         0);  // max. num. adv. events
       app_assert(sc == SL_STATUS_OK,
-                    "[E: 0x%04x] Failed to set advertising timing\n",
-                    (int)sc);
+                 "[E: 0x%04x] Failed to set advertising timing\n",
+                 (int)sc);
 
       // Start general advertising and enable connections.
       sc = sl_bt_legacy_advertiser_generate_data(advertising_set_handle,
                                                  sl_bt_advertiser_general_discoverable);
       app_assert(sc == SL_STATUS_OK,
-                    "[E: 0x%04x] Failed to generate data\n",
-                    (int)sc);
+                 "[E: 0x%04x] Failed to generate data\n",
+                 (int)sc);
 
       sc = sl_bt_legacy_advertiser_start(advertising_set_handle,
                                          sl_bt_advertiser_connectable_scannable);
       app_assert(sc == SL_STATUS_OK,
-                    "[E: 0x%04x] Failed to start advertising\n",
-                    (int)sc);
+                 "[E: 0x%04x] Failed to start advertising\n",
+                 (int)sc);
       break;
 
     // -------------------------------
@@ -171,8 +170,8 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
       // initiates the pairing process
       sc = sl_bt_sm_increase_security(evt->data.evt_connection_opened.connection);
       app_assert(sc == SL_STATUS_OK,
-                    "[E: 0x%04x] Failed to increasing security\n",
-                    (int)sc);
+                 "[E: 0x%04x] Failed to increasing security\n",
+                 (int)sc);
       break;
 
     // -------------------------------
@@ -182,13 +181,13 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
       sc = sl_bt_legacy_advertiser_generate_data(advertising_set_handle,
                                                  sl_bt_advertiser_general_discoverable);
       app_assert(sc == SL_STATUS_OK,
-                    "[E: 0x%04x] Failed to generate data\n",
-                    (int)sc);
+                 "[E: 0x%04x] Failed to generate data\n",
+                 (int)sc);
       sc = sl_bt_legacy_advertiser_start(advertising_set_handle,
                                          sl_bt_advertiser_connectable_scannable);
       app_assert(sc == SL_STATUS_OK,
-                    "[E: 0x%04x] Failed to start advertising\n",
-                    (int)sc);
+                 "[E: 0x%04x] Failed to start advertising\n",
+                 (int)sc);
       break;
 
     // -------------------------------
@@ -201,7 +200,7 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
     // This event indicates a new bonding attempt is in process (regardless of the bonding initiator)
     case sl_bt_evt_sm_confirm_bonding_id:
       app_log("New bonding request\r\n");
-      sl_bt_sm_bonding_confirm(evt->data.evt_sm_confirm_bonding.connection,1);
+      sl_bt_sm_bonding_confirm(evt->data.evt_sm_confirm_bonding.connection, 1);
       break;
 
     // -------------------------------
@@ -215,11 +214,11 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
     // This event is triggered if the pairing or bonding procedure fails.
     case sl_bt_evt_sm_bonding_failed_id:
       app_log("bonding failed, reason 0x%2X\r\n",
-                 evt->data.evt_sm_bonding_failed.reason);
+              evt->data.evt_sm_bonding_failed.reason);
       sc = sl_bt_connection_close(evt->data.evt_sm_bonding_failed.connection);
       app_assert(sc == SL_STATUS_OK,
-                    "[E: 0x%04x] Failed to close a Bluetooth connection\n",
-                    (int)sc);
+                 "[E: 0x%04x] Failed to close a Bluetooth connection\n",
+                 (int)sc);
       break;
 
     ///////////////////////////////////////////////////////////////////////////
@@ -232,4 +231,3 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
       break;
   }
 }
-

@@ -31,7 +31,7 @@ To create a **Peripheral**:
     ![board_control_configure](images/board_control_configure.png)  
     Then enable *Virtual COM UART* under its configuration.
     ![enable_vir_com](images/enable_vir_com.png)
- 
+
    - Install the **Legacy Advertising** component, if it is not yet installed.
    ![legacy](images/legacy.png)
 

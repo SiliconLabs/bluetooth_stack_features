@@ -84,7 +84,7 @@ The UI can be adjusted using the following parameters in [utils.py](./utils.py):
 
 ```python
 Y_LIM_M = None # If None, the scale will be dynamic
-X_SCALE_S = 30 
+X_SCALE_S = 30
 X_PADDING_S = 1 # Seconds of padding added to the x-axis
 PLOT_REFRESH_PERIOD_MS = 30
 BUFFER_SIZE = int(X_SCALE_S / (PLOT_REFRESH_PERIOD_MS / 1000))  # Number of samples displayed

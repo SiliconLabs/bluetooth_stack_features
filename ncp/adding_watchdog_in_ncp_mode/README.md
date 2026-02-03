@@ -16,20 +16,20 @@ The sleeptimer is set by calling the function:
 ```C
 
 sl_status_t sl_sleeptimer_start_periodic_timer	(	sl_sleeptimer_timer_handle_t *	 handle,
-           
+
                                                     uint32_t    timeout,
-           
+
                                                     sl_sleeptimer_timer_callback_t   callback,
-                                                            
+
                                                     void *   callback_data,
-                                                            
+
                                                     uint8_t	 priority,
-                                                            
-                                                    uint16_t   option_flags)		
+
+                                                    uint16_t   option_flags)
 
 ```
 
-Each time the sleeptimer timesout, it will execute it's `sleeptimer_callback`, which in turn generates an `sl_bt_evt_system_external_signal` event. 
+Each time the sleeptimer timesout, it will execute it's `sleeptimer_callback`, which in turn generates an `sl_bt_evt_system_external_signal` event.
 
 By default in NCP mode, all of the events are passed to the host, but they can also be handled by the NCP by writing the handling code in the function:
 
@@ -41,7 +41,7 @@ If you don't want to pass the events to the host after the NCP handles them, cha
 
 To determine whether you recovered from a crash with a Watchdog reset or whether the device was reset normally, use the function `RMU_ResetCauseGet()`.
 
-To simulate a crash scenario you can issue the command [sl_bt_user_message_to_target()](https://docs.silabs.com/bluetooth/9.0.0/bluetooth-stack-api/sl-bt-user#sl-bt-user-message-to-target) from the NCP host. This command will be handled in the target by the function `sl_ncp_user_cmd_message_to_target_cb()` and if `USER_CMD_1_ID` is sent, the sleeptimer will be disabled and after some time the watchdog is triggered. 
+To simulate a crash scenario you can issue the command [sl_bt_user_message_to_target()](https://docs.silabs.com/bluetooth/9.0.0/bluetooth-stack-api/sl-bt-user#sl-bt-user-message-to-target) from the NCP host. This command will be handled in the target by the function `sl_ncp_user_cmd_message_to_target_cb()` and if `USER_CMD_1_ID` is sent, the sleeptimer will be disabled and after some time the watchdog is triggered.
 
 
 

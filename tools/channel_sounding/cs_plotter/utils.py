@@ -17,7 +17,7 @@ from pyqtgraph.Qt import QtWidgets, QtCore
 import re
 
 Y_LIM_M = None # If None, the scale will be dynamic
-X_SCALE_S = 30 
+X_SCALE_S = 30
 X_PADDING_S = 1 # Seconds of padding added to the x-axis
 PLOT_REFRESH_PERIOD_MS = 30
 BUFFER_SIZE = int(X_SCALE_S / (PLOT_REFRESH_PERIOD_MS / 1000))  # Number of samples displayed
@@ -83,8 +83,8 @@ def create_label_widget():
     layout.addWidget(label)
     layout.setAlignment(label, QtCore.Qt.AlignCenter)
     frame.setLayout(layout)
-    
+
     return frame, label
-        
+
 def mm_to_m(distance_mm):
     return round(distance_mm / 1000.0, 1)

@@ -75,9 +75,9 @@ As shown above, the example requires two devices (e.g., BRD4104a Rev A00) and se
    ![nvm configure](images/nvm.png)
 
    - Replace the *app.c* file in the project with the provided central/app.c.
-  
+
 4. The device has the peripheral role (#D2):  
-   - Import the GATT configuration:        
+   - Import the GATT configuration:  
     - Open the **Bluetooth GATT Configurator** under the **CONFIGURATION TOOLS** tab.
     - Find the Import button and import the attached **config/gatt_configuration.btconf** file.
     ![btc configure](images/btconf.png)
@@ -88,7 +88,7 @@ As shown above, the example requires two devices (e.g., BRD4104a Rev A00) and se
 5. Build and flash them to each device.
 
 6. Connect to Serial terminal supported entering HEX data e.g Hercules
-   - Serial terminal (#S1): connect to the central device. 
+   - Serial terminal (#S1): connect to the central device.
    - Serial terminal (#S2): connect to the peripheral device.
 
 ## Usage
@@ -126,4 +126,3 @@ As shown above, the example requires two devices (e.g., BRD4104a Rev A00) and se
 * [central/app.c](src/central/app.c)
 * [peripheral/app.c](src/peripheral/app.c)
 * [gatt_configuration.btconf](config/gatt_configuration.btconf)
-

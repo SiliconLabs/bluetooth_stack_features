@@ -32,12 +32,12 @@ class StepData:
         self.step_data_len = int(step_data_len)
 
         raw_bytes = bytearray.fromhex(raw_step_data)
-        
+
         # Check that the data len matches the expected len
-        self.raw_step_data_array = np.frombuffer(raw_bytes, dtype=np.uint8)      
+        self.raw_step_data_array = np.frombuffer(raw_bytes, dtype=np.uint8)
         if self.step_data_len != len(self.raw_step_data_array):
             print("The raw step data length does not match the reported length!")
-            exit(1)        
+            exit(1)
         self.parsed_step_data = {
             f"{self.role}_step_data": {},
         }
@@ -45,7 +45,7 @@ class StepData:
     def _get_mode_specific_data(self, step_mode, byte_index):
         """ Parse the step data according to the mode-specific data structures. This is described in BLE Core Spec V6.0 | Vol 4, Part E Section 7.7.65.44. """
         mode_specific_data = {}
-        
+
         match step_mode:
             case 0:  # Calibration
                 packet_quality, byte_index = self._get_bytes(byte_index, 1)
@@ -55,11 +55,11 @@ class StepData:
                 mode_specific_data["Packet_Quality"] = int(packet_quality)
                 mode_specific_data["Packet_RSSI"] = int(np.int8(packet_rssi))
                 mode_specific_data["Packet_Antenna"] = int(packet_antenna)
-                
+
                 if self.role == "initiator":
                     measured_freq_offset, byte_index = self._get_bytes(byte_index, 2, True)
                     mode_specific_data["Measured_Freq_Offset"] = int(measured_freq_offset)
-                    
+
             case 1:  # RTT
                 packet_quality, byte_index = self._get_bytes(byte_index, 1)
                 packet_nadm, byte_index = self._get_bytes(byte_index, 1)
@@ -72,7 +72,7 @@ class StepData:
                 mode_specific_data["Packet_RSSI"] = int(np.int8(packet_rssi))
                 mode_specific_data[f"ToA_ToD_{self.role.title()}"] = int(toa_tod)
                 mode_specific_data["Packet_Antenna"] = int(packet_antenna)
-        
+
             case 2:  # PBR
                 antenna_permutation_index, byte_index = self._get_bytes(byte_index, 1)
                 
@@ -91,7 +91,7 @@ class StepData:
                 
             case _:
                 pass
-        
+
         return mode_specific_data, byte_index
                         
     def _get_bytes(self, index, num_of_bytes, combine=False):

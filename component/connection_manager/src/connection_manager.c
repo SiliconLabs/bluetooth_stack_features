@@ -42,16 +42,16 @@ void sli_bt_cm_on_event(sl_bt_msg_t *evt)
   switch (SL_BT_MSG_ID(evt->header)) {
     case sl_bt_evt_connection_opened_id:
       sli_bt_cm_add_connection(&evt->data.evt_connection_opened);
-    break;
+      break;
     case sl_bt_evt_connection_parameters_id:
       sli_bt_cm_update_parameters(&evt->data.evt_connection_parameters);
-    break;
+      break;
     case sl_bt_evt_sm_bonded_id:
       sli_bt_cm_update_bonding(&evt->data.evt_sm_bonded);
-    break;
+      break;
     case sl_bt_evt_connection_closed_id:
       sli_bt_cm_remove_connection(&evt->data.evt_connection_closed);
-    break;
+      break;
   }
 }
 
@@ -61,7 +61,9 @@ sl_status_t sli_bt_cm_add_connection(sl_bt_evt_connection_opened_t *evt_data)
   connection_t *connection;
   sc = sl_bt_cm_get_connection_by_handle(0x00, &connection);
 
-  if(sc != SL_STATUS_OK) return SL_STATUS_FULL;
+  if (sc != SL_STATUS_OK) {
+    return SL_STATUS_FULL;
+  }
 
   connection->address = evt_data->address;
   connection->address_type = evt_data->address_type;
@@ -79,7 +81,9 @@ sl_status_t sli_bt_cm_update_parameters(sl_bt_evt_connection_parameters_t *evt_d
   connection_t *connection;
   sc = sl_bt_cm_get_connection_by_handle(evt_data->connection, &connection);
 
-  if(sc != SL_STATUS_OK) return sc;
+  if (sc != SL_STATUS_OK) {
+    return sc;
+  }
 
   connection->interval = evt_data->interval;
   connection->latency = evt_data->latency;
@@ -96,7 +100,9 @@ sl_status_t sli_bt_cm_update_bonding(sl_bt_evt_sm_bonded_t *evt_data)
   connection_t *connection;
   sc = sl_bt_cm_get_connection_by_handle(evt_data->connection, &connection);
 
-  if(sc != SL_STATUS_OK) return sc;
+  if (sc != SL_STATUS_OK) {
+    return sc;
+  }
 
   connection->bonding = evt_data->bonding;
   connection->security_mode = evt_data->security_mode;
@@ -110,7 +116,9 @@ sl_status_t sli_bt_cm_remove_connection(sl_bt_evt_connection_closed_t *evt_data)
   connection_t *connection;
   sc = sl_bt_cm_get_connection_by_handle(evt_data->connection, &connection);
 
-  if(sc != SL_STATUS_OK) return sc;
+  if (sc != SL_STATUS_OK) {
+    return sc;
+  }
 
   connection->handle = 0x00;
 
@@ -122,17 +130,17 @@ sl_status_t sl_bt_cm_get_connection_handles(uint8_t *connection_handles, uint8_t
   uint8_t handle_index = 0;
   for (uint8_t connection_index = 0; connection_index < SL_BT_CONFIG_MAX_CONNECTIONS; connection_index++) {
     if (connections[connection_index].handle != 0x00) {
-      if(handle_index == *size) return SL_STATUS_WOULD_OVERFLOW;
+      if (handle_index == *size) {
+        return SL_STATUS_WOULD_OVERFLOW;
+      }
       connection_handles[handle_index] = connections[connection_index].handle;
       handle_index++;
     }
   }
 
   (*size) = handle_index;
-  return (*size == 0 ) ? SL_STATUS_EMPTY : SL_STATUS_OK;
+  return (*size == 0) ? SL_STATUS_EMPTY : SL_STATUS_OK;
 }
-
-
 
 sl_status_t sl_bt_cm_get_connection_by_handle(uint8_t connection_handle, connection_t **connection)
 {

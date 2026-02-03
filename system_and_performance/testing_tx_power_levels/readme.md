@@ -1,7 +1,7 @@
 # Testing TX Power Levels #
- 
+
 ## Description ##
- 
+
 The command **sl_bt_system_set_tx_power** can be used to set the global minimum and maximum radiated TX power levels for Bluetooth, but the value which is actually set by the Bluetooth stack may not be the same as the input to the command. The actual set value can be read from the command response.
 
 This example iterates through a power level range between a minimum and a maximum value given to **sl_bt_system_set_tx_power** command and prints out both the input parameter and the response.
@@ -15,15 +15,15 @@ This code example has related User's Guides, which may be worth reading before. 
 [TX Power Limitations for Regulatory Compliance (ETSI, FCC)](https://docs.silabs.com/bluetooth/8.2.0/bluetooth-fundamentals-system-performance/compliance-power-limitations)
 
 ## Simplicity SDK version ##
- 
+
 SiSDK v2025.6
- 
+
 ## Hardware Required ##
- 
+
 - A WSTK board.
 
 - A Bluetooth capable radio board, e.g: BRD4161A.
- 
+
 ## Setup ##
 
 To be able to test this example do as follows:
@@ -49,9 +49,9 @@ To be able to test this example do as follows:
 4. Build and flash the project to your device.
 
 5. Do not forget to flash a bootloader to your board, if you have not done so already.
- 
+
 ## How It Works ##
- 
+
 1. On your PC launch the Console that is integrated on Simplicity Studio or can use a third-party terminal tool like TeraTerm to receive the data from the virtual COM port.
 
 2. Reset your device and observe the log messages. As shown, the TX power values of EFR32xG chip set are not continuous, the lower the value, the coarser the adjustment.

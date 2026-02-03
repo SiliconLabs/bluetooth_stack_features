@@ -26,7 +26,6 @@
 #include "app_log.h"
 #include "sl_simple_button_instances.h"
 
-
 CustomAdv_t sData; // Our custom advertising data stored here
 
 uint8_t num_presses = 0;
@@ -40,7 +39,9 @@ static void handle_button_press(int button)
   if (button > 0) {
     num_presses++;
   } else {
-    if (num_presses > 0) num_presses--;
+    if (num_presses > 0) {
+      num_presses--;
+    }
   }
   last_press = button;
   // Update the advertising data on-the-fly
@@ -48,17 +49,17 @@ static void handle_button_press(int button)
 }
 
 /******************************************
- * Callback when button state change
- ******************************************/
+* Callback when button state change
+******************************************/
 void sl_button_on_change(const sl_button_t *handle)
 {
-  if((handle == &sl_button_btn0) &&
-      (sl_button_get_state(handle) == SL_SIMPLE_BUTTON_PRESSED)) { //if button 0 is pressed
-	  sl_bt_external_signal(0x1);
-  } else if ((handle == &sl_button_btn1) &&
-      (sl_button_get_state(handle) == SL_SIMPLE_BUTTON_PRESSED)) { //if button 1 is pressed
-		sl_bt_external_signal(0x2); 
-	  }
+  if ((handle == &sl_button_btn0)
+      && (sl_button_get_state(handle) == SL_SIMPLE_BUTTON_PRESSED)) { //if button 0 is pressed
+    sl_bt_external_signal(0x1);
+  } else if ((handle == &sl_button_btn1)
+             && (sl_button_get_state(handle) == SL_SIMPLE_BUTTON_PRESSED)) { //if button 1 is pressed
+    sl_bt_external_signal(0x2);
+  }
 }
 
 /**************************************************************************//**
@@ -106,8 +107,8 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
       // Extract unique ID from BT Address.
       sc = sl_bt_system_get_identity_address(&address, &address_type);
       app_assert(sc == SL_STATUS_OK,
-                    "[E: 0x%04x] Failed to get Bluetooth address\n",
-                    (int)sc);
+                 "[E: 0x%04x] Failed to get Bluetooth address\n",
+                 (int)sc);
 
       // Pad and reverse unique ID to get System ID.
       system_id[0] = address.addr[5];
@@ -124,14 +125,14 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
                                                    sizeof(system_id),
                                                    system_id);
       app_assert(sc == SL_STATUS_OK,
-                    "[E: 0x%04x] Failed to write attribute\n",
-                    (int)sc);
+                 "[E: 0x%04x] Failed to write attribute\n",
+                 (int)sc);
 
       // Create an advertising set.
       sc = sl_bt_advertiser_create_set(&advertising_set_handle);
       app_assert(sc == SL_STATUS_OK,
-                    "[E: 0x%04x] Failed to create advertising set\n",
-                    (int)sc);
+                 "[E: 0x%04x] Failed to create advertising set\n",
+                 (int)sc);
 
       // Set advertising interval to 100ms.
       sc = sl_bt_advertiser_set_timing(
@@ -145,8 +146,8 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
       fill_adv_packet(&sData, 0x06, 0x02FF, num_presses, last_press, "CustomAdvDemo");
       start_adv(&sData, advertising_set_handle);
       app_assert(sc == SL_STATUS_OK,
-                    "[E: 0x%04x] Failed to set advertising timing\n",
-                    (int)sc);
+                 "[E: 0x%04x] Failed to set advertising timing\n",
+                 (int)sc);
       app_log("Start advertising ...\n");
       break;
 
@@ -160,16 +161,16 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
     case sl_bt_evt_connection_closed_id:
       // Restart advertising after client has disconnected.
       sc = sl_bt_legacy_advertiser_generate_data(advertising_set_handle,
-                                                 sl_bt_advertiser_general_discoverable );
+                                                 sl_bt_advertiser_general_discoverable);
       app_assert(sc == SL_STATUS_OK,
-                    "[E: 0x%04x] Failed to generate data\n",
-                    (int)sc);
+                 "[E: 0x%04x] Failed to generate data\n",
+                 (int)sc);
       sc = sl_bt_legacy_advertiser_start(
         advertising_set_handle,
         sl_bt_legacy_advertiser_connectable);
       app_assert(sc == SL_STATUS_OK,
-                    "[E: 0x%04x] Failed to start advertising\n",
-                    (int)sc);
+                 "[E: 0x%04x] Failed to start advertising\n",
+                 (int)sc);
       break;
 
     ///////////////////////////////////////////////////////////////////////////
@@ -178,10 +179,9 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
 
     case sl_bt_evt_system_external_signal_id:
       if (evt->data.evt_system_external_signal.extsignals & 0x1) {
-          handle_button_press(0);
-      }
-      else if (evt->data.evt_system_external_signal.extsignals & 0x2) {
-          handle_button_press(1);
+        handle_button_press(0);
+      } else if (evt->data.evt_system_external_signal.extsignals & 0x2) {
+        handle_button_press(1);
       }
       break;
 

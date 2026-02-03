@@ -35,7 +35,7 @@
 #include "app_log.h"
 
 // Advertiser address
-static bd_addr advertiser = {.addr = {0x00, 0x00, 0x00, 0x00, 0x00, 0x00}};
+static bd_addr advertiser = { .addr = { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 } };
 // Connection ID
 uint8_t connection = 0;
 
@@ -104,13 +104,13 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
       app_assert_status(sc);
 
       app_log("Bluetooth %s address: %02X:%02X:%02X:%02X:%02X:%02X\r\n",
-               address_type ? "static random" : "public device",
-               address.addr[5],
-               address.addr[4],
-               address.addr[3],
-               address.addr[2],
-               address.addr[1],
-               address.addr[0]);
+              address_type ? "static random" : "public device",
+              address.addr[5],
+              address.addr[4],
+              address.addr[3],
+              address.addr[2],
+              address.addr[1],
+              address.addr[0]);
 
       sl_bt_scanner_start(sl_bt_gap_1m_phy, sl_bt_scanner_discover_observation);
       break;
@@ -137,31 +137,31 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
       scan_resp = (struct sl_bt_evt_scanner_legacy_advertisement_report_s *)&(evt->data);
       app_log("RSSI %d, Addr 0x%02X%02X%02X%02X%02X%02X, Addr Type %X, Bond %d, msg len: %x, msg: 0x\r\n", scan_resp->rssi, scan_resp->address.addr[5], scan_resp->address.addr[4], scan_resp->address.addr[3], scan_resp->address.addr[2], scan_resp->address.addr[1], scan_resp->address.addr[0], scan_resp->address_type, scan_resp->bonding, scan_resp->data.len);
 
-      if(scan_resp->address.addr[0] == advertiser.addr[0] &&
-         scan_resp->address.addr[1] == advertiser.addr[1] &&
-         scan_resp->address.addr[2] == advertiser.addr[2] &&
-         scan_resp->address.addr[3] == advertiser.addr[3] &&
-         scan_resp->address.addr[4] == advertiser.addr[4] &&
-         scan_resp->address.addr[5] == advertiser.addr[5] &&
-         connection == 0) {
-          sl_bt_scanner_stop();
-          app_log("Found it - %02X:%02X:%02X:%02X:%02X:%02X\r\n",
-                  advertiser.addr[5],
-                  advertiser.addr[4],
-                  advertiser.addr[3],
-                  advertiser.addr[2],
-                  advertiser.addr[1],
-                  advertiser.addr[0]);
-          sl_bt_connection_open(scan_resp->address, scan_resp->address_type, sl_bt_gap_phy_1m, &connection);
-          app_log("Connection initiated - %02X:%02X:%02X:%02X:%02X:%02X\r\n",
-                  advertiser.addr[5],
-                  advertiser.addr[4],
-                  advertiser.addr[3],
-                  advertiser.addr[2],
-                  advertiser.addr[1],
-                  advertiser.addr[0]);
-        }
-      } break;
+      if (scan_resp->address.addr[0] == advertiser.addr[0]
+          && scan_resp->address.addr[1] == advertiser.addr[1]
+          && scan_resp->address.addr[2] == advertiser.addr[2]
+          && scan_resp->address.addr[3] == advertiser.addr[3]
+          && scan_resp->address.addr[4] == advertiser.addr[4]
+          && scan_resp->address.addr[5] == advertiser.addr[5]
+          && connection == 0) {
+        sl_bt_scanner_stop();
+        app_log("Found it - %02X:%02X:%02X:%02X:%02X:%02X\r\n",
+                advertiser.addr[5],
+                advertiser.addr[4],
+                advertiser.addr[3],
+                advertiser.addr[2],
+                advertiser.addr[1],
+                advertiser.addr[0]);
+        sl_bt_connection_open(scan_resp->address, scan_resp->address_type, sl_bt_gap_phy_1m, &connection);
+        app_log("Connection initiated - %02X:%02X:%02X:%02X:%02X:%02X\r\n",
+                advertiser.addr[5],
+                advertiser.addr[4],
+                advertiser.addr[3],
+                advertiser.addr[2],
+                advertiser.addr[1],
+                advertiser.addr[0]);
+      }
+    } break;
 
     // -------------------------------
     // Default event handler.

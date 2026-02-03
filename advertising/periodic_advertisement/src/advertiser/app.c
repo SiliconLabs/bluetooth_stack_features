@@ -80,13 +80,13 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
       app_assert_status(sc);
 
       app_log_info("Bluetooth %s address: %02X:%02X:%02X:%02X:%02X:%02X\n",
-                 address_type ? "static random" : "public device",
-                 address.addr[5],
-                 address.addr[4],
-                 address.addr[3],
-                 address.addr[2],
-                 address.addr[1],
-                 address.addr[0]);
+                   address_type ? "static random" : "public device",
+                   address.addr[5],
+                   address.addr[4],
+                   address.addr[3],
+                   address.addr[2],
+                   address.addr[1],
+                   address.addr[0]);
       // Pad and reverse unique ID to get System ID.
       system_id[0] = address.addr[5];
       system_id[1] = address.addr[4];
@@ -128,7 +128,7 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
 
       sc = sl_bt_extended_advertiser_start(advertising_set_handle,
                                            sl_bt_extended_advertiser_non_connectable,
-                                           SL_BT_EXTENDED_ADVERTISER_INCLUDE_TX_POWER );
+                                           SL_BT_EXTENDED_ADVERTISER_INCLUDE_TX_POWER);
 
       app_assert_status(sc);
 
@@ -154,12 +154,11 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
       break;
 
     case sl_bt_evt_system_external_signal_id:
-      if(evt->data.evt_system_external_signal.extsignals == SIGNAL_REFRESH_DATA)
-      {
+      if (evt->data.evt_system_external_signal.extsignals == SIGNAL_REFRESH_DATA) {
         app_log("\r\n");
         for (int i = 0; i < 190; i++) {
-            periodic_adv_data[i] = rand()%9;
-            app_log(" %X", periodic_adv_data[i]);
+          periodic_adv_data[i] = rand() % 9;
+          app_log(" %X", periodic_adv_data[i]);
         }
         app_log("\r\n");
 
@@ -186,10 +185,10 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
  * @param[in] handle Handle of the sleeptimer instance
  * @param[in] data  Callback data
  ******************************************************************************/
-void sleeptimer_callback(sl_sleeptimer_timer_handle_t *handle, void *data){
+void sleeptimer_callback(sl_sleeptimer_timer_handle_t *handle, void *data)
+{
   (void)handle;
   (void)data;
 
   sl_bt_external_signal(SIGNAL_REFRESH_DATA);
-
 }

@@ -1,9 +1,9 @@
 /***************************************************************************//**
  * @file app.c
  * @brief Silicon Labs Empty Example Project
- * This example demonstrates the bare minimum needed for a Blue Gecko C 
- * application that allows Over-the-Air Device Firmware Upgrading (OTA DFU). 
- * The application starts advertising after boot and restarts advertising after 
+ * This example demonstrates the bare minimum needed for a Blue Gecko C
+ * application that allows Over-the-Air Device Firmware Upgrading (OTA DFU).
+ * The application starts advertising after boot and restarts advertising after
  * a connection is closed.
  * @version 1.0.1
  *******************************************************************************
@@ -101,17 +101,16 @@ void appMain(gecko_configuration_t *pconfig)
         gecko_cmd_system_set_tx_power(0);
 
         /* Set the adv payload to 0 length */
-         //gecko_cmd_le_gap_bt5_set_adv_data(0, 0, 0, NULL);
+        //gecko_cmd_le_gap_bt5_set_adv_data(0, 0, 0, NULL);
 
-        uint8_t name[] = {3, 9, 'D', 'T'};
+        uint8_t name[] = { 3, 9, 'D', 'T' };
         gecko_cmd_le_gap_bt5_set_adv_data(0, 0, 4, name);
-
 
         /* Start general advertising and enable connections. */
         //gecko_cmd_le_gap_start_advertising(0, le_gap_general_discoverable, le_gap_connectable_scannable);
 
-         /* Start advertising and disable connections. */
-         gecko_cmd_le_gap_start_advertising(0,le_gap_user_data, le_gap_non_connectable);
+        /* Start advertising and disable connections. */
+        gecko_cmd_le_gap_start_advertising(0, le_gap_user_data, le_gap_non_connectable);
 
         break;
 

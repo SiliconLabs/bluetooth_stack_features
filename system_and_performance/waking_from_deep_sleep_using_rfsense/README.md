@@ -8,7 +8,7 @@ The RFSense is a wide band circuit, it can detect energy in the 100MHz - 5 GHz f
 
 ### Legacy mode ###
 
-In legacy mode, the RFSense module generates an interrupt if it detects energy for a configured time. This time can be configured with the function parameter **senseTime**. It is the interval (in microseconds) in whihch the RF energy must be continually detected to be considered "sensed". The possible values of this parameter depend on the device type. The API will return the actual value which was set. This is the only mode supported by Series 1 devices.
+In legacy mode, the RFSense module generates an interrupt if it detects energy for a configured time. This time can be configured with the function parameter **senseTime**. It is the interval (in microseconds) in which the RF energy must be continually detected to be considered "sensed". The possible values of this parameter depend on the device type. The API will return the actual value which was set. This is the only mode supported by Series 1 devices.
 
 ### Selective Mode ###
 
@@ -21,14 +21,14 @@ More info about RFSense:
 ## Setup ##
 1. Create a **Bluetooth - SoC Empty** project
 2. Open the "Software components" and do the following changes:
-  - Install **IO Stream: USART** component with the defaul instance name: **vcom**
+  - Install **IO Stream: USART** component with the default instance name: **vcom**
 
     ![](images/install-usart.png)
 
   - Find the **Board Control** component  and enable *Virtual COM UART* under its configuration
 
   - Install the **Log** component (found under Application > Utility group)
-  
+
   - Install the **Legacy Advertising** component, if it is not yet installed (Bluetooth > Feature)
 
     ![](images/legacy.png)
@@ -40,16 +40,16 @@ More info about RFSense:
 
 ## Usage ##
 You have the following options to select in the example code:
-  - **RfSense Mode**: 
+  - **RfSense Mode**:
     - Legacy
     - Selective
   - **RfSense Wait**: this sets the time how long the device will advertise before activating RfSense
   - **goToDeepSleep**: When set to *true*, the device will go the EM4
 
-After startup the device will start advetising for the time set with the parameter **RFSENSE_WAIT**. After that it will activate the RfSense, and will go to EM4 if allowed. When a signal is detected by the RfSense, a reset will be triggered. 
+After startup the device will start advetising for the time set with the parameter **RFSENSE_WAIT**. After that it will activate the RfSense, and will go to EM4 if allowed. When a signal is detected by the RfSense, a reset will be triggered.
 ![](images/rfsense-energy.png)
 
-If you set the varaible *goToDeepSleep* to *false*, it will not go into EM4. In this case the function *rfsense_callback* will be called. 
+If you set the variable *goToDeepSleep* to *false*, it will not go into EM4. In this case the function *rfsense_callback* will be called.
 
 ### Using in legacy mode
 
@@ -61,5 +61,3 @@ The RfSense callback or reset from EM4 can be triggered with any 2.4 GHz signal 
 ### Using in selective mode
 
 With selective mode the device can only be woken up by transmitting the correct syncword. As an example the attached **src/syncword/app_process.c** file can be used. Create a new **RAIL - SoC Simple TRX** project in Studio, and replace the app_process.c with the provided file. Build and flash it to the device. The syncword can be sent with pressing BTN0 on the WSTK.
-
-

@@ -33,15 +33,15 @@
 static uint32_t reset_cause;
 static const WDOG_Init_TypeDef init =
 {
- .enable = true,             /* Start watchdog when init done */
- .debugRun = false,          /* WDOG not counting during debug halt */
- .em2Run = true,             /* WDOG counting when in EM2 */
- .em3Run = true,             /* WDOG counting when in EM3 */
- .em4Block = false,          /* EM4 can be entered */
- .swoscBlock = false,        /* Do not block disabling LFRCO/LFXO in CMU */
- .lock = false,              /* Do not lock WDOG configuration (if locked, reset needed to unlock) */
- .clkSel = wdogClkSelULFRCO, /* Select 1kHZ WDOG oscillator */
- .perSel = wdogPeriod_2k,    /* Set the watchdog period to 2049 clock periods (ie ~2 seconds)*/
+  .enable = true,            /* Start watchdog when init done */
+  .debugRun = false,         /* WDOG not counting during debug halt */
+  .em2Run = true,            /* WDOG counting when in EM2 */
+  .em3Run = true,            /* WDOG counting when in EM3 */
+  .em4Block = false,         /* EM4 can be entered */
+  .swoscBlock = false,       /* Do not block disabling LFRCO/LFXO in CMU */
+  .lock = false,             /* Do not lock WDOG configuration (if locked, reset needed to unlock) */
+  .clkSel = wdogClkSelULFRCO, /* Select 1kHZ WDOG oscillator */
+  .perSel = wdogPeriod_2k,   /* Set the watchdog period to 2049 clock periods (ie ~2 seconds)*/
 };
 
 sl_sleeptimer_timer_handle_t wdog_timer;
@@ -63,10 +63,10 @@ SL_WEAK void app_init(void)
   reset_cause = RMU_ResetCauseGet();
   RMU_ResetCauseClear();
   if (reset_cause & RMU_RSTCAUSE_WDOGRST) {
-      /* watchdog reset occured */
-      /* send message to host */
-      sl_bt_send_evt_user_message_to_host((uint8_t) sizeof(watchdog_reset_message),
-                                          watchdog_reset_message);
+    /* watchdog reset occurred */
+    /* send message to host */
+    sl_bt_send_evt_user_message_to_host((uint8_t) sizeof(watchdog_reset_message),
+                                        watchdog_reset_message);
   }
 
   // init Watchdog driver
@@ -147,10 +147,10 @@ void sl_ncp_user_cmd_message_to_target_cb(void *data)
  * @param[in] handle Handle of the sleeptimer instance
  * @param[in] data  Callback data
  ******************************************************************************/
-void sleeptimer_callback(sl_sleeptimer_timer_handle_t *handle, void *data){
+void sleeptimer_callback(sl_sleeptimer_timer_handle_t *handle, void *data)
+{
   (void)handle;
   (void)data;
 
   WDOG_Feed();
-
 }

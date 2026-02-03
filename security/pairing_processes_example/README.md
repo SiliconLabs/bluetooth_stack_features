@@ -28,7 +28,7 @@ SiSDK v2024.6
 
 2. The function code is in the *app.c* file. Copy and replace this file to the project folder.
 
-3. Import the GATT configuration:        
+3. Import the GATT configuration:  
   - Open the **Bluetooth GATT Configurator** under the **CONFIGURATION TOOLS** tab.
   - Find the Import button and import the attached **gatt_configuration.btconf** file.
     ![btc configure](images/btconf.png)
@@ -69,7 +69,7 @@ SiSDK v2024.6
 
     ![glib1](images/glib1.png)
     ![glib2](images/glib2.png)
-    ![lcd](images/lcd.png) 
+    ![lcd](images/lcd.png)
 
 6. Configure macros *IO_CAPABILITY* and *MITM_PROTECTION* to DISPLAYONLY and 0x00 respectively.
 

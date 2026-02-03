@@ -28,14 +28,14 @@ The image above shows one advertising event. The advertisement is transmitted on
 ## Setting up
 
 1. Create a new SoC-Empty project for your device.
-   
+
 2. Using the project configurator install the PRS Software Component.
 
 3. Install the **Legacy Advertising** component, if it is not yet installed (Bluetooth > Feature)
 
 4. Copy the attached app.c into your project.
 
-5. The application calls a single function to enable the RX/TX activity pins. 
+5. The application calls a single function to enable the RX/TX activity pins.
 
 6. In  `app_init()`, configure the TX and RX indicators to the desired pins. The example below outputs RX activity on PORTB0 and TX activity on PORTB1.
 
@@ -57,4 +57,4 @@ SoC-empty example starts advertising by default. Therefore, if you connect a log
 
 * [app.c](src/app.c)
 
-  
+

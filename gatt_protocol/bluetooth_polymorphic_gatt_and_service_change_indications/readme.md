@@ -43,13 +43,13 @@ Use the server project from the **bluetooth_polymorphic_gatt_and_gatt_caching** 
 2. Copy the attached *src/client/app.c* file into your project replacing the original *app.c*.
 
 3. Open the Software Components and make the following changes:
-              
+
     - Add the **IO Stream: USART** component, with the instance name: **vcom**
     - Add the **Log** component
     - In the **Board Control** set the **Enable Virtual COM UART** to enabled
     - Install the **Legacy Advertising** component, if it is not yet installed
 4. Open the Software Components and install **NVM3 Default Instance** component.
-   
+
 5. Build and flash your project to your device.
 
 ## Usage
@@ -87,4 +87,3 @@ To test the example
 ## Source
 
 * [src/client/app.c](src/client/app.c)
-

@@ -34,9 +34,9 @@
 #include <stdbool.h>
 
 enum {
-    SERVICE_DISCOVERY,
-    CHARACHTERISTIC_DISCOVERY,
-    CHARACHTERISTIC_READ
+  SERVICE_DISCOVERY,
+  CHARACHTERISTIC_DISCOVERY,
+  CHARACHTERISTIC_READ
 };
 
 /**************************************************************************//**

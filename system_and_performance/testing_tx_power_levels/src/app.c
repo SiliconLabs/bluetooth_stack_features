@@ -74,10 +74,10 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
     case sl_bt_evt_system_boot_id:
       /* Print stack version. */
       app_log_info("Bluetooth stack booted: v%d.%d.%d-b%d\n",
-                 evt->data.evt_system_boot.major,
-                 evt->data.evt_system_boot.minor,
-                 evt->data.evt_system_boot.patch,
-                 evt->data.evt_system_boot.build);
+                   evt->data.evt_system_boot.major,
+                   evt->data.evt_system_boot.minor,
+                   evt->data.evt_system_boot.patch,
+                   evt->data.evt_system_boot.build);
 
       // Extract unique ID from BT Address.
       sc = sl_bt_system_get_identity_address(&address, &address_type);
@@ -85,13 +85,13 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
 
       /* Print local Bluetooth address. */
       app_log_info("Bluetooth %s address: %02X:%02X:%02X:%02X:%02X:%02X\n",
-                 address_type ? "static random" : "public device",
-                 address.addr[5],
-                 address.addr[4],
-                 address.addr[3],
-                 address.addr[2],
-                 address.addr[1],
-                 address.addr[0]);
+                   address_type ? "static random" : "public device",
+                   address.addr[5],
+                   address.addr[4],
+                   address.addr[3],
+                   address.addr[2],
+                   address.addr[1],
+                   address.addr[0]);
 
       app_log_info("------------------------Start-------------------------\r\n");
 
@@ -103,7 +103,6 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
 
     case sl_bt_evt_system_external_signal_id:
       if (evt->data.evt_system_external_signal.extsignals == SIGNAL_PRINT) {
-
         /* Set maximum tx power and read what was actually set */
         sc = sl_bt_system_set_tx_power(MIN_TEST_NUMBER, tx_to_set, NULL, &tx_set);
         app_assert_status(sc);
@@ -137,10 +136,10 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
  * @param[in] handle Handle of the sleeptimer instance
  * @param[in] data  Callback data
  ******************************************************************************/
-void sleeptimer_callback(sl_sleeptimer_timer_handle_t *handle, void *data){
+void sleeptimer_callback(sl_sleeptimer_timer_handle_t *handle, void *data)
+{
   (void)handle;
   (void)data;
 
   sl_bt_external_signal(SIGNAL_PRINT);
-
 }

@@ -76,15 +76,15 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
     case sl_bt_evt_system_boot_id:
       // Print boot message.
       LOGD("Bluetooth stack booted: v%d.%d.%d-b%d\n",
-                 evt->data.evt_system_boot.major,
-                 evt->data.evt_system_boot.minor,
-                 evt->data.evt_system_boot.patch,
-                 evt->data.evt_system_boot.build);
+           evt->data.evt_system_boot.major,
+           evt->data.evt_system_boot.minor,
+           evt->data.evt_system_boot.patch,
+           evt->data.evt_system_boot.build);
       // Extract unique ID from BT Address.
       sc = sl_bt_system_get_identity_address(&address, &address_type);
       app_assert(sc == SL_STATUS_OK,
-                    "[E: 0x%04x] Failed to get Bluetooth address\n",
-                    (int)sc);
+                 "[E: 0x%04x] Failed to get Bluetooth address\n",
+                 (int)sc);
 
       // Pad and reverse unique ID to get System ID.
       system_id[0] = address.addr[5];
@@ -100,8 +100,8 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
                                                    sizeof(system_id),
                                                    system_id);
       app_assert(sc == SL_STATUS_OK,
-                    "[E: 0x%04x] Failed to write attribute\n",
-                    (int)sc);
+                 "[E: 0x%04x] Failed to write attribute\n",
+                 (int)sc);
       break;
 
     // -------------------------------
@@ -163,14 +163,14 @@ static void update_display(void)
   }
 
   r = rsp_queue.head;
-do {
+  do {
     LOGI("---%s---RSSI:%d-------%s Addr--- ",
          "Extended ADV",
          r->data.rssi,
          r->data.address_type == 1 ? "Random"
          : r->data.address_type == 0 ? "Public" : "Anonymous");
     if (r->data.address_type != 255) {
-        HEX_DUMP_REVS(r->data.address.addr, 6);
+      HEX_DUMP_REVS(r->data.address.addr, 6);
     }
     LOGV("---> Payload Data\n");
     HEX_DUMP(r->data.data.data, r->data.data.len);
@@ -209,13 +209,13 @@ static void on_system_boot(void)
    * switching */
   sc = sl_bt_scanner_set_parameters(sl_bt_scanner_scan_mode_passive, 0xFFFF, 0xFFFF);
   app_assert(sc == SL_STATUS_OK,
-                      "[E: 0x%04x] Failed to set discovery timing\n",
-                      (int)sc);
-   /*Start discovering*/
+             "[E: 0x%04x] Failed to set discovery timing\n",
+             (int)sc);
+  /*Start discovering*/
   sc = sl_bt_scanner_start(sl_bt_gap_1m_phy, sl_bt_scanner_discover_observation);
   app_assert(sc == SL_STATUS_OK,
-                      "[E: 0x%04x] Failed to start discovery\n",
-                      (int)sc);
+             "[E: 0x%04x] Failed to start discovery\n",
+             (int)sc);
   /* Start refreshing timer */
   sc = sl_sleeptimer_start_periodic_timer(&sleeptimer_handle, REFRESH_PERIOD, sleeptimer_callback, (void*)NULL, 0, 0);
   app_assert_status(sc);
@@ -228,10 +228,10 @@ static void scanner_on_event(sl_bt_msg_t *evt)
     case sl_bt_evt_system_boot_id:
       on_system_boot();
       break;
-   case sl_bt_evt_system_external_signal_id:
-     if(evt->data.evt_system_external_signal.extsignals == REFRESH_TIMER_ID){
-         period_check();
-       }
+    case sl_bt_evt_system_external_signal_id:
+      if (evt->data.evt_system_external_signal.extsignals == REFRESH_TIMER_ID) {
+        period_check();
+      }
       break;
     case sl_bt_evt_scanner_extended_advertisement_report_id:
       if (run_filters(&evt->data.evt_scanner_extended_advertisement_report)) {
@@ -249,10 +249,10 @@ static void scanner_on_event(sl_bt_msg_t *evt)
  * @param[in] handle Handle of the sleeptimer instance
  * @param[in] data  Callback data
  ******************************************************************************/
-void sleeptimer_callback(sl_sleeptimer_timer_handle_t *handle, void *data){
+void sleeptimer_callback(sl_sleeptimer_timer_handle_t *handle, void *data)
+{
   (void)handle;
   (void)data;
 
   sl_bt_external_signal(REFRESH_TIMER_ID);
-
 }

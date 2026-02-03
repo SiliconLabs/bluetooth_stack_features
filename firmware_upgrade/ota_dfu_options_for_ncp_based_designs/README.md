@@ -32,7 +32,7 @@ An NCP host example is provided with the SDK at `<StudioPath>\<version X>\develo
 
 The Apploader is a simple application with a minimal Bluetooth stack, that handles the upload process. The Apploader uses the API of the Gecko Bootloader to decode the GBL files and to store the application image in the flash.
 
-To use this approach, your device needs to be programmed with a suitable Gecko bootloader. When creating the bootloader project select **Bluetooth in-place OTA DFU Bootloader** or **Internal Storage Bootloader (single image on 512kB/1MB device)**, depending on the size of internal flash in your device. If you want to keep the possibility of **UART DFU** as well, then you should 
+To use this approach, your device needs to be programmed with a suitable Gecko bootloader. When creating the bootloader project select **Bluetooth in-place OTA DFU Bootloader** or **Internal Storage Bootloader (single image on 512kB/1MB device)**, depending on the size of internal flash in your device. If you want to keep the possibility of **UART DFU** as well, then you should
 
 * Use a **BGAPI UART DFU Bootloader**.
 * Install the **Common Storage**, and **Internal Storage** plugins in the `Plugins tab`.
@@ -81,7 +81,7 @@ Some of the benefits of this approach are:
 
 An obvious disadvantage of this solution is the requirement to have dedicated flash space available to be used as the download area.
 
-Same with the [Apploader](#apploader), to use this approach, your device needs to be programmed with a suitable Gecko bootloader. When creating the bootloader project select **Internal Storage Bootloader (single image on 512kB/1MB device)**, depending on the size of internal flash in your device. If you want to keep the possibility of UART DFU as well, then you should 
+Same with the [Apploader](#apploader), to use this approach, your device needs to be programmed with a suitable Gecko bootloader. When creating the bootloader project select **Internal Storage Bootloader (single image on 512kB/1MB device)**, depending on the size of internal flash in your device. If you want to keep the possibility of UART DFU as well, then you should
 
 * Use a **BGAPI UART DFU Bootloader**
 
@@ -150,7 +150,7 @@ See the [Usage](#usage) section of this readme file.
 1. Create a new **BGAPI UART DFU Bootloader** project for your part.  
 ![Create bootloader project](images/uart_bootloader.png)
 
-2. Build and flash the bootloader project to your part. 
+2. Build and flash the bootloader project to your part.
     *Note: on series 1 devices (EFR32xG1x) you should flash the image that ends with **-combined.s37**!*
 
 3. Create a new **NCP-empty-target** example project for your part.
@@ -163,7 +163,7 @@ At this point, you should be able to connect to your part with the Bluetooth NCP
     ```C
     // The advertising set handle allocated from Bluetooth stack.
     static uint8_t advertising_set_handle = 0xff;
-    
+
     bool sl_ncp_local_evt_process(sl_bt_msg_t *evt)
     {
       bool evt_handled = true;
@@ -202,9 +202,9 @@ At this point, you should be able to connect to your part with the Bluetooth NCP
 
 2. Alternatively, create a **BGAPI UART DFU Bootloader** and modify it as described in the [Description](#description) section.
 
-3. Build and flash the bootloader project to your part. 
+3. Build and flash the bootloader project to your part.
     *Note: on series 1 devices (EFR32xG1x) you should flash the image that ends with **-combined.s37**!*
-    
+
 4. Create a new **NCP-empty-target** project.
 
 5. Add the following function to **app.c**:
@@ -212,18 +212,18 @@ At this point, you should be able to connect to your part with the Bluetooth NCP
     ```c
     // The advertising set handle allocated from Bluetooth stack.
     static uint8_t advertising_set_handle = 0xff;
-    
+
     bool sl_ncp_local_evt_process(sl_bt_msg_t *evt)
     {
       bool evt_handled = true;
-    
+
       switch (SL_BT_MSG_ID(evt->header)) {
         case sl_bt_evt_system_boot_id:
           {
             // Start advertising automatically at boot (just to make testing easier)
             // Create an advertising set.
             sl_bt_advertiser_create_set(&advertising_set_handle);
-    
+
             // Start advertising
             sl_bt_legacy_advertiser_generate_data(advertising_set_handle,
                                                   advertiser_general_discoverable);
@@ -231,7 +231,7 @@ At this point, you should be able to connect to your part with the Bluetooth NCP
                                           advertiser_connectable_scannable);
           }
           break;
-    
+
         default:
           break;
       }
@@ -255,7 +255,7 @@ See section [Usage](#usage) to see how to load new firmware from OTA Client.
 1. Create a new **Internal Storage Bootloader** project for your part. This example is for the EFR32MG12 device.  
 ![Create bootloader project](images/internal_storage_bootloader.png)
 2. Alternatively, create a **BGAPI UART DFU Bootloader** and modify it as described in the [Description](#description) section.
-3. Build and flash the bootloader project to your part. 
+3. Build and flash the bootloader project to your part.
     *Note: on series 1 devices (EFR32xG1x) you should flash the image that ends with **-combined.s37**!*
 4. Create a new **NCP-empty-target** project.
 5. Copy the attached [app.c](src/app.c) file replacing the existing `app.c`.

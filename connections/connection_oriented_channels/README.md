@@ -29,5 +29,3 @@ Copy the provided app.c file to the project. For the peripheral, also import the
 ## Usage
 
 Build and flash the two projects on the devices, and connect to them with a serial terminal to see the logs. After the connection is established, the central will open a connection-oriented data channel to the peripheral. The peripheral will send 5 initial credits after the channel is opened. Additional credits can be sent with pressing the BTN0 on the board. On the central side pressing the BTN0 will trigger the data transfer of as many packets as it has credits for.
-
-

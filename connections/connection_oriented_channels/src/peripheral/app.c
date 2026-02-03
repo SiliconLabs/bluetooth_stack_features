@@ -35,7 +35,6 @@
 #include "sl_simple_button_instances.h"
 #include "sl_simple_led_instances.h"
 
-
 #define SIGNAL_BTN_PRESS  1
 
 #define INITIAL_CREDITS         50
@@ -125,7 +124,7 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
       max_sdu = evt->data.evt_l2cap_le_channel_open_request.max_sdu;
       cid = evt->data.evt_l2cap_le_channel_open_request.cid;
       sc = sl_bt_l2cap_send_le_channel_open_response(connection, cid,
-                                          max_sdu, max_pdu, INITIAL_CREDITS, 0);
+                                                     max_sdu, max_pdu, INITIAL_CREDITS, 0);
       app_assert_status(sc);
       break;
 
@@ -134,15 +133,15 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
       break;
 
     case sl_bt_evt_system_external_signal_id:
-          if(evt->data.evt_system_external_signal.extsignals == SIGNAL_BTN_PRESS){
-             sl_bt_l2cap_channel_send_credit(connection, cid, CREDITS_PER_BUTTONPRESS);
-             credit += CREDITS_PER_BUTTONPRESS;
-            }
-          break;
+      if (evt->data.evt_system_external_signal.extsignals == SIGNAL_BTN_PRESS) {
+        sl_bt_l2cap_channel_send_credit(connection, cid, CREDITS_PER_BUTTONPRESS);
+        credit += CREDITS_PER_BUTTONPRESS;
+      }
+      break;
 
     case sl_bt_evt_l2cap_channel_closed_id:
-       app_log("L2CAP channel closed, reason: %x\r\n", evt->data.evt_l2cap_channel_closed.reason);
-       break;
+      app_log("L2CAP channel closed, reason: %x\r\n", evt->data.evt_l2cap_channel_closed.reason);
+      break;
 
     // -------------------------------
     // This event indicates that a connection was closed.
@@ -172,11 +171,10 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
 void sl_button_on_change(const sl_button_t *handle)
 {
   sl_button_state_t state;
-  if(handle->context == sl_button_btn0.context){
-      state = sl_button_get_state(&sl_button_btn0);
-      if(state == SL_SIMPLE_BUTTON_PRESSED){
-          sl_bt_external_signal(SIGNAL_BTN_PRESS);
-      }
+  if (handle->context == sl_button_btn0.context) {
+    state = sl_button_get_state(&sl_button_btn0);
+    if (state == SL_SIMPLE_BUTTON_PRESSED) {
+      sl_bt_external_signal(SIGNAL_BTN_PRESS);
+    }
   }
 }
-

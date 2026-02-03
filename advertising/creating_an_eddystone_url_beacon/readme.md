@@ -1,7 +1,7 @@
 # Creating an Eddystone-URL Beacon #
- 
+
 ## Description ##
- 
+
 This example demonstrates how to create an Eddystone beacon with Silicon Labs' Bluetooth SDK.
 
 ### Eddystone Beacons ###
@@ -53,18 +53,18 @@ The device is now ready to start advertising the Eddystone-URL beacon data. This
 sl_bt_legacy_advertiser_start(advertising_set_handle, advertiser_non_connectable);
 ```
 This tells the stack to use the custom user data and to make the beacon non-connectable.
- 
+
 ## Gecko SDK version ##
- 
+
 GSDK v3.1.1
- 
+
 ## Hardware Required ##
- 
+
 - A WSTK board.
 - A Bluetooth capable radio board, e.g: BRD4161A.
- 
+
 ## Setup
- 
+
 To be able to test this example do as follows:
 
 1. Create a **Bluetooth - SoC Empty** project.
@@ -90,9 +90,9 @@ To be able to test this example do as follows:
 4. Build and flash the project to your device.
 
 5. Do not forget to flash a bootloader to your board, if you have not done so already.
- 
+
 ## How It Works ##
- 
+
 Follow the below steps to test the example:
 
 1. Open the EFR Connect app on your smartphone.

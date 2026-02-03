@@ -94,7 +94,7 @@ To try this example, you need two radio boards, one for the advertiser side and 
 
 2. Copy the attached [src/scanner/app.c](src/scanner/app.c) replacing the existing `app.c`.
 
-3. insall the **Synchronization to periodic advertising trains by scanning**. Note: This will install needed dependencies such as **Periodic Advertising Synchronization** that will be configured in next step ![Periodic Advertising](images/add_periodic_sync_component.png)
+3. install the **Synchronization to periodic advertising trains by scanning**. Note: This will install needed dependencies such as **Periodic Advertising Synchronization** that will be configured in next step ![Periodic Advertising](images/add_periodic_sync_component.png)
 
 3. Config **Software components**.  
 

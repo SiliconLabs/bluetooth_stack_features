@@ -46,8 +46,7 @@ RAIL_RfSenseSelectiveOokConfig_t rfsense_config = {
 
 #define RFSENSE_SELECTED_MODE RFSENSE_MODE_LEGACY
 
-
-#define RFSENSE_WAIT (5*32768) //5 sec
+#define RFSENSE_WAIT (5 * 32768) //5 sec
 #define RFSENSE_TIME 1000 //1000 msec is the minimum for BG22
 #define RFSENSE_EXT_SIGNAL 1
 
@@ -60,8 +59,7 @@ void rfsense_callback()
 {
   app_log("RfSense callback!\r\n");
   return;
- }
-
+}
 
 // The advertising set handle allocated from Bluetooth stack.
 static uint8_t advertising_set_handle = 0xff;
@@ -90,8 +88,8 @@ SL_WEAK void app_process_action(void)
 }
 
 /**************************************************************************//**
- Callback for the sleeptimer. Since this function is called from interrupt context,
- only an external signal is set, as no other BGAPI calls are allowed in this case.
+   Callback for the sleeptimer. Since this function is called from interrupt context,
+   only an external signal is set, as no other BGAPI calls are allowed in this case.
  *****************************************************************************/
 void sleep_timer_callback(sl_sleeptimer_timer_handle_t *handle, void *data)
 {
@@ -101,25 +99,23 @@ void sleep_timer_callback(sl_sleeptimer_timer_handle_t *handle, void *data)
 }
 
 /**************************************************************************//**
-Function for starting RfSense
+   Function for starting RfSense
  *****************************************************************************/
 void app_rfsense_handler(void)
 {
   RAIL_Status_t rail_status;
   RAIL_Time_t rfsense_time;
 
-   if (RFSENSE_MODE_SELECTIVE == RFSENSE_SELECTED_MODE){
-       rail_status =  RAIL_StartSelectiveOokRfSense(railHandleRfsense, &rfsense_config);
-       app_log("\r\nSelective RfSense start status: %x \r\n", rail_status);
-   }
-   else{
-       rfsense_time = RAIL_StartRfSense(RAIL_EFR32_HANDLE, RAIL_RFSENSE_2_4GHZ, RFSENSE_TIME, rfsense_callback);
-       app_log("\r\nLegacy RfSense started with RfSense time: %d\r\n", rfsense_time);
-   }
+  if (RFSENSE_MODE_SELECTIVE == RFSENSE_SELECTED_MODE) {
+    rail_status =  RAIL_StartSelectiveOokRfSense(railHandleRfsense, &rfsense_config);
+    app_log("\r\nSelective RfSense start status: %x \r\n", rail_status);
+  } else {
+    rfsense_time = RAIL_StartRfSense(RAIL_EFR32_HANDLE, RAIL_RFSENSE_2_4GHZ, RFSENSE_TIME, rfsense_callback);
+    app_log("\r\nLegacy RfSense started with RfSense time: %d\r\n", rfsense_time);
+  }
 
- if(goToDeepSleep)
-  {
-     EMU_EnterEM4(); //if device goes to EM4, the callback function won't be called, a reset event will happen instead
+  if (goToDeepSleep) {
+    EMU_EnterEM4();  //if device goes to EM4, the callback function won't be called, a reset event will happen instead
   }
 }
 /**************************************************************************//**
@@ -143,8 +139,8 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
       // Extract unique ID from BT Address.
       sc = sl_bt_system_get_identity_address(&address, &address_type);
       app_assert(sc == SL_STATUS_OK,
-                    "[E: 0x%04x] Failed to get Bluetooth address\n",
-                    (int)sc);
+                 "[E: 0x%04x] Failed to get Bluetooth address\n",
+                 (int)sc);
 
       // Pad and reverse unique ID to get System ID.
       system_id[0] = address.addr[5];
@@ -161,14 +157,14 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
                                                    sizeof(system_id),
                                                    system_id);
       app_assert(sc == SL_STATUS_OK,
-                    "[E: 0x%04x] Failed to write attribute\n",
-                    (int)sc);
+                 "[E: 0x%04x] Failed to write attribute\n",
+                 (int)sc);
 
       // Create an advertising set.
       sc = sl_bt_advertiser_create_set(&advertising_set_handle);
       app_assert(sc == SL_STATUS_OK,
-                    "[E: 0x%04x] Failed to create advertising set\n",
-                    (int)sc);
+                 "[E: 0x%04x] Failed to create advertising set\n",
+                 (int)sc);
 
       // Set advertising interval to 100ms.
       sc = sl_bt_advertiser_set_timing(
@@ -178,27 +174,27 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
         0,   // adv. duration
         0);  // max. num. adv. events
       app_assert(sc == SL_STATUS_OK,
-                    "[E: 0x%04x] Failed to set advertising timing\n",
-                    (int)sc);
+                 "[E: 0x%04x] Failed to set advertising timing\n",
+                 (int)sc);
       // Start general advertising and enable connections.
       sc = sl_bt_legacy_advertiser_generate_data(advertising_set_handle,
                                                  advertiser_general_discoverable);
       app_assert(sc == SL_STATUS_OK,
-                    "[E: 0x%04x] Failed to generate data\n",
-                    (int)sc);
+                 "[E: 0x%04x] Failed to generate data\n",
+                 (int)sc);
       sc = sl_bt_legacy_advertiser_start(advertising_set_handle,
                                          advertiser_connectable_scannable);
       app_assert(sc == SL_STATUS_OK,
-                    "[E: 0x%04x] Failed to start advertising\n",
-                    (int)sc);
+                 "[E: 0x%04x] Failed to start advertising\n",
+                 (int)sc);
 
       //Start a timer, the RfSense will be activated when it expires
       sl_sleeptimer_start_timer(&rfsense_timer, RFSENSE_WAIT, sleep_timer_callback, NULL, 0, 0);
       break;
 
     case sl_bt_evt_system_external_signal_id:
-      if(evt->data.evt_system_external_signal.extsignals & RFSENSE_EXT_SIGNAL) {
-          app_rfsense_handler();
+      if (evt->data.evt_system_external_signal.extsignals & RFSENSE_EXT_SIGNAL) {
+        app_rfsense_handler();
       }
       break;
     // -------------------------------
@@ -215,13 +211,13 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
       sc = sl_bt_legacy_advertiser_generate_data(advertising_set_handle,
                                                  advertiser_general_discoverable);
       app_assert(sc == SL_STATUS_OK,
-                    "[E: 0x%04x] Failed to generate data\n",
-                    (int)sc);
+                 "[E: 0x%04x] Failed to generate data\n",
+                 (int)sc);
       sc = sl_bt_legacy_advertiser_start(advertising_set_handle,
                                          advertiser_connectable_scannable);
       app_assert(sc == SL_STATUS_OK,
-                    "[E: 0x%04x] Failed to start advertising\n",
-                    (int)sc);
+                 "[E: 0x%04x] Failed to start advertising\n",
+                 (int)sc);
       break;
 
     ///////////////////////////////////////////////////////////////////////////

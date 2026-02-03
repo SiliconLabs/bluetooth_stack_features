@@ -44,13 +44,13 @@
 #define SIGNAL_BTN_PRESS      1
 
 // The advertised name of the peripheral unit
-static char dev_name[]= "CoC Peripheral";
+static char dev_name[] = "CoC Peripheral";
 
 // The advertising set handle allocated from Bluetooth stack.
 static uint8_t advertising_set_handle = 0xff;
 static uint8_t connection = 0;
 static uint16_t cid = 0;
-static uint8_t tx_packet[TX_PACKET_SIZE] = {TX_PACKET_DUMMY_VALUE};
+static uint8_t tx_packet[TX_PACKET_SIZE] = { TX_PACKET_DUMMY_VALUE };
 static uint16_t max_pdu = MAX_PDU_SIZE, max_sdu = MAX_SDU_SIZE, spsm = SPSM;
 //Initial credit request. It will be overwritten with the value actually provided by the peripheral
 static uint16_t credit = 0;
@@ -82,7 +82,6 @@ SL_WEAK void app_process_action(void)
  * @param[in] data: Advertisement packet
  * @param[in] len:  Length of the advertisement packet
  *****************************************************************************/
-
 static uint8_t find_name_in_advertisement(uint8_t *data, uint8_t len)
 {
   uint8_t ad_field_length;
@@ -96,7 +95,7 @@ static uint8_t find_name_in_advertisement(uint8_t *data, uint8_t len)
     // Shortened Local Name ($08) or Complete Local Name($08)
     if (ad_field_type == 0x08 || ad_field_type == 0x09) {
       // compare name
-      if (memcmp(&data[i + 2], dev_name, (ad_field_length-1)) == 0) {
+      if (memcmp(&data[i + 2], dev_name, (ad_field_length - 1)) == 0) {
         return 1;
       }
     }
@@ -128,13 +127,12 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
 
     case sl_bt_evt_scanner_legacy_advertisement_report_id:
       //Check scan response packet for the peripheral's name
-      if(find_name_in_advertisement(evt->data.evt_scanner_legacy_advertisement_report.data.data,
-                                        evt->data.evt_scanner_legacy_advertisement_report.data.len))
-      {
+      if (find_name_in_advertisement(evt->data.evt_scanner_legacy_advertisement_report.data.data,
+                                     evt->data.evt_scanner_legacy_advertisement_report.data.len)) {
         sl_bt_scanner_stop();
         sc = sl_bt_connection_open(evt->data.evt_scanner_legacy_advertisement_report.address,
-                              evt->data.evt_scanner_legacy_advertisement_report.address_type,
-                              sl_bt_gap_phy_1m, &connection);
+                                   evt->data.evt_scanner_legacy_advertisement_report.address_type,
+                                   sl_bt_gap_phy_1m, &connection);
         app_assert_status(sc);
       }
       break;
@@ -147,10 +145,10 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
       break;
 
     case sl_bt_evt_l2cap_le_channel_open_response_id:
-      if(!evt->data.evt_l2cap_le_channel_open_response.errorcode){
+      if (!evt->data.evt_l2cap_le_channel_open_response.errorcode) {
         app_log("L2CAP open channel response received. cid: %x, credit: %d\r\n",
-                    evt->data.evt_l2cap_le_channel_open_response.cid,
-                    evt->data.evt_l2cap_le_channel_open_response.credit);
+                evt->data.evt_l2cap_le_channel_open_response.cid,
+                evt->data.evt_l2cap_le_channel_open_response.credit);
         credit = evt->data.evt_l2cap_le_channel_open_response.credit;
         cid    = evt->data.evt_l2cap_le_channel_open_response.cid;
       } else {
@@ -174,21 +172,21 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
       break;
 
     case sl_bt_evt_system_external_signal_id:
-      if(evt->data.evt_system_external_signal.extsignals == SIGNAL_BTN_PRESS){
-          if(credit > 0){
-            while(credit > 0){
-              sc = sl_bt_l2cap_channel_send_data(connection, cid, sizeof(tx_packet), tx_packet);
-              if(!sc){
-                credit--;
-                app_log("Remaining credits: %d\r\n", credit);
-              } else {
-                  app_log("Error while sending packet: %x\r\n", sc);
-              }
+      if (evt->data.evt_system_external_signal.extsignals == SIGNAL_BTN_PRESS) {
+        if (credit > 0) {
+          while (credit > 0) {
+            sc = sl_bt_l2cap_channel_send_data(connection, cid, sizeof(tx_packet), tx_packet);
+            if (!sc) {
+              credit--;
+              app_log("Remaining credits: %d\r\n", credit);
+            } else {
+              app_log("Error while sending packet: %x\r\n", sc);
             }
-          } else {
-            app_log("No credits available\r\n");
           }
+        } else {
+          app_log("No credits available\r\n");
         }
+      }
       break;
     // -------------------------------
     // This event indicates that a connection was closed.
@@ -217,11 +215,10 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
 void sl_button_on_change(const sl_button_t *handle)
 {
   sl_button_state_t state;
-  if(handle->context == sl_button_btn0.context){
-      state = sl_button_get_state(&sl_button_btn0);
-      if(state == SL_SIMPLE_BUTTON_PRESSED){
-          sl_bt_external_signal(SIGNAL_BTN_PRESS);
-      }
+  if (handle->context == sl_button_btn0.context) {
+    state = sl_button_get_state(&sl_button_btn0);
+    if (state == SL_SIMPLE_BUTTON_PRESSED) {
+      sl_bt_external_signal(SIGNAL_BTN_PRESS);
+    }
   }
 }
-

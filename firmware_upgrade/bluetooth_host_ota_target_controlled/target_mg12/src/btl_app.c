@@ -76,15 +76,15 @@ void bootloader_appInit(void)
 uint32_t bootloader_handle_event(struct gecko_cmd_packet *evt)
 {
   bool evt_handled = false;
-  switch(BGLIB_MSG_ID(evt->header)) {
+  switch (BGLIB_MSG_ID(evt->header)) {
     case gecko_evt_system_boot_id:
       gecko_cmd_le_gap_set_advertise_timing(0, 160, 160, 0, 0);
       gecko_cmd_le_gap_start_advertising(0, le_gap_general_discoverable, le_gap_connectable_scannable);
       break;
 
     case gecko_evt_le_connection_opened_id:
-      if(ota_mode != 0) {
-        gecko_cmd_le_connection_set_parameters(ota_connection,6,6,0,1000);
+      if (ota_mode != 0) {
+        gecko_cmd_le_connection_set_parameters(ota_connection, 6, 6, 0, 1000);
         evt_handled = true;
       }
       break;
@@ -94,16 +94,16 @@ uint32_t bootloader_handle_event(struct gecko_cmd_packet *evt)
       uint8_t *data = &(evt->data.evt_gatt_server_user_write_request.value.data[0]);
       uint8_t length = evt->data.evt_gatt_server_user_write_request.value.len;
 
-      if(characteristic == gattdb_ota_control) {
+      if (characteristic == gattdb_ota_control) {
         evt_handled = true;
 
         /* If control data = 0, then start transfer
          * If control data = 3, then end transfer. */
-        switch(data[0]) {
+        switch (data[0]) {
           /* Start Transfer. */
           case 0:
             /* To work with blue gecko app, connection reset must occur. */
-            if(ota_mode == 0) {
+            if (ota_mode == 0) {
               ota_connection = evt->data.evt_gatt_server_user_write_request.connection;
               ota_mode = 1;
               ota_data_len = 0;
@@ -138,7 +138,7 @@ uint32_t bootloader_handle_event(struct gecko_cmd_packet *evt)
             /* Verify Image */
             int32_t ret = bootloader_verifyImage(STORAGE_SLOT_ID, 0);
 
-            if(ret != BOOTLOADER_OK){
+            if (ret != BOOTLOADER_OK) {
               gecko_cmd_le_gap_start_advertising(0, le_gap_discover_generic, le_gap_connectable_scannable);
               break;
             }
@@ -148,9 +148,8 @@ uint32_t bootloader_handle_event(struct gecko_cmd_packet *evt)
             break;
         }
       }
-
       // Store image into a storage slot
-      else if(characteristic == gattdb_ota_data) {
+      else if (characteristic == gattdb_ota_data) {
         evt_handled = true;
         bootloader_writeStorage(STORAGE_SLOT_ID,
                                 ota_data_len,
@@ -166,7 +165,7 @@ uint32_t bootloader_handle_event(struct gecko_cmd_packet *evt)
     }
 
     case gecko_evt_le_connection_closed_id:
-      if(ota_mode != 0){
+      if (ota_mode != 0) {
         gecko_cmd_le_gap_start_advertising(0, le_gap_discover_generic, le_gap_connectable_scannable);
         evt_handled = true;
       }
@@ -203,13 +202,12 @@ void wait_for_char(uint8_t character)
 {
   uint8_t response = 0;
 
-  do{
+  do {
     /* Clean rx queue. */
     UARTDRV_Abort(handle, uartdrvAbortAll);
 
     UARTDRV_ReceiveB(handle, &response, 1);
-
-  } while(response != character);
+  } while (response != character);
 }
 
 void handle_bootloader_cmds(void)
@@ -235,7 +233,7 @@ void handle_bootloader_cmds(void)
   bootloader_getStorageSlotInfo(STORAGE_SLOT_ID, &slotInfo);
 
   /* Transmit gbl file, make it blocking so no USART transfers occur. */
-  if(bootloader_xmodemSend((uint8_t *)slotInfo.address, ota_data_len) == 0){
+  if (bootloader_xmodemSend((uint8_t *)slotInfo.address, ota_data_len) == 0) {
     /* Failed. */
     /* Set gpio activation pin back to low. */
     bootloader_setGPIOActivation(APP_MODE);

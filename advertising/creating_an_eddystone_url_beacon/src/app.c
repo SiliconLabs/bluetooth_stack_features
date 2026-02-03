@@ -30,11 +30,11 @@ static const uint8_t eddystone_data[] = {
   0xAA, 0xFE,    // Eddystone ID
   0x10,          // Length of service data
   0x16,          // Service data
-  0xAA,  0xFE,   // Eddystone ID
+  0xAA, 0xFE,    // Eddystone ID
   0x10,          // Frame type Eddystone-URL
   0x00,          // Tx power
   0x01,          // 0x00=http://www., 0x01=https://www.
-  's','i','l','a','b','s','.','c','o','m'
+  's', 'i', 'l', 'a', 'b', 's', '.', 'c', 'o', 'm'
 };
 
 /**************************************************************************//**
@@ -81,25 +81,25 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
     case sl_bt_evt_system_boot_id:
       /* Print stack version */
       app_log("Bluetooth stack booted: v%d.%d.%d-b%d\n",
-                 evt->data.evt_system_boot.major,
-                 evt->data.evt_system_boot.minor,
-                 evt->data.evt_system_boot.patch,
-                 evt->data.evt_system_boot.build);
+              evt->data.evt_system_boot.major,
+              evt->data.evt_system_boot.minor,
+              evt->data.evt_system_boot.patch,
+              evt->data.evt_system_boot.build);
       // Extract unique ID from BT Address.
       sc = sl_bt_system_get_identity_address(&address, &address_type);
       app_assert(sc == SL_STATUS_OK,
-                    "[E: 0x%04x] Failed to get Bluetooth address\n",
-                    (int)sc);
+                 "[E: 0x%04x] Failed to get Bluetooth address\n",
+                 (int)sc);
 
       /* Print Bluetooth address */
       app_log("Bluetooth %s address: %02X:%02X:%02X:%02X:%02X:%02X\n",
-                       address_type ? "static random" : "public device",
-                       address.addr[5],
-                       address.addr[4],
-                       address.addr[3],
-                       address.addr[2],
-                       address.addr[1],
-                       address.addr[0]);
+              address_type ? "static random" : "public device",
+              address.addr[5],
+              address.addr[4],
+              address.addr[3],
+              address.addr[2],
+              address.addr[1],
+              address.addr[0]);
 
       // Pad and reverse unique ID to get System ID.
       system_id[0] = address.addr[5];
@@ -116,20 +116,20 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
                                                    sizeof(system_id),
                                                    system_id);
       app_assert(sc == SL_STATUS_OK,
-                    "[E: 0x%04x] Failed to write attribute\n",
-                    (int)sc);
+                 "[E: 0x%04x] Failed to write attribute\n",
+                 (int)sc);
 
       // Create an advertising set.
       sc = sl_bt_advertiser_create_set(&advertising_set_handle);
       app_assert(sc == SL_STATUS_OK,
-                    "[E: 0x%04x] Failed to create advertising set\n",
-                    (int)sc);
+                 "[E: 0x%04x] Failed to create advertising set\n",
+                 (int)sc);
 
       // Set 0 dBm Transmit Power.
       sc = sl_bt_system_set_tx_power(0, 0, &ret_min_power, &ret_max_power);
       app_assert(sc == SL_STATUS_OK,
-                    "[E: 0x%04x] Failed to set max TX power for Bluetooth\n",
-                    (int)sc);
+                 "[E: 0x%04x] Failed to set max TX power for Bluetooth\n",
+                 (int)sc);
       (void)ret_min_power;
       (void)ret_max_power;
 
@@ -139,8 +139,8 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
                                             sizeof(eddystone_data),
                                             eddystone_data);
       app_assert(sc == SL_STATUS_OK,
-                    "[E: 0x%04x] Failed to set advertiser data\n",
-                    (int)sc);
+                 "[E: 0x%04x] Failed to set advertiser data\n",
+                 (int)sc);
 
       // Set advertising parameters. 100ms advertisement interval.
       sc = sl_bt_advertiser_set_timing(
@@ -150,16 +150,16 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
         0,   // adv. duration
         0);  // max. num. adv. events
       app_assert(sc == SL_STATUS_OK,
-                    "[E: 0x%04x] Failed to set advertising timing\n",
-                    (int)sc);
+                 "[E: 0x%04x] Failed to set advertising timing\n",
+                 (int)sc);
 
       // Start advertising in user mode and disable connections.
       sc = sl_bt_legacy_advertiser_start(
         advertising_set_handle,
         sl_bt_advertiser_non_connectable);
       app_assert(sc == SL_STATUS_OK,
-                    "[E: 0x%04x] Failed to start advertising\n",
-                    (int)sc);
+                 "[E: 0x%04x] Failed to start advertising\n",
+                 (int)sc);
       app_log("boot event - starting advertising\r\n");
       break;
 

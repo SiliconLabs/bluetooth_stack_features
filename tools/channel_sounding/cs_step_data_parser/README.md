@@ -41,7 +41,7 @@ The parser parses the log line-for-line, extracting the CS step data into chunks
 Let's say the following chunk of CS step data was collected:
 ```text
 000b0500d901ea0200460500d802e80200210500d501e802022d151394b1ec03ebdf39036126d5033cc2180300000013
-``` 
+```
 
 If we start from the first byte, we can see that:
 
@@ -75,7 +75,7 @@ pip install -r requirements.txt
 Once the installation is finished, the script can be started:
 
 ```bash
-python step_data_parser.py <input.txt> <output.json> 
+python step_data_parser.py <input.txt> <output.json>
 ```
 
 > [!TIP]  

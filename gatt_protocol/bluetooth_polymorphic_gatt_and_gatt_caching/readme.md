@@ -95,7 +95,7 @@ To test the example
 
 2. Reset both WSTKs. You should now see the client connecting to the server, discovering the database version and writing to the corresponding characteristic handle. Make sure that the server starts with version 1 when connecting to the client for the first time.
 
-3. On the server side, press PB1 to switch to database version 2. Now you can see the result of the out_of_sync error code on the client side. 
+3. On the server side, press PB1 to switch to database version 2. Now you can see the result of the out_of_sync error code on the client side.
 
 4. Press PB0 on the server to switch back to database version 1, and observe the change on the client side again.
 

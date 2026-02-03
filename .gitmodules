@@ -1,0 +1,3 @@
+[submodule ".github/coding-convention-tool"]
+	path = .github/coding-convention-tool
+	url = https://github.com/SiliconLabsSoftware/devs-coding-convention-tool.git

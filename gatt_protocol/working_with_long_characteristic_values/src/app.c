@@ -30,7 +30,7 @@ static uint8_t find_service_in_advertisement(uint8_t *data,
 static uint16_t queue_characteristic_chunk(uint8_t * data,
                                            uint16_t len,
                                            uint8_t connection,
-                                           uint16_t characteristic ,
+                                           uint16_t characteristic,
                                            uint16_t offset);
 static uint16_t write_characteristic(uint8_t *data,
                                      uint16_t len,
@@ -54,7 +54,7 @@ static uint16_t att_mtu = 0;
 
 static volatile bool is_central = false;
 static uint8_t long_data_buffer[512];
-static uint8_t test_data_to_write[512] = {0xff, 0xfe};
+static uint8_t test_data_to_write[512] = { 0xff, 0xfe };
 
 static const uint8_t advertised_service_uuid[16] = { 0x77,
                                                      0x23,
@@ -71,7 +71,7 @@ static const uint8_t advertised_service_uuid[16] = { 0x77,
                                                      0x3c,
                                                      0x43,
                                                      0xb5,
-                                                     0xcd};
+                                                     0xcd };
 static gatt_state_t gatt_state;
 static uint8_t connection_handle = 0xff;
 static uint32_t service_handle = 0xffffffff;
@@ -128,25 +128,25 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
     case sl_bt_evt_system_boot_id:
       /* Print stack version */
       app_log("Bluetooth stack booted: v%d.%d.%d-b%d\r\n",
-                 evt->data.evt_system_boot.major,
-                 evt->data.evt_system_boot.minor,
-                 evt->data.evt_system_boot.patch,
-                 evt->data.evt_system_boot.build);
+              evt->data.evt_system_boot.major,
+              evt->data.evt_system_boot.minor,
+              evt->data.evt_system_boot.patch,
+              evt->data.evt_system_boot.build);
       // Extract unique ID from BT Address.
       sc = sl_bt_system_get_identity_address(&address, &address_type);
       app_assert(sc == SL_STATUS_OK,
-                    "[E: 0x%04x] Failed to get Bluetooth address\n",
-                    (int)sc);
+                 "[E: 0x%04x] Failed to get Bluetooth address\n",
+                 (int)sc);
 
       /* Print Bluetooth address */
       app_log("Bluetooth %s address: %02X:%02X:%02X:%02X:%02X:%02X\r\n",
-                       address_type ? "static random" : "public device",
-                       address.addr[5],
-                       address.addr[4],
-                       address.addr[3],
-                       address.addr[2],
-                       address.addr[1],
-                       address.addr[0]);
+              address_type ? "static random" : "public device",
+              address.addr[5],
+              address.addr[4],
+              address.addr[3],
+              address.addr[2],
+              address.addr[1],
+              address.addr[0]);
 
       // Pad and reverse unique ID to get System ID.
       system_id[0] = address.addr[5];
@@ -163,35 +163,35 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
                                                    sizeof(system_id),
                                                    system_id);
       app_assert(sc == SL_STATUS_OK,
-                    "[E: 0x%04x] Failed to write attribute\n",
-                    (int)sc);
+                 "[E: 0x%04x] Failed to write attribute\n",
+                 (int)sc);
 
       // Create an advertising set.
       sc = sl_bt_advertiser_create_set(&advertising_set_handle);
       app_assert(sc == SL_STATUS_OK,
-                    "[E: 0x%04x] Failed to create advertising set\n",
-                    (int)sc);
+                 "[E: 0x%04x] Failed to create advertising set\n",
+                 (int)sc);
       // Set advertising interval to 100ms.
       sc = sl_bt_advertiser_set_timing(
-              advertising_set_handle,
-              160, // min. adv. interval (milliseconds * 1.6)
-              160, // max. adv. interval (milliseconds * 1.6)
-              0,   // adv. duration
-              0);  // max. num. adv. events
+        advertising_set_handle,
+        160,       // min. adv. interval (milliseconds * 1.6)
+        160,       // max. adv. interval (milliseconds * 1.6)
+        0,         // adv. duration
+        0);        // max. num. adv. events
       app_assert(sc == SL_STATUS_OK,
-                    "[E: 0x%04x] Failed to set advertising timing\n",
-                    (int)sc);
+                 "[E: 0x%04x] Failed to set advertising timing\n",
+                 (int)sc);
       // Start general advertising and enable connections.
       sc = sl_bt_legacy_advertiser_generate_data(advertising_set_handle,
                                                  sl_bt_advertiser_general_discoverable);
       app_assert(sc == SL_STATUS_OK,
-                    "[E: 0x%04x] Failed to generate data\n",
-                    (int)sc);
+                 "[E: 0x%04x] Failed to generate data\n",
+                 (int)sc);
       sc = sl_bt_legacy_advertiser_start(advertising_set_handle,
                                          sl_bt_advertiser_connectable_scannable);
       app_assert(sc == SL_STATUS_OK,
-                    "[E: 0x%04x] Failed to start advertising\n",
-                    (int)sc);
+                 "[E: 0x%04x] Failed to start advertising\n",
+                 (int)sc);
       app_log("boot event - starting advertising\r\n");
       app_log("Press PB0 to enter central mode\r\n");
       gatt_state = IDLE;
@@ -207,16 +207,16 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
         // then stop scanning for a while
         sc = sl_bt_scanner_stop();
         app_assert(sc == SL_STATUS_OK,
-                      "[E: 0x%04x] Failed to stop discovery\n",
-                      (int)sc);
+                   "[E: 0x%04x] Failed to stop discovery\n",
+                   (int)sc);
         // and connect to that device
         sc = sl_bt_connection_open(evt->data.evt_scanner_legacy_advertisement_report.address,
                                    evt->data.evt_scanner_legacy_advertisement_report.address_type,
                                    sl_bt_gap_1m_phy,
                                    &connection_handle);
         app_assert(sc == SL_STATUS_OK,
-                      "[E: 0x%04x] Failed to connect\n",
-                      (int)sc);
+                   "[E: 0x%04x] Failed to connect\n",
+                   (int)sc);
         gatt_state = CONNECTED;
       }
 
@@ -231,8 +231,8 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
         // Discover the service on the peripheral device
         sc = sl_bt_gatt_discover_primary_services(connection_handle);
         app_assert(sc == SL_STATUS_OK,
-                      "[E: 0x%04x] Failed to discover primary services\n",
-                      (int)sc);
+                   "[E: 0x%04x] Failed to discover primary services\n",
+                   (int)sc);
         gatt_state = DISCOVERING_SERVICES;
       }
       break;
@@ -241,19 +241,19 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
     // This event indicates that a connection was closed.
     case sl_bt_evt_connection_closed_id:
       app_log("connection closed, reason: 0x%2.2x\r\n",
-                 evt->data.evt_connection_closed.reason);
+              evt->data.evt_connection_closed.reason);
       connection_handle = 0xff;
       // Restart advertising after client has disconnected.
       sc = sl_bt_legacy_advertiser_generate_data(advertising_set_handle,
                                                  sl_bt_advertiser_general_discoverable);
       app_assert(sc == SL_STATUS_OK,
-                    "[E: 0x%04x] Failed to generate data\n",
-                    (int)sc);
+                 "[E: 0x%04x] Failed to generate data\n",
+                 (int)sc);
       sc = sl_bt_legacy_advertiser_start(advertising_set_handle,
                                          sl_bt_advertiser_connectable_scannable);
       app_assert(sc == SL_STATUS_OK,
-                    "[E: 0x%04x] Failed to start advertising\n",
-                    (int)sc);
+                 "[E: 0x%04x] Failed to start advertising\n",
+                 (int)sc);
       break;
 
     // -------------------------------
@@ -262,8 +262,7 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
       if (BTN0_IRQ_EVENT & evt->data.evt_system_external_signal.extsignals) {
         is_central ^= 1;
         set_mode();
-      } 
-      else if (BTN1_IRQ_EVENT & evt->data.evt_system_external_signal.extsignals) {
+      } else if (BTN1_IRQ_EVENT & evt->data.evt_system_external_signal.extsignals) {
         app_log("test data write.\r\n");
         if ((connection_handle > 0) && (characteristic_handle == gattdb_long_data)) {
           write_offset = write_characteristic(test_data_to_write,
@@ -285,8 +284,8 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
     // This event is generated when a new service is discovered
     case sl_bt_evt_gatt_service_id:
       if ((memcmp(evt->data.evt_gatt_service.uuid.data,
-                      advertised_service_uuid,
-                      evt->data.evt_gatt_service.uuid.len) == 0) && is_central) {
+                  advertised_service_uuid,
+                  evt->data.evt_gatt_service.uuid.len) == 0) && is_central) {
         app_log("Service found\r\n");
         // Save service handle for future reference
         service_handle = evt->data.evt_gatt_service.service;
@@ -297,7 +296,7 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
     // This event is generated when a new characteristic is discovered
     case sl_bt_evt_gatt_characteristic_id:
       if ((evt->data.evt_gatt_characteristic.characteristic == gattdb_long_data)
-        && is_central) {
+          && is_central) {
         app_log("Characteristic found\r\n");
         // Save characteristic handle for future reference
         characteristic_handle = evt->data.evt_gatt_characteristic.characteristic;
@@ -315,10 +314,10 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
       if (gatt_state == DISCOVERING_SERVICES) {
         // Discover characteristic on the peripheral device
         sc = sl_bt_gatt_discover_characteristics(connection_handle,
-                                                  service_handle);
+                                                 service_handle);
         app_assert(sc == SL_STATUS_OK,
-                      "[E: 0x%04x] Failed to discover characteristics\n",
-                      (int)sc);
+                   "[E: 0x%04x] Failed to discover characteristics\n",
+                   (int)sc);
         gatt_state = DISCOVERING_CHARACTERISTICS;
         break;
       }
@@ -326,17 +325,17 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
       if (gatt_state == DISCOVERING_CHARACTERISTICS) {
         app_log("Reading long characteristic value\r\n");
         sc = sl_bt_gatt_read_characteristic_value(connection_handle,
-                                            characteristic_handle);
+                                                  characteristic_handle);
         app_assert(sc == SL_STATUS_OK,
-                      "[E: 0x%04x] Failed to reading long characteristic value\n",
-                      (int)sc);
+                   "[E: 0x%04x] Failed to reading long characteristic value\n",
+                   (int)sc);
         gatt_state = READING_CHARACTERISTIC;
         break;
       }
       // If reading characteristic finished
       if (gatt_state == READING_CHARACTERISTIC) {
         app_log("Characteristic read finished with result %2X\r\n",
-                   evt->data.evt_gatt_procedure_completed.result);
+                evt->data.evt_gatt_procedure_completed.result);
         gatt_state = CONNECTED;
         app_log("Connected. Press PB1 on central to write test data\r\n");
         break;
@@ -345,8 +344,7 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
       if (gatt_state == PREPARING_LONG_WRITE) {
         if (write_offset == (sizeof(test_data_to_write) - 1)) {
           gatt_state = EXECUTING_LONG_WRITE;
-        } 
-        else {
+        } else {
           write_offset += queue_characteristic_chunk(&test_data_to_write[write_offset],
                                                      sizeof(test_data_to_write) - write_offset,
                                                      connection_handle,
@@ -365,17 +363,17 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
       }
       break;
 
-     // -------------------------------
-     // This event is generated when a characteristic value was received
+    // -------------------------------
+    // This event is generated when a characteristic value was received
     case sl_bt_evt_gatt_characteristic_value_id:
       app_log("Received %d bytes on characteristic handle %d \r\n",
-                evt->data.evt_gatt_characteristic_value.value.len,
-                evt->data.evt_gatt_characteristic_value.characteristic);
+              evt->data.evt_gatt_characteristic_value.value.len,
+              evt->data.evt_gatt_characteristic_value.characteristic);
       app_log("Starting from offset %d\r\n",
-                evt->data.evt_gatt_characteristic_value.offset);
+              evt->data.evt_gatt_characteristic_value.offset);
       break;
 
-     // -------------------------------
+    // -------------------------------
     case sl_bt_evt_gatt_server_user_read_request_id:
       if (evt->data.evt_gatt_server_user_read_request.characteristic == gattdb_long_data) {
         uint8_t offset = evt->data.evt_gatt_server_user_read_request.offset;
@@ -386,70 +384,69 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
         if (bytes_left_to_send > att_mtu - 1) {
           bytes_in_this_tx = att_mtu - 1;
           bytes_left_to_send -= bytes_in_this_tx;
-        } 
-        else {
+        } else {
           bytes_in_this_tx = bytes_left_to_send;
           bytes_left_to_send = 0;     // reset for next time
         }
 
         sc = sl_bt_gatt_server_send_user_read_response(
-              evt->data.evt_gatt_server_user_read_request.connection,
-              evt->data.evt_gatt_server_user_read_request.characteristic,
-              (uint8_t)SL_STATUS_OK,
-              bytes_in_this_tx,
-              &long_data_buffer[offset],
-              &sent_len);
+          evt->data.evt_gatt_server_user_read_request.connection,
+          evt->data.evt_gatt_server_user_read_request.characteristic,
+          (uint8_t)SL_STATUS_OK,
+          bytes_in_this_tx,
+          &long_data_buffer[offset],
+          &sent_len);
         app_assert(sc == SL_STATUS_OK,
-                      "[E: 0x%04x] Failed to send a response\n",
-                      (int)sc);
+                   "[E: 0x%04x] Failed to send a response\n",
+                   (int)sc);
       }
       break;
 
     case sl_bt_evt_gatt_server_user_write_request_id:
       if (evt->data.evt_gatt_server_user_write_request.characteristic == gattdb_long_data) {
-          app_log_info("gatt_write_request opcode %2X, %d bytes at offset %d\r\n",
+        app_log_info("gatt_write_request opcode %2X, %d bytes at offset %d\r\n",
                      evt->data.evt_gatt_server_user_write_request.att_opcode,
                      evt->data.evt_gatt_server_user_write_request.value.len,
                      evt->data.evt_gatt_server_user_write_request.offset);
-          memcpy(&long_data_buffer[evt->data.evt_gatt_server_user_write_request.offset],
-                 evt->data.evt_gatt_server_user_write_request.value.data,
-                 evt->data.evt_gatt_server_user_write_request.value.len);
+        memcpy(&long_data_buffer[evt->data.evt_gatt_server_user_write_request.offset],
+               evt->data.evt_gatt_server_user_write_request.value.data,
+               evt->data.evt_gatt_server_user_write_request.value.len);
 
-          if(evt->data.evt_gatt_server_user_write_request.att_opcode == sl_bt_gatt_write_request ){
+        if (evt->data.evt_gatt_server_user_write_request.att_opcode == sl_bt_gatt_write_request ) {
           sc = sl_bt_gatt_server_send_user_write_response(
-              evt->data.evt_gatt_server_user_write_request.connection,
-              evt->data.evt_gatt_server_user_write_request.characteristic,
-              (uint8_t)SL_STATUS_OK);
+            evt->data.evt_gatt_server_user_write_request.connection,
+            evt->data.evt_gatt_server_user_write_request.characteristic,
+            (uint8_t)SL_STATUS_OK);
           app_assert(sc == SL_STATUS_OK,
-                        "[E: 0x%04x] Failed to send a write response\n",
-                        (int)sc);
-          } else if (evt->data.evt_gatt_server_user_write_request.att_opcode == sl_bt_gatt_prepare_write_request){
+                     "[E: 0x%04x] Failed to send a write response\n",
+                     (int)sc);
+        } else if (evt->data.evt_gatt_server_user_write_request.att_opcode == sl_bt_gatt_prepare_write_request) {
           sc = sl_bt_gatt_server_send_user_prepare_write_response(
-              evt->data.evt_gatt_server_user_write_request.connection,
-              evt->data.evt_gatt_server_user_write_request.characteristic,
-              (uint8_t)SL_STATUS_OK,
-              evt->data.evt_gatt_server_user_write_request.offset,
-              evt->data.evt_gatt_server_user_write_request.value.len,
-              evt->data.evt_gatt_server_user_write_request.value.data);
+            evt->data.evt_gatt_server_user_write_request.connection,
+            evt->data.evt_gatt_server_user_write_request.characteristic,
+            (uint8_t)SL_STATUS_OK,
+            evt->data.evt_gatt_server_user_write_request.offset,
+            evt->data.evt_gatt_server_user_write_request.value.len,
+            evt->data.evt_gatt_server_user_write_request.value.data);
           app_assert(sc == SL_STATUS_OK,
-                        "[E: 0x%04x] Failed to send a prepare write response\n",
-                        (int)sc);
-          }
+                     "[E: 0x%04x] Failed to send a prepare write response\n",
+                     (int)sc);
+        }
       }
-      if(evt->data.evt_gatt_server_user_write_request.att_opcode == sl_bt_gatt_execute_write_request){
-          sc = sl_bt_gatt_server_send_user_write_response(evt->data.evt_gatt_server_user_write_request.connection,
-                                                     evt->data.evt_gatt_server_user_write_request.characteristic,
-                                                     (uint8_t)SL_STATUS_OK);
-          app_assert(sc == SL_STATUS_OK,
-                        "[E: 0x%04x] Failed to send a write response\n",
-                        (int)sc);
+      if (evt->data.evt_gatt_server_user_write_request.att_opcode == sl_bt_gatt_execute_write_request) {
+        sc = sl_bt_gatt_server_send_user_write_response(evt->data.evt_gatt_server_user_write_request.connection,
+                                                        evt->data.evt_gatt_server_user_write_request.characteristic,
+                                                        (uint8_t)SL_STATUS_OK);
+        app_assert(sc == SL_STATUS_OK,
+                   "[E: 0x%04x] Failed to send a write response\n",
+                   (int)sc);
       }
       break;
 
     case sl_bt_evt_gatt_server_execute_write_completed_id:
       app_log("Queued GATT write completed ");
       app_log("result = 0x%2X\r\n",
-                 evt->data.evt_gatt_server_execute_write_completed.result);
+              evt->data.evt_gatt_server_execute_write_completed.result);
       break;
 
     ///////////////////////////////////////////////////////////////////////////
@@ -474,8 +471,7 @@ void sl_button_on_change(const sl_button_t *handle)
   if (sl_button_get_state(handle) == SL_SIMPLE_BUTTON_PRESSED) {
     if (&sl_button_btn0 == handle) {
       sl_bt_external_signal(BTN0_IRQ_EVENT);
-    }
-    else if (&sl_button_btn1 == handle) {
+    } else if (&sl_button_btn1 == handle) {
       sl_bt_external_signal(BTN1_IRQ_EVENT);
     }
   }
@@ -510,7 +506,7 @@ static uint8_t find_service_in_advertisement(uint8_t *data, uint8_t len)
 static uint16_t queue_characteristic_chunk(uint8_t * data,
                                            uint16_t len,
                                            uint8_t connection,
-                                           uint16_t characteristic ,
+                                           uint16_t characteristic,
                                            uint16_t offset)
 {
   uint8_t max_tx_size = att_mtu - 5;
@@ -525,12 +521,11 @@ static uint16_t queue_characteristic_chunk(uint8_t * data,
                                                        data,
                                                        &sent_len);
     app_assert(sc == SL_STATUS_OK,
-                  "[E: 0x%04x] Failed to prepare write\n",
-                  (int)sc);
+               "[E: 0x%04x] Failed to prepare write\n",
+               (int)sc);
     app_log("Wrote %d bytes to remote\r\n", sent_len);
     return sent_len;
-  } 
-  else if (len) {
+  } else if (len) {
     /* check to see if there is any data smaller than max_tx_size to be sent*/
     sc = sl_bt_gatt_prepare_characteristic_value_write(connection,
                                                        characteristic,
@@ -539,12 +534,11 @@ static uint16_t queue_characteristic_chunk(uint8_t * data,
                                                        data,
                                                        &sent_len);
     app_assert(sc == SL_STATUS_OK,
-                  "[E: 0x%04x] Failed to prepare write\n",
-                  (int)sc);
+               "[E: 0x%04x] Failed to prepare write\n",
+               (int)sc);
     app_log("Wrote %d bytes to remote\r\n", sent_len);
     return sent_len;
-  } 
-  else { /* len == 0*/
+  } else { /* len == 0*/
     /* part 3 executing the write*/
     /* send all the queued blocks */
     gatt_state = EXECUTING_LONG_WRITE;
@@ -572,8 +566,7 @@ static uint16_t write_characteristic(uint8_t *data,
                                       connection,
                                       characteristic,
                                       offset);
-  } 
-  else {
+  } else {
     app_log("GATT busy, please try again later\r\n");
     return -1;
   }
@@ -583,7 +576,7 @@ static uint16_t write_characteristic(uint8_t *data,
 /*
  * Helper function to put the device in central/peripheral mode
  * and start scanning or advertising accordingly.
-*/
+ */
 static void set_mode(void)
 {
   sl_status_t sc;
@@ -594,23 +587,22 @@ static void set_mode(void)
     if (gatt_state == SCANNING) {
       sc = sl_bt_scanner_stop();
       app_assert(sc == SL_STATUS_OK,
-                    "[E: 0x%04x] Failed to stop scanning\n",
-                    (int)sc);
+                 "[E: 0x%04x] Failed to stop scanning\n",
+                 (int)sc);
     }
 
     sc = sl_bt_scanner_set_parameters(sl_bt_scanner_scan_mode_passive, 160, 160);
     app_assert(sc == SL_STATUS_OK,
-                      "[E: 0x%04x] Failed to set scan parameters \n",
-                      (int)sc);
+               "[E: 0x%04x] Failed to set scan parameters \n",
+               (int)sc);
     // Start scanning - looking for peripheral devices
     sc = sl_bt_scanner_start(sl_bt_gap_1m_phy, sl_bt_scanner_discover_observation);
     app_assert(sc == SL_STATUS_OK,
-                  "[E: 0x%04x] Failed to start discovery #1\n",
-                  (int)sc);
+               "[E: 0x%04x] Failed to start discovery #1\n",
+               (int)sc);
     gatt_state = SCANNING;
     app_log("starting scanning\r\n");
   } else {
-
     // Set advertising interval to 100ms.
     sc = sl_bt_advertiser_set_timing(
       advertising_set_handle,
@@ -619,19 +611,19 @@ static void set_mode(void)
       0,   // adv. duration
       0);  // max. num. adv. events
     app_assert(sc == SL_STATUS_OK,
-                  "[E: 0x%04x] Failed to set advertising timing\n",
-                  (int)sc);
+               "[E: 0x%04x] Failed to set advertising timing\n",
+               (int)sc);
     // Start general advertising and enable connections.
-      sc = sl_bt_legacy_advertiser_generate_data(advertising_set_handle,
-                                                 sl_bt_advertiser_general_discoverable);
-      app_assert(sc == SL_STATUS_OK,
-                    "[E: 0x%04x] Failed to generate data\n",
-                    (int)sc);
-      sc = sl_bt_legacy_advertiser_start(advertising_set_handle,
-                                         sl_bt_advertiser_connectable_scannable);
-      app_assert(sc == SL_STATUS_OK,
-                    "[E: 0x%04x] Failed to start advertising\n",
-                    (int)sc);
+    sc = sl_bt_legacy_advertiser_generate_data(advertising_set_handle,
+                                               sl_bt_advertiser_general_discoverable);
+    app_assert(sc == SL_STATUS_OK,
+               "[E: 0x%04x] Failed to generate data\n",
+               (int)sc);
+    sc = sl_bt_legacy_advertiser_start(advertising_set_handle,
+                                       sl_bt_advertiser_connectable_scannable);
+    app_assert(sc == SL_STATUS_OK,
+               "[E: 0x%04x] Failed to start advertising\n",
+               (int)sc);
     app_log("boot event - starting advertising\r\n");
   }
 }

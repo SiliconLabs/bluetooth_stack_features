@@ -121,7 +121,7 @@ To try this example, you need two radio boards, one for the advertiser side and 
 
 3. Config **Software components**.  
 
-    * In **Bluetooth Core configuration**, set the value **Max number of periodic advertising synchronizations** according to the number of advertisers and set **Buffer memory size for Bluetooth stack** to `4800`, 
+    * In **Bluetooth Core configuration**, set the value **Max number of periodic advertising synchronizations** according to the number of advertisers and set **Buffer memory size for Bluetooth stack** to `4800`,
     * Add **Log** driver the same way as in the case of the Advertiser device.  
 
     * While the Advertiser must use the **Periodic Advertising** component, the Scanner must use the **Periodic Advertising Synchronization** component.  

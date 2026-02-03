@@ -29,13 +29,11 @@
 #define TICKS_PER_SECOND    32768
 #define TIMER_CALLBACK      1
 
-
 /**************************************************************************//**
  * Local variable
  *****************************************************************************/
 static uint32_t reset_cause;
 static const WDOG_Init_TypeDef init = WDOG_INIT_DEFAULT;
-
 
 sl_sleeptimer_timer_handle_t wdog_timer;
 
@@ -55,10 +53,10 @@ SL_WEAK void app_init(void)
   reset_cause = RMU_ResetCauseGet();
   RMU_ResetCauseClear();
   if (reset_cause & EMU_RSTCAUSE_WDOG0) {
-      /* watchdog reset occured */
-      /* send message to host */
-      sl_bt_send_evt_user_message_to_host((uint8_t) sizeof(watchdog_reset_message),
-                                          watchdog_reset_message);
+    /* watchdog reset occurred */
+    /* send message to host */
+    sl_bt_send_evt_user_message_to_host((uint8_t) sizeof(watchdog_reset_message),
+                                        watchdog_reset_message);
   }
 
   CMU_ClockEnable(cmuClock_WDOG0, true);
@@ -120,7 +118,8 @@ void sl_ncp_user_cmd_message_to_target_cb(void *data)
  * @param[in] handle Handle of the sleeptimer instance
  * @param[in] data  Callback data
  ******************************************************************************/
-void sleeptimer_callback(sl_sleeptimer_timer_handle_t *handle, void *data){
+void sleeptimer_callback(sl_sleeptimer_timer_handle_t *handle, void *data)
+{
   (void)handle;
   (void)data;
 
@@ -147,7 +146,7 @@ bool sl_ncp_local_evt_process(sl_bt_msg_t *evt)
 
   switch (SL_BT_MSG_ID(evt->header)) {
     // -------------------------------
-    // This event is actived by the software timer
+    // This event is activated by the software timer
     case sl_bt_evt_system_external_signal_id:
       // Feed the watchdog
       WDOGn_Feed(DEFAULT_WDOG);

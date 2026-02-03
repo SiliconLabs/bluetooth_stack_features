@@ -35,7 +35,6 @@
 #include "app_log.h"
 #include "nvm3.h"
 
-
 #define NVM_KEY_HASH_1      0x01
 #define NVM_KEY_HASH_2      0x02
 
@@ -46,7 +45,7 @@
 sl_sleeptimer_timer_handle_t write_value_timeout_timer;
 
 /* UUID of the DB hash characteristic */
-static uint8_t db_hash_uuid[2] = {0x2a,0x2b};
+static uint8_t db_hash_uuid[2] = { 0x2a, 0x2b };
 
 /* DB hash of the 1st version of the database */
 static uint8_t db_hash_version_1[DATABASE_HASH_LENGTH];
@@ -73,10 +72,10 @@ static uint8_t db_version = 0xFF;
 static uint8_t conn_handle = 0xFF;
 
 /* enable bit to be sent */
-static uint8_t enable_bit[1] = {0x01};
+static uint8_t enable_bit[1] = { 0x01 };
 
 /* dummy data to be sent */
-static uint8_t dummy_data[1] = {0x01};
+static uint8_t dummy_data[1] = { 0x01 };
 
 /* remember if we have already enabled robust caching */
 static uint8_t robust_caching_enabled = 0;
@@ -84,7 +83,7 @@ static uint8_t robust_caching_enabled = 0;
 static uint8_t valid_handles = 0;
 
 /**************************************************************************//**
- Callback for the sleeptimer.
+   Callback for the sleeptimer.
  *****************************************************************************/
 void sleep_timer_callback(sl_sleeptimer_timer_handle_t *handle, void *data)
 {
@@ -103,18 +102,16 @@ void sleep_timer_callback(sl_sleeptimer_timer_handle_t *handle, void *data)
 static uint8_t findDeviceByName(sl_bt_evt_scanner_legacy_advertisement_report_t *pResp, char* name)
 {
   uint8_t i = 0;
-  uint8_t ad_len,ad_type;
+  uint8_t ad_len, ad_type;
 
-  while (i < (pResp->data.len - 1))
-  {
+  while (i < (pResp->data.len - 1)) {
     ad_len  = pResp->data.data[i];
-    ad_type = pResp->data.data[i+1];
+    ad_type = pResp->data.data[i + 1];
 
-    if (ad_type == 0x08 || ad_type == 0x09 )
-    {
+    if (ad_type == 0x08 || ad_type == 0x09 ) {
       // type 0x08 = Shortened Local Name
       // type 0x09 = Complete Local Name
-      if (memcmp(name, &(pResp->data.data[i+2]), ad_len-1) == 0) {
+      if (memcmp(name, &(pResp->data.data[i + 2]), ad_len - 1) == 0) {
         return 1;
       }
     }
@@ -131,12 +128,12 @@ void app_init(void)
   Ecode_t ret_code;
 
   ret_code = nvm3_readData(nvm3_defaultHandle, NVM_KEY_HASH_1, db_hash_version_1, DATABASE_HASH_LENGTH);
-  if(ret_code == ECODE_NVM3_OK){
+  if (ret_code == ECODE_NVM3_OK) {
+    valid_handles++;
+    ret_code = nvm3_readData(nvm3_defaultHandle, NVM_KEY_HASH_2, db_hash_version_2, DATABASE_HASH_LENGTH);
+    if (ret_code == ECODE_NVM3_OK) {
       valid_handles++;
-      ret_code = nvm3_readData(nvm3_defaultHandle, NVM_KEY_HASH_2, db_hash_version_2, DATABASE_HASH_LENGTH);
-      if(ret_code == ECODE_NVM3_OK){
-          valid_handles++;
-      }
+    }
   }
 }
 
@@ -170,7 +167,7 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
     case sl_bt_evt_system_boot_id:
       app_log("Boot event\r\n");
       /* Enable bondings in security manager (this is needed for Service Change Indications) */
-      sc = sl_bt_sm_configure( 2, sl_bt_sm_io_capability_noinputnooutput);
+      sc = sl_bt_sm_configure(2, sl_bt_sm_io_capability_noinputnooutput);
       app_assert_status(sc);
 
       /* 10ms scan interval, 100% duty cycle*/
@@ -179,16 +176,16 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
 
       sc = sl_bt_scanner_start(sl_bt_gap_1m_phy, sl_bt_scanner_discover_observation);
       app_assert_status(sc);
-    break;
+      break;
 
     case sl_bt_evt_scanner_legacy_advertisement_report_id:
-     /* Find server by name */
-     if (findDeviceByName(&evt->data.evt_scanner_legacy_advertisement_report, "GATT server")) {
-       /* Connect to server */
-       sc = sl_bt_connection_open(evt->data.evt_scanner_legacy_advertisement_report.address, evt->data.evt_scanner_legacy_advertisement_report.address_type, sl_bt_gap_1m_phy, &conn_handle);
-       app_assert_status(sc);
-     }
-    break;
+      /* Find server by name */
+      if (findDeviceByName(&evt->data.evt_scanner_legacy_advertisement_report, "GATT server")) {
+        /* Connect to server */
+        sc = sl_bt_connection_open(evt->data.evt_scanner_legacy_advertisement_report.address, evt->data.evt_scanner_legacy_advertisement_report.address_type, sl_bt_gap_1m_phy, &conn_handle);
+        app_assert_status(sc);
+      }
+      break;
 
     case sl_bt_evt_connection_opened_id:
       app_log("connection opened\r\n");
@@ -204,124 +201,112 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
        * as in this application this is the only value that we read by UUID and not by handle */
       if (evt->data.evt_gatt_characteristic_value.att_opcode == sl_bt_gatt_read_by_type_response) {
         /* print DB hash */
-          app_log("database hash: ");
-          for (uint8_t i = 0; i < 16; i++) {
-            app_log("%02X",evt->data.evt_gatt_characteristic_value.value.data[i]);
-          }
-          app_log("\r\n");
+        app_log("database hash: ");
+        for (uint8_t i = 0; i < 16; i++) {
+          app_log("%02X", evt->data.evt_gatt_characteristic_value.value.data[i]);
+        }
+        app_log("\r\n");
 
-          /* Let's compare the hash with the two version of the database we know from earlier observations */
-          if (memcmp(&evt->data.evt_gatt_characteristic_value.value.data[0], &db_hash_version_1[0], 16) == 0) {
-            db_version = 1;
-            app_log("version 1 detected\r\n");
+        /* Let's compare the hash with the two version of the database we know from earlier observations */
+        if (memcmp(&evt->data.evt_gatt_characteristic_value.value.data[0], &db_hash_version_1[0], 16) == 0) {
+          db_version = 1;
+          app_log("version 1 detected\r\n");
+        } else
+        if (memcmp(&evt->data.evt_gatt_characteristic_value.value.data[0], &db_hash_version_2[0], 16) == 0) {
+          db_version = 2;
+          app_log("version 2 detected\r\n");
+        } else {
+          db_version = 0xFF;
+          app_log("unknown version detected, storing it to NVM\r\n");
+          if (valid_handles == 0) {
+            key = NVM_KEY_HASH_1;
+            memcpy(db_hash_version_1, evt->data.evt_gatt_characteristic_value.value.data, DATABASE_HASH_LENGTH);
+          } else {
+            key = NVM_KEY_HASH_2;
+            memcpy(db_hash_version_2, evt->data.evt_gatt_characteristic_value.value.data, DATABASE_HASH_LENGTH);
           }
-          else
-          if (memcmp(&evt->data.evt_gatt_characteristic_value.value.data[0], &db_hash_version_2[0], 16) == 0) {
-            db_version = 2;
-            app_log("version 2 detected\r\n");
+          //store the value to the NVM
+          ret_code = nvm3_writeData(nvm3_defaultHandle, key, evt->data.evt_gatt_characteristic_value.value.data, DATABASE_HASH_LENGTH);
+          valid_handles++;
+          if (ret_code != ECODE_NVM3_OK) {
+            app_log("Error while storing data to the NVM: %x\r\n", ret_code);
           }
-          else
-          {
-            db_version = 0xFF;
-            app_log("unknown version detected, storing it to NVM\r\n");
-            if(valid_handles == 0){
-                key = NVM_KEY_HASH_1;
-                memcpy(db_hash_version_1, evt->data.evt_gatt_characteristic_value.value.data, DATABASE_HASH_LENGTH);
-            }else{
-                key = NVM_KEY_HASH_2;
-                memcpy(db_hash_version_2, evt->data.evt_gatt_characteristic_value.value.data, DATABASE_HASH_LENGTH);
-            }
-              //store the value to the NVM
-              ret_code = nvm3_writeData(nvm3_defaultHandle, key, evt->data.evt_gatt_characteristic_value.value.data, DATABASE_HASH_LENGTH);
-              valid_handles++;
-              if(ret_code != ECODE_NVM3_OK){
-                  app_log("Error while storing data to the NVM: %x\r\n", ret_code);
-              }
-              db_version = valid_handles;
-          }
+          db_version = valid_handles;
+        }
 
-          /* enable robust caching by writing 0x01 into the Client Supported Features characteristic */
-          if (robust_caching_enabled == 0) {
-            /* The handle of the Client Supported Features characteristic depends on a version of the remote GATT database.
-             * Here we assume, that we already know the handle for each version from earlier observations. */
-            if (db_version == 1) {
-              app_log("enable robust caching... ");
-              sc = sl_bt_gatt_write_characteristic_value(conn_handle, client_supported_features_handle_version_1, sizeof(enable_bit), &enable_bit[0]);
-              app_assert_status(sc);
-            }
-            else
-            if (db_version == 2) {
-              app_log("enable robust caching... ");
-              sc = sl_bt_gatt_write_characteristic_value(conn_handle, client_supported_features_handle_version_2, sizeof(enable_bit), &enable_bit[0]);
-              app_assert_status(sc);
-            }
-            robust_caching_enabled = 1;
+        /* enable robust caching by writing 0x01 into the Client Supported Features characteristic */
+        if (robust_caching_enabled == 0) {
+          /* The handle of the Client Supported Features characteristic depends on a version of the remote GATT database.
+           * Here we assume, that we already know the handle for each version from earlier observations. */
+          if (db_version == 1) {
+            app_log("enable robust caching... ");
+            sc = sl_bt_gatt_write_characteristic_value(conn_handle, client_supported_features_handle_version_1, sizeof(enable_bit), &enable_bit[0]);
+            app_assert_status(sc);
+          } else
+          if (db_version == 2) {
+            app_log("enable robust caching... ");
+            sc = sl_bt_gatt_write_characteristic_value(conn_handle, client_supported_features_handle_version_2, sizeof(enable_bit), &enable_bit[0]);
+            app_assert_status(sc);
           }
+          robust_caching_enabled = 1;
+        }
 
-          /* After detecting the database let's write a dummy value to the custom characteristic every second.
-           * Start a sleeptimer here that will trigger the write procedure */
-          sc = sl_sleeptimer_start_periodic_timer_ms(&write_value_timeout_timer, 1000, sleep_timer_callback, NULL, 0, 0);
-          app_assert_status(sc);
+        /* After detecting the database let's write a dummy value to the custom characteristic every second.
+         * Start a sleeptimer here that will trigger the write procedure */
+        sc = sl_sleeptimer_start_periodic_timer_ms(&write_value_timeout_timer, 1000, sleep_timer_callback, NULL, 0, 0);
+        app_assert_status(sc);
       }
       break;
 
-      case sl_bt_evt_system_external_signal_id:
-        if (evt->data.evt_system_external_signal.extsignals & WRITE_VALUE_TIMEOUT){
-            /* Write a dummy value to the custom characteristic. The handle of the custom characteristic depends
-             * on a version of the remote GATT database. Here we assume, that we already know the handle for each
-             * version from earlier observations. */
-            if (db_version == 1) {
-              app_log("write to handle %d... ",char_handle_version_1);
-              sc = sl_bt_gatt_write_characteristic_value(conn_handle, char_handle_version_1, sizeof(dummy_data), &dummy_data[0]);
-              app_assert_status(sc);
-            }
-            else
-              if (db_version == 2) {
-                app_log("write to handle %d... ",char_handle_version_2);
-                sc = sl_bt_gatt_write_characteristic_value(conn_handle, char_handle_version_2, sizeof(dummy_data), &dummy_data[0]);
-                app_assert_status(sc);
-              }
-              else
-              {
-                /* we do not know the handle for the characteristic, so we should discover it! This is outside of the scope
-                 * of this example. Find an example for GATT discovery. */
-              }
-
+    case sl_bt_evt_system_external_signal_id:
+      if (evt->data.evt_system_external_signal.extsignals & WRITE_VALUE_TIMEOUT) {
+        /* Write a dummy value to the custom characteristic. The handle of the custom characteristic depends
+         * on a version of the remote GATT database. Here we assume, that we already know the handle for each
+         * version from earlier observations. */
+        if (db_version == 1) {
+          app_log("write to handle %d... ", char_handle_version_1);
+          sc = sl_bt_gatt_write_characteristic_value(conn_handle, char_handle_version_1, sizeof(dummy_data), &dummy_data[0]);
+          app_assert_status(sc);
+        } else
+        if (db_version == 2) {
+          app_log("write to handle %d... ", char_handle_version_2);
+          sc = sl_bt_gatt_write_characteristic_value(conn_handle, char_handle_version_2, sizeof(dummy_data), &dummy_data[0]);
+          app_assert_status(sc);
+        } else {
+          /* we do not know the handle for the characteristic, so we should discover it! This is outside of the scope
+           * of this example. Find an example for GATT discovery. */
         }
-        break;
+      }
+      break;
 
+    case sl_bt_evt_gatt_procedure_completed_id:
+      /* check the result of the read/write procedure */
+      if (evt->data.evt_gatt_procedure_completed.result == SL_STATUS_OK) {
+        app_log("OK\r\n");
+      } else
+      /* check if out-of-sync error was received */
+      if (evt->data.evt_gatt_procedure_completed.result == SL_STATUS_BT_ATT_OUT_OF_SYNC) {
+        app_log("database has changed!\r\n");
 
-      case sl_bt_evt_gatt_procedure_completed_id:
-        /* check the result of the read/write procedure */
-        if (evt->data.evt_gatt_procedure_completed.result == SL_STATUS_OK) {
-          app_log("OK\r\n");
-        }
-        else
-          /* check if out-of-sync error was received */
-          if (evt->data.evt_gatt_procedure_completed.result == SL_STATUS_BT_ATT_OUT_OF_SYNC) {
-             app_log("database has changed!\r\n");
+        // Stop sleeptimer
+        sc = sl_sleeptimer_stop_timer(&write_value_timeout_timer);
+        app_assert_status(sc);
 
-             // Stop sleeptimer
-             sc = sl_sleeptimer_stop_timer(&write_value_timeout_timer);
-             app_assert_status(sc);
-
-            /* read database hash */
-            sc = sl_bt_gatt_read_characteristic_value_by_uuid(conn_handle, 0x0001FFFF, sizeof(db_hash_uuid), &db_hash_uuid[0]);
-            app_assert_status(sc);
-          }
-          else
-          {
-             app_log("ERROR: 0x%04x\r\n",evt->data.evt_gatt_procedure_completed.result);
-          }
+        /* read database hash */
+        sc = sl_bt_gatt_read_characteristic_value_by_uuid(conn_handle, 0x0001FFFF, sizeof(db_hash_uuid), &db_hash_uuid[0]);
+        app_assert_status(sc);
+      } else {
+        app_log("ERROR: 0x%04x\r\n", evt->data.evt_gatt_procedure_completed.result);
+      }
       break;
     // -------------------------------
     // This event indicates that a connection was closed.
     case sl_bt_evt_connection_closed_id:
       robust_caching_enabled = 0;
       sc = sl_sleeptimer_stop_timer(&write_value_timeout_timer);
-      if(sc != SL_STATUS_INVALID_STATE){
-          //SL_INVALID_STATE indicates that the timer was already stopped
-          app_assert_status(sc);
+      if (sc != SL_STATUS_INVALID_STATE) {
+        //SL_INVALID_STATE indicates that the timer was already stopped
+        app_assert_status(sc);
       }
       break;
 

@@ -2,7 +2,7 @@
 
 ## Description ##
 
-In Silicon Labs Bluetooth SDK v8.x you can use the API calls [sl_bt_legacy_advertiser_set_data()](https://docs.silabs.com/bluetooth/latest/bluetooth-stack-api/sl-bt-legacy-advertiser#sl-bt-legacy-advertiser-set-data) / [sl_bt_extended_advertiser_set_data()](https://docs.silabs.com/bluetooth/latest/bluetooth-stack-api/sl-bt-extended-advertiser#sl-bt-extended-advertiser-set-data) to set the advertisement and scan response data. Advertisment payload is defined in a structured manner whereas the data passed to above API calls is raw data uint8array. This example focuses on adding a middle layer between user application and the Bluetooth stack API to set the advertisement payload, which makes the payload more straightforward, visible, and easier to understand.
+In Silicon Labs Bluetooth SDK v8.x you can use the API calls [sl_bt_legacy_advertiser_set_data()](https://docs.silabs.com/bluetooth/latest/bluetooth-stack-api/sl-bt-legacy-advertiser#sl-bt-legacy-advertiser-set-data) / [sl_bt_extended_advertiser_set_data()](https://docs.silabs.com/bluetooth/latest/bluetooth-stack-api/sl-bt-extended-advertiser#sl-bt-extended-advertiser-set-data) to set the advertisement and scan response data. Advertisement payload is defined in a structured manner whereas the data passed to above API calls is raw data uint8array. This example focuses on adding a middle layer between user application and the Bluetooth stack API to set the advertisement payload, which makes the payload more straightforward, visible, and easier to understand.
 
 To learn more about the payload of Bluetooth advertisement, see [Bluetooth Advertising Data Basics](https://docs.silabs.com/bluetooth/latest/bluetooth-fundamentals-advertising-scanning/advertising-data-basics).
 
@@ -73,5 +73,5 @@ SiSDK  v2025.6
    <div style="text-align: center;">
       <img src="images/test_result_n.png" alt="Test result">
    </div>
-   
+
    For debugging purposes open a Terminal, and connect to your device via the JLink virtual COM port.

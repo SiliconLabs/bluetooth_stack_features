@@ -84,7 +84,7 @@ Peripheral: An EFR32 Radio board (a BGM module in this case, **it supports LE se
    ![button](images/install_button.png)  
 
 
-4. Import the GATT configuration:        
+4. Import the GATT configuration:  
     - Open the **Bluetooth GATT Configurator** under the **CONFIGURATION TOOLS** tab.
     - Find the Import button and import the attached **gatt_configuration.btconf** file.
     ![btc configure](images/btconf.png)

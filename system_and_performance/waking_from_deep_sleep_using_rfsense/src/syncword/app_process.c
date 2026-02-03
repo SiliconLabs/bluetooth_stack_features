@@ -81,7 +81,7 @@ static uint16_t unpack_packet(uint8_t *rx_destination, const RAIL_RxPacketInfo_t
 // -----------------------------------------------------------------------------
 //                                Global Variables
 // -----------------------------------------------------------------------------
-/// Flag, indicating transmit request (button has pressed / CLI transmit request has occured)
+/// Flag, indicating transmit request (button has pressed / CLI transmit request has occurred)
 volatile bool tx_requested = false;
 /// Flag, indicating received packet is forwarded on CLI or not
 volatile bool rx_requested = false;
@@ -204,14 +204,14 @@ void app_process_action(RAIL_Handle_t rail_handle)
     case S_CALIBRATION_ERROR:
       calibration_status_buff = calibration_status;
       app_assert(true,
-                  "Radio Calibration Error occurred\nEvents: %llX\nRAIL_Calibrate() result:%d\r\n",
-                  error_code,
-                  calibration_status_buff);
+                 "Radio Calibration Error occurred\nEvents: %llX\nRAIL_Calibrate() result:%d\r\n",
+                 error_code,
+                 calibration_status_buff);
       state = S_IDLE;
       break;
     default:
       // Unexpected state
-      app_log_info("Unexpected Simple TRX state occured:%d\r\n", state);
+      app_log_info("Unexpected Simple TRX state occurred:%d\r\n", state);
       break;
   }
 }
@@ -271,9 +271,9 @@ void set_up_tx_fifo(RAIL_Handle_t rail_handle)
   uint16_t allocated_tx_fifo_size = 0;
   allocated_tx_fifo_size = RAIL_SetTxFifo(rail_handle, tx_fifo, 0, RAIL_FIFO_SIZE);
   app_assert(allocated_tx_fifo_size == RAIL_FIFO_SIZE,
-               "RAIL_SetTxFifo() failed to allocate a large enough fifo (%d bytes instead of %d bytes)\r\n",
-               allocated_tx_fifo_size,
-               RAIL_FIFO_SIZE);
+             "RAIL_SetTxFifo() failed to allocate a large enough fifo (%d bytes instead of %d bytes)\r\n",
+             allocated_tx_fifo_size,
+             RAIL_FIFO_SIZE);
 }
 
 // -----------------------------------------------------------------------------
@@ -287,7 +287,7 @@ static void printf_rx_packet(const uint8_t * const rx_buffer, uint16_t length)
   uint8_t i = 0;
   app_log_info("Packet has been received: ");
   for (i = 0; i < length; i++) {
-   app_log_info("0x%02X, ", rx_buffer[i]);
+    app_log_info("0x%02X, ", rx_buffer[i]);
   }
   app_log_info("\r\n");
 }
@@ -307,9 +307,9 @@ static uint16_t unpack_packet(uint8_t *rx_destination, const RAIL_RxPacketInfo_t
  * The API prepares the packet for sending and load it in the RAIL TX FIFO
  *****************************************************************************/
 /*static void prepare_package(RAIL_Handle_t rail_handle, uint8_t *out_data, uint16_t length)
-{
-}
-*/
+   {
+   }
+ */
 #else
 /******************************************************************************
  * The API helps to unpack the received packet, point to the payload and returns the length.

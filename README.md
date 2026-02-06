@@ -18,6 +18,7 @@ This repo contains example projects which demonstrate the features of the Silico
 ## Examples ##
 
 - Advertising
+- Channel Sounding
 - Connections
 - GATT Protocol
 - Security

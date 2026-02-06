@@ -488,4 +488,28 @@
     <properties key="category" value="Bluetooth Examples"/>
     <properties key="quality" value="development"/>
   </descriptors>
+  <descriptors name="soc_channel_sounding_initiator_peripheral" label="Bluetooth - SoC Channel Sounding Initiator Peripheral" description="This example demonstrates swapping GAP roles so the CS Initiator runs as a peripheral and accepts a connection from a CS Reflector running as a central device.&#xA;">
+    <properties key="namespace" value="template.uc"/>
+    <properties key="keywords" value="universal\ configurator"/>
+    <properties key="projectFilePaths" value="channel_sounding/initiator_as_peripheral_reflector_as_central/SimplicityStudio/soc_channel_sounding_initiator_peripheral.slcp"/>
+    <properties key="readmeFiles" value="channel_sounding/initiator_as_peripheral_reflector_as_central/README.md"/>
+    <properties key="boardCompatibility" value="brd2606a brd4198a com.silabs.board.none"/>
+    <properties key="partCompatibility" value=".*efr32[bm]g24[^l].* .*bgm241sd22vna.*"/>
+    <properties key="ideCompatibility" value="generic-template iar-embedded-workbench makefile-ide simplicity-ide visual-studio-code"/>
+    <properties key="toolchainCompatibility" value="gcc iar segger"/>
+    <properties key="category" value="Bluetooth Examples"/>
+    <properties key="quality" value="development"/>
+  </descriptors>
+  <descriptors name="soc_channel_sounding_reflector_central" label="Bluetooth - SoC Channel Sounding Reflector Central" description="This example demonstrates swapping GAP roles so the CS Reflector runs as a central device and initiates a connection to a CS Initiator running as a peripheral device.&#xA;">
+    <properties key="namespace" value="template.uc"/>
+    <properties key="keywords" value="universal\ configurator"/>
+    <properties key="projectFilePaths" value="channel_sounding/initiator_as_peripheral_reflector_as_central/SimplicityStudio/soc_channel_sounding_reflector_central.slcp"/>
+    <properties key="readmeFiles" value="channel_sounding/initiator_as_peripheral_reflector_as_central/README.md"/>
+    <properties key="boardCompatibility" value="brd2606a brd4198a com.silabs.board.none"/>
+    <properties key="partCompatibility" value=".*efr32[bm]g24[^l].* .*bgm241sd22vna.*"/>
+    <properties key="ideCompatibility" value="generic-template iar-embedded-workbench makefile-ide simplicity-ide visual-studio-code"/>
+    <properties key="toolchainCompatibility" value="gcc iar segger"/>
+    <properties key="category" value="Bluetooth Examples"/>
+    <properties key="quality" value="development"/>
+  </descriptors>
 </model:MDescriptors>

@@ -1,0 +1,117 @@
+name: 05-Build_Apps
+run-name: ${{ github.actor }} started a workflow run
+
+on:
+  workflow_dispatch:
+    inputs:
+      sdk_version:
+        description: Selected SDK
+        required: true
+        type: choice
+        options:
+          - v2024.12.1
+          - v2025.6.0
+          - v2025.6.1
+          - v2025.6.2
+          - v2025.6.3
+          - v2025.12.0
+          - v2025.12.1
+          - v2025.12.2
+          - v2025.12.3
+          - v2026.6.0
+      selected_examples:
+        description: Selected examples, insert projects slcp file names comma-separated; empty selects all
+        type: string
+      selected_boards:
+        description: Selected boards, e.g brd4180a comma-separated; empty selects all
+        type: string
+
+jobs:
+  build_apps:
+    env:
+        APPS_OUTPUT_DIR: /tmp/output
+    name: Build applications
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Set up Java
+        uses: actions/setup-java@v5
+        with:
+          distribution: corretto
+          java-version: 21
+
+      - name: Setup SLT
+        uses: SiliconLabsSoftware/action-setup-slt@main
+        with:
+          install-conan: true
+          use-unstable: false
+
+      - name: Install SDK and build tools
+        run: |
+          set -euo pipefail
+
+          SDK_VERSION="${{ inputs.sdk_version }}"
+          SDK_VERSION="${SDK_VERSION#v}"
+
+          slt install "simplicity-sdk/${SDK_VERSION}@silabs"
+          slt install slc-cli
+          slt install gcc-arm-none-eabi
+          slt install cmake
+          slt install ninja
+          slt install commander
+
+          SDK_DIR="$(slt where "simplicity-sdk/${SDK_VERSION}")"
+          SLC_DIR="$(slt where slc-cli)"
+          ARM_GCC_DIR="$(slt where gcc-arm-none-eabi)"
+          CMAKE_DIR="$(slt where cmake)"
+          NINJA_DIR="$(slt where ninja)"
+          COMMANDER_DIR="$(slt where commander)"
+
+          {
+            echo "SDK_DIR=$SDK_DIR"
+            echo "ARM_GCC_DIR=$ARM_GCC_DIR"
+          } >> "$GITHUB_ENV"
+
+          printf '%s\n' \
+            "$SLC_DIR" \
+            "$ARM_GCC_DIR/bin" \
+            "$CMAKE_DIR/bin" \
+            "$NINJA_DIR" \
+            "$COMMANDER_DIR" \
+            "$COMMANDER_DIR/bin" >> "$GITHUB_PATH"
+      - name: Verify SLT installation
+        run: |
+          set -euo pipefail
+          slt --version
+          slc --version
+          arm-none-eabi-gcc --version
+          cmake --version
+          ninja --version
+          slt where commander
+          test -d "$SDK_DIR"
+
+      - name: Configure SLC
+        run: |
+          set -euo pipefail
+          slc signature trust --sdk="$SDK_DIR"
+          slc configuration --sdk="$SDK_DIR" --gcc-toolchain="$ARM_GCC_DIR"
+
+      - name: Check out repository
+        uses: actions/checkout@v6
+
+      - name: Build applications
+        run: |
+          set -euo pipefail
+
+          mkdir -p "$APPS_OUTPUT_DIR"
+
+          python3 build_sample_app.py \
+            . \
+            "${{ inputs.selected_examples }}" \
+            "${{ inputs.selected_boards }}" \
+            "$APPS_OUTPUT_DIR"
+      - name: Upload build artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: binaries & logs
+          path: ${{ env.APPS_OUTPUT_DIR }}

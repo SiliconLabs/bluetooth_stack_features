@@ -13,8 +13,7 @@ on:
         default: "main"
 
 jobs:
-  job1:
-    name: Check coding convention
+  Check_coding_convention:
     runs-on: ubuntu-22.04
     steps:
       - name: Trigger

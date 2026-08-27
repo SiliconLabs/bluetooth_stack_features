@@ -1,10 +1,10 @@
 id: bluetooth_stack_features
-label: Bluetooth Stack Features
+label: Bluetooth Stack Features examples
 description: >
   Bluetooth Stack Features
-version: 0.0.1
-sdk:
- id: "gecko_sdk"
- version: 4.1.2
-component_path:
- - path: "component/connection_manager"
+documentation:
+  - docset: unknown
+    version: 0.0.0
+version: 0.0.0
+supplier: Silicon Laboratories Inc.
+vendor: silabs

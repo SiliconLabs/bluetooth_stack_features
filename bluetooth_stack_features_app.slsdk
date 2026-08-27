@@ -1,0 +1,5 @@
+﻿id=com.silabs.sdk.bluetooth_stack_features_app
+version=1.0.1
+label=Bluetooth Stack Features Example Applications
+description=Bluetooth Stack Features Example Applications
+prop.file.templatesFile=bluetooth_stack_features_app_templates.xml
